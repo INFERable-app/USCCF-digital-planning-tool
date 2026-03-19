@@ -2,6 +2,7 @@
 ```mermaid
 %%{init: {'theme': 'base'}%%
 graph TD
+AccessTool[Access Tool] --> Login
 
 Login([Authnticate via SSO]) --> IsNew{Is this a new user?}
 
@@ -55,7 +56,7 @@ Review this resource.
 
 When you’re done, return to this tool."}
 
-TPM --> Fit{Is TPM a Good Fit?}
+TPM([TMP Path]) --> Fit([Is TPM a Good Fit?])
     
     Fit{Do you have a talent sourcing challenge and partners ready to organize?}
     Fit -- No --> End([Stop])
@@ -91,3 +92,4 @@ Self-assessment --> Fit
     RootCause --> Strategy2
     Performance -- Yes --> Done([Maintain & Improve])
 ```
+IL NEED: Tools to match CTE learners to workforce learning opportunities. Tools ad strategies, e.g. enabling coaches and connections.  
