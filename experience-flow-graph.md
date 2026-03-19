@@ -91,5 +91,8 @@ Self-assessment --> Fit
     Performance -- No --> RootCause[Analyze Root Cause]
     RootCause --> Strategy2
     Performance -- Yes --> Done([Maintain & Improve])
+
+LER([LER Path])
+
 ```
 IL NEED: Tools to match CTE learners to workforce learning opportunities. Tools ad strategies, e.g. enabling coaches and connections.  
