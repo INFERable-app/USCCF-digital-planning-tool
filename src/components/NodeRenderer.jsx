@@ -15,7 +15,7 @@ const NODE_COMPONENTS = {
 	results: ResultsNode,
 };
 
-export default function NodeRenderer({ node, answers, advance, onRestart }) {
+export default function NodeRenderer({ node, answers, advance, onBack, onRestart }) {
 	const NodeComponent = NODE_COMPONENTS[node.type];
 	const nodeEdges = node.edgeIds.map((id) => edges[id]);
 
@@ -25,6 +25,7 @@ export default function NodeRenderer({ node, answers, advance, onRestart }) {
 			nodeEdges={nodeEdges}
 			answers={answers}
 			advance={advance}
+			onBack={onBack}
 			onRestart={onRestart}
 		/>
 	);

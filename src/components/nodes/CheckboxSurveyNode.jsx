@@ -4,7 +4,7 @@ import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import CheckboxEdge from '../edges/CheckboxEdge.jsx';
 import { challengeLabels, edges } from '../../graph/wizardGraph.js';
 
-export default function CheckboxSurveyNode({ node, nodeEdges, answers, advance }) {
+export default function CheckboxSurveyNode({ node, nodeEdges, answers, advance, onBack }) {
 	const [selected, setSelected] = useState(new Set());
 	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 	const submitEdge = edges[node.submitEdgeId];
@@ -20,7 +20,7 @@ export default function CheckboxSurveyNode({ node, nodeEdges, answers, advance }
 
 	return (
 		<div className="screen screen-compact">
-			<CompactHeader />
+			<CompactHeader onBack={onBack} />
 			{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 			<div className="survey-content">
 				<p className="survey-question">{node.question}</p>

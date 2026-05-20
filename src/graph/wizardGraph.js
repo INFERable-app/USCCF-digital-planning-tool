@@ -17,10 +17,10 @@ export const edges = {
 
 	// Category
 	'pick-employer': { id: 'pick-employer', label: 'Employer', targetNodeId: 'role', storeKey: 'category', value: 'employer' },
-	'pick-education': { id: 'pick-education', label: 'Education Providers', targetNodeId: 'role', storeKey: 'category', value: 'education' },
-	'pick-intermediary': { id: 'pick-intermediary', label: 'Workforce Intermediary', targetNodeId: 'role', storeKey: 'category', value: 'intermediary' },
-	'pick-board': { id: 'pick-board', label: 'Workforce Board', targetNodeId: 'role', storeKey: 'category', value: 'board' },
-	'pick-state': { id: 'pick-state', label: 'State Agency', targetNodeId: 'role', storeKey: 'category', value: 'state' },
+	'pick-education': { id: 'pick-education', label: 'Education Providers', targetNodeId: 'role', storeKey: 'category', value: 'education', disabled: true },
+	'pick-intermediary': { id: 'pick-intermediary', label: 'Workforce Intermediary', targetNodeId: 'role', storeKey: 'category', value: 'intermediary', disabled: true },
+	'pick-board': { id: 'pick-board', label: 'Workforce Board', targetNodeId: 'role', storeKey: 'category', value: 'board', disabled: true },
+	'pick-state': { id: 'pick-state', label: 'State Agency', targetNodeId: 'role', storeKey: 'category', value: 'state', disabled: true },
 
 	// Role
 	'pick-role-coord': { id: 'pick-role-coord', label: 'Coordinating employer demand', targetNodeId: 'challenge', storeKey: 'role', value: 'coordinating' },

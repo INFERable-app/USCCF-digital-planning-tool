@@ -5,7 +5,7 @@
 }
 
 body {
-	background: #f0f0f0;
+	background: #c8c8c8;
 	font-family: 'Economica', sans-serif;
 }
 
@@ -15,22 +15,134 @@ body {
 	justify-content: center;
 	align-items: flex-start;
 	min-height: 100dvh;
+	padding: 40px 16px 60px;
 }
 
-.phone-frame {
-	width: 100%;
-	max-width: 402px;
-	min-height: 100dvh;
-	background: white;
+/* ── iPhone 17 bezel ──────────────────────────────────────────────────────── */
+.phone-chrome {
 	position: relative;
+	background: linear-gradient(160deg, #2e2e30 0%, #18181a 100%);
+	border-radius: 56px;
+	padding: 14px;
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.11),
+		0 32px 90px rgba(0, 0, 0, 0.55),
+		0 8px 24px rgba(0, 0, 0, 0.35);
+	flex-shrink: 0;
+}
+
+/* Left side: action button + volume up + volume down */
+.phone-chrome::before {
+	content: '';
+	position: absolute;
+	left: -4px;
+	top: 108px;
+	width: 4px;
+	height: 30px;
+	background: #3a3a3c;
+	border-radius: 2px 0 0 2px;
+	box-shadow: 0 54px 0 #3a3a3c, 0 98px 0 #3a3a3c;
+}
+
+/* Right side: power button */
+.phone-chrome::after {
+	content: '';
+	position: absolute;
+	right: -4px;
+	top: 168px;
+	width: 4px;
+	height: 62px;
+	background: #3a3a3c;
+	border-radius: 0 2px 2px 0;
+}
+
+/* ── Phone frame (screen glass) ───────────────────────────────────────────── */
+.phone-frame {
+	position: relative;
+	width: 402px;
+	height: 874px;
+	background: white;
+	border-radius: 44px;
 	overflow: hidden;
+}
+
+/* Dynamic Island */
+.dynamic-island {
+	position: absolute;
+	top: 11px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 126px;
+	height: 37px;
+	background: #000;
+	border-radius: 20px;
+	z-index: 50;
+	pointer-events: none;
+}
+
+/* Home indicator */
+.home-indicator {
+	position: absolute;
+	bottom: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 130px;
+	height: 5px;
+	background: rgba(0, 0, 0, 0.22);
+	border-radius: 3px;
+	z-index: 50;
+	pointer-events: none;
+}
+
+/* ── Status bar (back button lives here) ──────────────────────────────────── */
+.status-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 59px;
+	display: flex;
+	align-items: center;
+	padding: 0 20px;
+	z-index: 10;
 }
 
 /* ── Shared screen wrapper ────────────────────────────────────────────────── */
 .screen {
 	display: flex;
 	flex-direction: column;
-	min-height: 100dvh;
+	height: 100%;
+}
+
+/* ── Narrow viewports: revert to full-screen ──────────────────────────────── */
+@media (max-width: 450px) {
+	.app-shell {
+		padding: 0;
+	}
+	.phone-chrome {
+		border-radius: 0;
+		padding: 0;
+		background: white;
+		box-shadow: none;
+	}
+	.phone-chrome::before,
+	.phone-chrome::after {
+		display: none;
+	}
+	.phone-frame {
+		width: 100%;
+		height: auto;
+		min-height: 100dvh;
+		border-radius: 0;
+	}
+	.dynamic-island,
+	.home-indicator {
+		display: none;
+	}
+	.screen {
+		height: auto;
+		min-height: 100dvh;
+	}
 }
 
 /* ── Full hero header (Welcome / Category / Role / Challenge) ─────────────── */
@@ -105,8 +217,9 @@ body {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 23px 17px 32px;
+	padding: 16px 17px 32px;
 	gap: 16px;
+	overflow-y: auto;
 }
 
 .welcome-heading {
@@ -320,6 +433,7 @@ body {
 	border: none;
 	cursor: pointer;
 	text-align: center;
+	text-decoration: none;
 	transition: background 0.15s ease;
 	line-height: 1.1;
 }
@@ -371,14 +485,35 @@ body {
 	transition: background 0.15s ease;
 }
 
-.btn-choice:hover {
+.btn-choice:hover:not(:disabled) {
 	background: #7a2830;
+}
+
+.btn-choice:disabled {
+	background: #b0b0b0;
+	color: #e0e0e0;
+	cursor: not-allowed;
+}
+
+.btn-back {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-family: 'Economica', sans-serif;
+	font-size: 18px;
+	color: #8d2f38;
+	padding: 0;
+	line-height: 1;
+}
+
+.btn-back:hover {
+	text-decoration: underline;
 }
 
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
 .bottom-cta {
 	flex-shrink: 0;
-	padding: 12px 17px 24px;
+	padding: 12px 17px 28px;
 }
 
 /* ── Video card ───────────────────────────────────────────────────────────── */

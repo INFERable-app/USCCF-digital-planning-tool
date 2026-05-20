@@ -4,13 +4,13 @@ import VideoCard from '../shared/VideoCard.jsx';
 import { challengeLabels } from '../../graph/wizardGraph.js';
 import { resolveResult } from '../../graph/resolveResult.js';
 
-export default function ResultsNode({ node, answers, onRestart }) {
+export default function ResultsNode({ node, answers, onBack, onRestart }) {
 	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 	const result = resolveResult(node.resolvers, answers);
 
 	return (
 		<div className="screen screen-compact">
-			<CompactHeader />
+			<CompactHeader onBack={onBack} />
 			{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 			<div className="survey-content">
 				<p className="results-label">Recommended next step:</p>

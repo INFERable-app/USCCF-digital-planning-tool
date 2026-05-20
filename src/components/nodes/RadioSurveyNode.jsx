@@ -4,13 +4,13 @@ import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import RadioEdge from '../edges/RadioEdge.jsx';
 import { challengeLabels } from '../../graph/wizardGraph.js';
 
-export default function RadioSurveyNode({ node, nodeEdges, answers, advance }) {
+export default function RadioSurveyNode({ node, nodeEdges, answers, advance, onBack }) {
 	const [selectedEdgeId, setSelectedEdgeId] = useState(null);
 	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 
 	return (
 		<div className="screen screen-compact">
-			<CompactHeader />
+			<CompactHeader onBack={onBack} />
 			{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 			<div className="survey-content">
 				{node.intro && <p className="body-text">{node.intro}</p>}

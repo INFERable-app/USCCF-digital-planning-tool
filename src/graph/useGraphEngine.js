@@ -28,6 +28,14 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
+	function back() {
+		if (history.length === 0) return;
+		const prev = history[history.length - 1];
+		setHistory((h) => h.slice(0, -1));
+		setCurrentNodeId(prev);
+		window.scrollTo(0, 0);
+	}
+
 	function restart() {
 		setCurrentNodeId(startNodeId);
 		setAnswers({});
@@ -35,5 +43,5 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
-	return { node, answers, history, advance, restart };
+	return { node, answers, history, advance, back, restart };
 }
