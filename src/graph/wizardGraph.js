@@ -1,187 +1,269 @@
 export const startNodeId = 'welcome';
 
 export const challengeLabels = {
-	translating: 'Translating employer needs into skill requirements',
-	aggregating: 'Aggregating skill requirements across employer collaborative',
-	training: 'Training providers use different systems and credentials'
+    'ced-01': 'Establish/Expand network',
+    'ced-02': 'Convene employers',
+    'ced-03': 'Build consensus',
 };
 
 // ── Edges ────────────────────────────────────────────────────────────────────
-// Each edge is an answer/choice that advances the graph.
-// storeKey + value: written into accumulated answers when this edge is taken.
-// Checkbox option edges have no targetNodeId; they are selected by id and
-// passed as a dynamicValue array to the submit edge's advance() call.
 export const edges = {
-	// Welcome
-	'cta-start': { id: 'cta-start', label: "Let's get started!", targetNodeId: 'category' },
+    // Welcome
+    //'cta-start': { id: 'cta-start', label: "Let's get started!", targetNodeId: 'category' },
+    'cta-start': { id: 'cta-start', label: "Let's get started!", targetNodeId: 'role', storeKey: 'category', value: 'employer' },
 
-	// Category
-	'pick-employer': { id: 'pick-employer', label: 'Employer', targetNodeId: 'role', storeKey: 'category', value: 'employer' },
-	'pick-education': { id: 'pick-education', label: 'Education Providers', targetNodeId: 'role', storeKey: 'category', value: 'education', disabled: true },
-	'pick-intermediary': { id: 'pick-intermediary', label: 'Workforce Intermediary', targetNodeId: 'role', storeKey: 'category', value: 'intermediary', disabled: true },
-	'pick-board': { id: 'pick-board', label: 'Workforce Board', targetNodeId: 'role', storeKey: 'category', value: 'board', disabled: true },
-	'pick-state': { id: 'pick-state', label: 'State Agency', targetNodeId: 'role', storeKey: 'category', value: 'state', disabled: true },
+    // Category — only Employer active
+    'pick-employer': { id: 'pick-employer', label: 'Employer', targetNodeId: 'role', storeKey: 'category', value: 'employer' },
+    'pick-education': { id: 'pick-education', label: 'Education Providers', targetNodeId: 'role', storeKey: 'category', value: 'education', disabled: true },
+    'pick-intermediary': { id: 'pick-intermediary', label: 'Workforce Intermediary', targetNodeId: 'role', storeKey: 'category', value: 'intermediary', disabled: true },
+    'pick-board': { id: 'pick-board', label: 'Workforce Board', targetNodeId: 'role', storeKey: 'category', value: 'board', disabled: true },
+    'pick-state': { id: 'pick-state', label: 'State Agency', targetNodeId: 'role', storeKey: 'category', value: 'state', disabled: true },
 
-	// Role
-	'pick-role-coord': { id: 'pick-role-coord', label: 'Coordinating employer demand', targetNodeId: 'challenge', storeKey: 'role', value: 'coordinating' },
-	'pick-role-align': { id: 'pick-role-align', label: 'Aligning training with industry needs', targetNodeId: 'challenge', storeKey: 'role', value: 'aligning' },
-	'pick-role-track': { id: 'pick-role-track', label: 'Tracking talent pipeline outcomes', targetNodeId: 'challenge', storeKey: 'role', value: 'tracking' },
-	'pick-role-other': { id: 'pick-role-other', label: 'Other', targetNodeId: 'challenge', storeKey: 'role', value: 'other' },
+    // Role — only Coordinating Employer Demand active
+    'pick-role-coord': { id: 'pick-role-coord', label: 'Coordinating employer demand', targetNodeId: 'challenge', storeKey: 'role', value: 'coordinating' },
+    'pick-role-align': { id: 'pick-role-align', label: 'Aligning training with industry needs', targetNodeId: 'challenge', storeKey: 'role', value: 'aligning', disabled: true },
+    'pick-role-track': { id: 'pick-role-track', label: 'Tracking talent pipeline outcomes', targetNodeId: 'challenge', storeKey: 'role', value: 'tracking', disabled: true },
+    'pick-role-other': { id: 'pick-role-other', label: 'Other', targetNodeId: 'challenge', storeKey: 'role', value: 'other', disabled: true },
 
-	// Challenge — branching point
-	'pick-translating': { id: 'pick-translating', label: 'Translating employer needs into skill requirements', targetNodeId: 'context-survey', storeKey: 'challenge', value: 'translating' },
-	'pick-aggregating': { id: 'pick-aggregating', label: 'Aggregating skill requirements across employer collaborative', targetNodeId: 'checkbox-survey-2', storeKey: 'challenge', value: 'aggregating' },
-	'pick-training': { id: 'pick-training', label: 'Training providers use different systems and credentials', targetNodeId: 'context-survey', storeKey: 'challenge', value: 'training' },
+    // Challenge (Q2)
+    'pick-ced-01': { id: 'pick-ced-01', label: 'Establish/Expand employer collaborative network', targetNodeId: 'context-ced-01', storeKey: 'challenge', value: 'ced-01' },
+    'pick-ced-02': { id: 'pick-ced-02', label: 'Convene employers to define shared hiring needs', targetNodeId: 'context-ced-02', storeKey: 'challenge', value: 'ced-02' },
+    'pick-ced-03': { id: 'pick-ced-03', label: 'Build consensus on common job titles, roles, and requirements', targetNodeId: 'context-ced-03', storeKey: 'challenge', value: 'ced-03' },
 
-	// Context survey — all options navigate to the same target, differ by stored value
-	'context-opt-few': { id: 'context-opt-few', label: 'We have identified a few employers, but we do not have much collaboration', targetNodeId: 'tpm-certification', storeKey: 'contextOption', value: 'few-employers' },
-	'context-opt-no-tools': { id: 'context-opt-no-tools', label: "We have formed an employer collaborative, but we don't have many technology tools", targetNodeId: 'tpm-certification', storeKey: 'contextOption', value: 'collaborative-no-tools' },
-	'context-opt-platforms': { id: 'context-opt-platforms', label: 'We have an employer collaborative that has software platforms to support gathering and sharing information', targetNodeId: 'tpm-certification', storeKey: 'contextOption', value: 'collaborative-with-platforms' },
+    // Context for CED-01 (Q3_1) — 4 options, different targets
+    'ced01-already-identified': { id: 'ced01-already-identified', label: 'We have already identified an industry focus for an employer collaborative.', targetNodeId: 'resource-ai-identify-partners' },
+    'ced01-need-focus': { id: 'ced01-need-focus', label: 'We need to identify an industry focus for an employer collaborative.', targetNodeId: 'resource-tpm-57-58' },
+    'ced01-need-employers': { id: 'ced01-need-employers', label: 'We need to identify employers to invite to join the collaborative.', targetNodeId: 'followup-outreach' },
+    'ced01-want-expand': { id: 'ced01-want-expand', label: 'We want to expand the number of employers in the collaborative.', targetNodeId: 'resource-ai-identify-partners' },
 
-	// TPM certification — options navigate to different targets
-	'tpm-yes': { id: 'tpm-yes', label: 'Yes', targetNodeId: 'checkbox-survey', storeKey: 'tpm', value: 'yes' },
-	'tpm-no': { id: 'tpm-no', label: 'No', targetNodeId: 'tpm-video', storeKey: 'tpm', value: 'no' },
+    // Context for CED-02 (Q3_2) — 1 option
+    'ced02-same-industry': { id: 'ced02-same-industry', label: 'The employers in the collaborative are from the same industry or occupation cluster.', targetNodeId: 'followup-facilitation' },
 
-	// TPM video
-	'after-video': { id: 'after-video', label: 'Next', targetNodeId: 'checkbox-survey' },
+    // Context for CED-03 (Q3_3) — 1 option
+    'ced03-need-framework': { id: 'ced03-need-framework', label: 'The collaborative network needs a common skills framework aligned to occupations.', targetNodeId: 'followup-competency' },
 
-	// Checkbox survey 1 options (no targetNodeId — selected ids collected, then passed via submit edge)
-	'opt-frameworks': { id: 'opt-frameworks', label: 'Some of our employers use industry-defined skills frameworks' },
-	'opt-job-descriptions': { id: 'opt-job-descriptions', label: 'Employers often provide job descriptions that do not include skill definitions and how skills differ for entry-level, journeyman, and supervisor' },
-	'opt-no-language': { id: 'opt-no-language', label: 'No common skills language across employer partners' },
+    // Q4_1: Do you need outreach materials?
+    'outreach-yes': { id: 'outreach-yes', label: 'Yes', targetNodeId: 'resource-tpm-59-64', storeKey: 'outreach', value: 'yes' },
+    'outreach-no': { id: 'outreach-no', label: 'No', targetNodeId: 'end', storeKey: 'outreach', value: 'no' },
 
-	// Checkbox survey 1 submit
-	'submit-checkbox-1': { id: 'submit-checkbox-1', label: 'Submit', targetNodeId: 'results', storeKey: 'checkboxAnswers' },
+    // Q4_2: Do you need facilitation support?
+    'facilitation-yes': { id: 'facilitation-yes', label: 'Yes', targetNodeId: 'resource-tpm-74-78', storeKey: 'facilitation', value: 'yes' },
+    'facilitation-no': { id: 'facilitation-no', label: 'No', targetNodeId: 'followup-labor-data', storeKey: 'facilitation', value: 'no' },
 
-	// Checkbox survey 2 options
-	'opt-meetings': { id: 'opt-meetings', label: 'Collaborative meetings' },
-	'opt-dashboards': { id: 'opt-dashboards', label: 'Dashboards' },
-	'opt-shared-files': { id: 'opt-shared-files', label: 'Shared files' },
+    // Q4_3: Do you have labor market data?
+    'labor-data-no': { id: 'labor-data-no', label: 'No', targetNodeId: 'resource-tpm-84-85-bls', storeKey: 'laborData', value: 'no' },
+    'labor-data-yes': { id: 'labor-data-yes', label: 'Yes', targetNodeId: 'end', storeKey: 'laborData', value: 'yes' },
 
-	// Checkbox survey 2 submit
-	'submit-checkbox-2': { id: 'submit-checkbox-2', label: 'Submit', targetNodeId: 'results', storeKey: 'checkboxAnswers' }
+    // Q4_4: Do you need sample competency frameworks?
+    'competency-yes': { id: 'competency-yes', label: 'Yes', targetNodeId: 'resource-internal-library', storeKey: 'competency', value: 'yes' },
+    'competency-no': { id: 'competency-no', label: 'No', targetNodeId: 'followup-taxonomy', storeKey: 'competency', value: 'no' },
+
+    // Q4_5: Do you need skills taxonomy resources?
+    'taxonomy-yes': { id: 'taxonomy-yes', label: 'Yes', targetNodeId: 'resource-onet-lightcast', storeKey: 'taxonomy', value: 'yes' },
+    'taxonomy-no': { id: 'taxonomy-no', label: 'No', targetNodeId: 'end', storeKey: 'taxonomy', value: 'no' },
 };
 
 // ── Nodes ────────────────────────────────────────────────────────────────────
-// edgeIds: ordered list controlling render order of choices/options.
-// challengeBar: whether to render the blue challenge title bar (compact screens).
-// resolvers: result nodes only — condition-matched content (see resolveResult.js).
+const FOOTER = 'Return to this tool when you are ready to explore the next step.';
+
 export const nodes = {
-	'welcome': {
-		id: 'welcome',
-		type: 'welcome',
-		layout: 'hero',
-		challengeBar: false,
-		heading: 'Welcome to the planning tool.',
-		body: 'After answering a few quick questions we can get you started on your digital transformation.',
-		edgeIds: ['cta-start']
-	},
+    'welcome': {
+        id: 'welcome',
+        type: 'welcome',
+        layout: 'hero',
+        challengeBar: false,
+        heading: 'Welcome to the planning tool.',
+        body: 'After answering a few quick questions we can get you started on your digital transformation.',
+        edgeIds: ['cta-start'],
+    },
 
-	'category': {
-		id: 'category',
-		type: 'multiChoice',
-		layout: 'hero',
-		challengeBar: false,
-		question: 'What category best describes your organization?',
-		edgeIds: ['pick-employer', 'pick-education', 'pick-intermediary', 'pick-board', 'pick-state']
-	},
+    'category': {
+        id: 'category',
+        type: 'multiChoice',
+        layout: 'hero',
+        challengeBar: false,
+        question: 'What category best describes your organization?',
+        edgeIds: ['pick-employer', 'pick-education', 'pick-intermediary', 'pick-board', 'pick-state'],
+    },
 
-	'role': {
-		id: 'role',
-		type: 'multiChoice',
-		layout: 'hero',
-		challengeBar: false,
-		question: 'What is your primary role?',
-		edgeIds: ['pick-role-coord', 'pick-role-align', 'pick-role-track', 'pick-role-other']
-	},
+    'role': {
+        id: 'role',
+        type: 'multiChoice',
+        layout: 'hero',
+        challengeBar: false,
+        question: 'What is your primary role?',
+        edgeIds: ['pick-role-coord', 'pick-role-align', 'pick-role-track', 'pick-role-other'],
+    },
 
-	'challenge': {
-		id: 'challenge',
-		type: 'multiChoice',
-		layout: 'hero',
-		challengeBar: false,
-		question: 'What challenge do you want to address through digital transformation?',
-		edgeIds: ['pick-translating', 'pick-aggregating', 'pick-training']
-	},
+    // Q2
+    'challenge': {
+        id: 'challenge',
+        type: 'multiChoice',
+        layout: 'hero',
+        challengeBar: false,
+        question: 'What challenge do you want to address?',
+        edgeIds: ['pick-ced-01', 'pick-ced-02', 'pick-ced-03'],
+    },
 
-	'context-survey': {
-		id: 'context-survey',
-		type: 'radioSurvey',
-		layout: 'compact',
-		challengeBar: true,
-		intro: 'Helping employers understand and define high-demand skills is a key step in moving towards aligning training with industry needs.',
-		question: 'What is your current context?',
-		submitLabel: 'Next',
-		edgeIds: ['context-opt-few', 'context-opt-no-tools', 'context-opt-platforms']
-	},
+    // Q3_1
+    'context-ced-01': {
+        id: 'context-ced-01',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'What is your current context?',
+        submitLabel: 'Next',
+        edgeIds: ['ced01-already-identified', 'ced01-need-focus', 'ced01-need-employers', 'ced01-want-expand'],
+    },
 
-	'tpm-certification': {
-		id: 'tpm-certification',
-		type: 'radioSurvey',
-		layout: 'compact',
-		challengeBar: true,
-		question: 'Are you practicing TPM?',
-		submitLabel: 'Next',
-		edgeIds: ['tpm-yes', 'tpm-no']
-	},
+    // Q3_2
+    'context-ced-02': {
+        id: 'context-ced-02',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'What is your current context?',
+        submitLabel: 'Next',
+        edgeIds: ['ced02-same-industry'],
+    },
 
-	'tpm-video': {
-		id: 'tpm-video',
-		type: 'videoInfo',
-		layout: 'compact',
-		challengeBar: true,
-		intro: 'Before continuing, we recommend watching this video on the TPM program.',
-		videoUrl: 'https://youtu.be/IzN76ccR0ZA?si=kBpfhzgGsTBBmEY8',
-		videoAlt: 'TPM Program video thumbnail',
-		linkLabel: 'Watch video on the TPM program:',
-		linkDisplay: 'https://youtu.be/IzN76ccR0ZA',
-		edgeIds: ['after-video']
-	},
+    // Q3_3
+    'context-ced-03': {
+        id: 'context-ced-03',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'What is your current context?',
+        submitLabel: 'Next',
+        edgeIds: ['ced03-need-framework'],
+    },
 
-	'checkbox-survey': {
-		id: 'checkbox-survey',
-		type: 'checkboxSurvey',
-		layout: 'compact',
-		challengeBar: true,
-		question: 'How do employers provide information? (Check all that apply)',
-		submitEdgeId: 'submit-checkbox-1',
-		edgeIds: ['opt-frameworks', 'opt-job-descriptions', 'opt-no-language']
-	},
+    // Q4_1
+    'followup-outreach': {
+        id: 'followup-outreach',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'Do you need outreach materials?',
+        submitLabel: 'Next',
+        edgeIds: ['outreach-yes', 'outreach-no'],
+    },
 
-	'checkbox-survey-2': {
-		id: 'checkbox-survey-2',
-		type: 'checkboxSurvey',
-		layout: 'compact',
-		challengeBar: true,
-		question: 'How do you share information with employers? (Check all that apply)',
-		submitEdgeId: 'submit-checkbox-2',
-		edgeIds: ['opt-meetings', 'opt-dashboards', 'opt-shared-files']
-	},
+    // Q4_2
+    'followup-facilitation': {
+        id: 'followup-facilitation',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'Do you need facilitation support?',
+        submitLabel: 'Next',
+        edgeIds: ['facilitation-yes', 'facilitation-no'],
+    },
 
-	// Single results node serves all challenge paths — resolvers pick the right content.
-	'results': {
-		id: 'results',
-		type: 'results',
-		layout: 'compact',
-		challengeBar: true,
-		edgeIds: [],
-		resolvers: [
-			{
-				when: { challenge: ['translating', 'training'] },
-				recommendation: 'Watch video on the importance of communicating skill and credential requirements.',
-				videoUrl: 'https://youtu.be/IzN76ccR0ZA?si=kBpfhzgGsTBBmEY8',
-				videoAlt: 'Video thumbnail',
-				bodyText: 'Use a template to capture competencies from employers in a standard way.',
-				cta: { label: 'View Template', url: '#' },
-				footer: 'Return to this tool when you are ready to explore the next step.'
-			},
-			{
-				when: { challenge: ['aggregating'] },
-				recommendation: 'Watch video on TPM Web Tools',
-				videoUrl: 'https://youtu.be/IzN76ccR0ZA?si=kBpfhzgGsTBBmEY8',
-				videoAlt: 'TPM Web Tools video thumbnail',
-				footer: 'Return to this tool when you are ready to explore the next step.'
-			}
-		]
-	}
+    // Q4_3
+    'followup-labor-data': {
+        id: 'followup-labor-data',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'Do you have labor market data?',
+        submitLabel: 'Next',
+        edgeIds: ['labor-data-no', 'labor-data-yes'],
+    },
+
+    // Q4_4
+    'followup-competency': {
+        id: 'followup-competency',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'Do you need sample competency frameworks?',
+        submitLabel: 'Next',
+        edgeIds: ['competency-yes', 'competency-no'],
+    },
+
+    // Q4_5
+    'followup-taxonomy': {
+        id: 'followup-taxonomy',
+        type: 'radioSurvey',
+        layout: 'compact',
+        challengeBar: true,
+        question: 'Do you need skills taxonomy resources?',
+        submitLabel: 'Next',
+        edgeIds: ['taxonomy-yes', 'taxonomy-no'],
+    },
+
+    // ── Resource nodes (terminal) ───────────────────────────────────────────
+    'resource-ai-identify-partners': {
+        id: 'resource-ai-identify-partners',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'AI Prompt – Identify Partners', footer: FOOTER }],
+    },
+
+    'resource-tpm-57-58': {
+        id: 'resource-tpm-57-58',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 57–58', footer: FOOTER }],
+    },
+
+    'resource-tpm-59-64': {
+        id: 'resource-tpm-59-64',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 59–64', footer: FOOTER }],
+    },
+
+    'resource-tpm-74-78': {
+        id: 'resource-tpm-74-78',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 74–78', footer: FOOTER }],
+    },
+
+    'resource-tpm-84-85-bls': {
+        id: 'resource-tpm-84-85-bls',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'TPM Academy p. 84–85 & BLS.gov', footer: FOOTER }],
+    },
+
+    'resource-internal-library': {
+        id: 'resource-internal-library',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'Consult Internal Library', footer: FOOTER }],
+    },
+
+    'resource-onet-lightcast': {
+        id: 'resource-onet-lightcast',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: 'O*NET & Lightcast Skills Library', footer: FOOTER }],
+    },
+
+    // ── End node ────────────────────────────────────────────────────────────
+    'end': {
+        id: 'end',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{ when: {}, recommendation: "You've completed this section.", footer: FOOTER }],
+    },
 };
