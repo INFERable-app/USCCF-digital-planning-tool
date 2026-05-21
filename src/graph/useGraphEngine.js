@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { startNodeId, nodes, edges } from './wizardGraph.js';
 
 export function useGraphEngine() {
@@ -8,11 +8,6 @@ export function useGraphEngine() {
 
 	const node = nodes[currentNodeId];
 
-	// advance(edgeId, dynamicValue?)
-	// - Resolves the edge, optionally stores a value in answers, then navigates.
-	// - dynamicValue is used when the component collects a value at runtime
-	//   (e.g. selected radio edge id, array of checked checkbox edge ids).
-	//   If the edge already carries a static `value`, that wins.
 	function advance(edgeId, dynamicValue) {
 		const edge = edges[edgeId];
 		if (!edge) throw new Error(`useGraphEngine: unknown edge id "${edgeId}"`);
@@ -25,6 +20,7 @@ export function useGraphEngine() {
 
 		setHistory((prev) => [...prev, currentNodeId]);
 		setCurrentNodeId(edge.targetNodeId);
+		window.history.pushState({}, '');
 		window.scrollTo(0, 0);
 	}
 
@@ -42,6 +38,14 @@ export function useGraphEngine() {
 		setHistory([]);
 		window.scrollTo(0, 0);
 	}
+
+	// No dependency array — always registers a fresh closure so back() sees
+	// the latest history state without stale capture issues.
+	useEffect(() => {
+		function onPopState() { back(); }
+		window.addEventListener('popstate', onPopState);
+		return () => window.removeEventListener('popstate', onPopState);
+	});
 
 	return { node, answers, history, advance, back, restart };
 }
