@@ -12,23 +12,16 @@ function fallbackCopy(text, onSuccess) {
 	document.body.removeChild(el);
 }
 
-function renderText(text) {
-	return text.split(/(\[[^\]]+\])/g).map((part, i) =>
-		/^\[.+\]$/.test(part)
-			? <mark key={i} className="prompt-placeholder">{part}</mark>
-			: part
-	);
-}
-
 export default function PromptBlock({ label, text }) {
+	const [value, setValue] = useState(text);
 	const [copied, setCopied] = useState(false);
 
 	function handleCopy() {
 		const succeed = () => { setCopied(true); setTimeout(() => setCopied(false), 2000); };
 		if (navigator.clipboard?.writeText) {
-			navigator.clipboard.writeText(text).then(succeed).catch(() => fallbackCopy(text, succeed));
+			navigator.clipboard.writeText(value).then(succeed).catch(() => fallbackCopy(value, succeed));
 		} else {
-			fallbackCopy(text, succeed);
+			fallbackCopy(value, succeed);
 		}
 	}
 
@@ -40,7 +33,12 @@ export default function PromptBlock({ label, text }) {
 					{copied ? 'Copied ✓' : 'Copy'}
 				</button>
 			</div>
-			<p className="prompt-block-body">{renderText(text)}</p>
+			<textarea
+				className="prompt-block-body"
+				value={value}
+				onChange={e => setValue(e.target.value)}
+				spellCheck={false}
+			/>
 		</div>
 	);
 }

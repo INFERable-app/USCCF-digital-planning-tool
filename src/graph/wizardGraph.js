@@ -34,7 +34,7 @@ export const edges = {
     'ced01-already-identified': { id: 'ced01-already-identified', label: 'We have already identified an industry focus for an employer collaborative.', targetNodeId: 'resource-ai-identify-partners' },
     'ced01-need-focus': { id: 'ced01-need-focus', label: 'We need to identify an industry focus for an employer collaborative.', targetNodeId: 'resource-tpm-57-58' },
     'ced01-need-employers': { id: 'ced01-need-employers', label: 'We need to identify employers to invite to join the collaborative.', targetNodeId: 'resource-tpm-59-64' },
-    'ced01-want-expand': { id: 'ced01-want-expand', label: 'We want to expand the number of employers in the collaborative.', targetNodeId: 'resource-ai-identify-partners' },
+    'ced01-want-expand': { id: 'ced01-want-expand', label: 'We want to expand the number of employers in the collaborative.', targetNodeId: 'resource-want-expand' },
 
     // Context for CED-02 (Q3_2) — 1 option
     'ced02-same-industry': { id: 'ced02-same-industry', label: 'The employers in the collaborative are from the same industry or occupation cluster.', targetNodeId: 'resource-ced02' },
@@ -45,6 +45,15 @@ export const edges = {
 
 // ── Nodes ────────────────────────────────────────────────────────────────────
 const FOOTER = 'Return to this tool when you are ready to explore the next step.';
+const TPM_PDF = 'https://www.tpmacademy.org/wp-content/uploads/2024/06/TPM-5.0_Curriculum_FINAL.pdf';
+const AI_PROMPT_IDENTIFY = `I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].
+
+Help me identify:
+• Major employers in this industry in the region
+• Small and mid-sized employers that may be important partners
+• Local industry associations and trade organizations
+• Chambers of commerce and economic development organizations connected to this industry
+• Employer groups already collaborating on workforce or skills initiatives`;
 
 export const nodes = {
     'welcome': {
@@ -127,18 +136,23 @@ export const nodes = {
         edgeIds: [],
         resolvers: [{
             when: {},
-            recommendation: 'AI Prompt Template – Identify Employers and Industry Partners for a Regional Collaborative',
-            promptBlock: {
-                label: 'Core Prompt',
-                text: `I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].
+            recommendation: 'Identify local industry associations and organizations that align with your industry focus.',
+            promptBlock: { label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY },
+            footer: FOOTER,
+        }],
+    },
 
-Help me identify:
-• Major employers in this industry in the region
-• Small and mid-sized employers that may be important partners
-• Local industry associations and trade organizations
-• Chambers of commerce and economic development organizations connected to this industry
-• Employer groups already collaborating on workforce or skills initiatives`,
-            },
+    'resource-want-expand': {
+        id: 'resource-want-expand',
+        type: 'results',
+        layout: 'compact',
+        challengeBar: true,
+        edgeIds: [],
+        resolvers: [{
+            when: {},
+            recommendation: 'Apply strategies to find employer points of contact for target industry.',
+            promptBlock: { label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY },
+            bodyText: 'Consider creating an outreach/recruiting toolkit.',
             footer: FOOTER,
         }],
     },
@@ -151,7 +165,8 @@ Help me identify:
         edgeIds: [],
         resolvers: [{
             when: {},
-            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '57–58' }],
+            recommendation: 'The following activity can help you take steps towards determining the focus of a collaborative.',
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '57–58', url: `${TPM_PDF}#page=57` }],
             footer: FOOTER,
         }],
     },
@@ -164,7 +179,8 @@ Help me identify:
         edgeIds: [],
         resolvers: [{
             when: {},
-            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '59–64' }],
+            bodyText: `When standing up a collaborative, consider the following:\n• Who will host the collaborative?\n• What will be the size and geographic scope of the collaborative?\n• How will the collaborative be financed?\n• How will the collaborative share information?`,
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '59–64', url: `${TPM_PDF}#page=59` }],
             footer: FOOTER,
         }],
     },
@@ -178,9 +194,11 @@ Help me identify:
         edgeIds: [],
         resolvers: [{
             when: {},
+            recommendation: 'After identifying and recruiting employers, make plans to bring the employers together to discuss shared needs.',
+            bodyText: 'Facilitate demand planning around priority occupations. Review resources that provide data on occupational outlook and projections.',
             resources: [
-                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '74–78' },
-                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '84–85' },
+                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '74–78', url: `${TPM_PDF}#page=74` },
+                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '84–85', url: `${TPM_PDF}#page=84` },
                 { type: 'link', label: 'BLS Occupational Outlook Handbook', url: 'https://www.bls.gov/ooh/' },
             ],
             footer: FOOTER,

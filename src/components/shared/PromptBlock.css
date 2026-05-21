@@ -42,6 +42,9 @@
 }
 
 .prompt-block-body {
+	display: block;
+	width: 100%;
+	min-height: 160px;
 	padding: 12px;
 	background: #f7f7f7;
 	font-family: 'Economica', sans-serif;
@@ -50,6 +53,10 @@
 	line-height: 1.55;
 	white-space: pre-wrap;
 	margin: 0;
+	border: none;
+	outline: none;
+	resize: vertical;
+	box-sizing: border-box;
 }
 
 .prompt-placeholder {
