@@ -149,7 +149,11 @@ Help me identify:
         layout: 'compact',
         challengeBar: true,
         edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 57–58', footer: FOOTER }],
+        resolvers: [{
+            when: {},
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '57–58' }],
+            footer: FOOTER,
+        }],
     },
 
     'resource-tpm-59-64': {
@@ -158,7 +162,11 @@ Help me identify:
         layout: 'compact',
         challengeBar: true,
         edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 59–64', footer: FOOTER }],
+        resolvers: [{
+            when: {},
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '59–64' }],
+            footer: FOOTER,
+        }],
     },
 
     // CED-02: facilitation support + labor market data on one screen
@@ -170,10 +178,10 @@ Help me identify:
         edgeIds: [],
         resolvers: [{
             when: {},
-            links: [
-                { label: 'TPM Academy Curriculum p. 74–78', url: null },
-                { label: 'TPM Academy Curriculum p. 84–85', url: null },
-                { label: 'BLS Occupational Outlook Handbook', url: 'https://www.bls.gov/ooh/' },
+            resources: [
+                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '74–78' },
+                { type: 'pdf', label: 'TPM Academy Curriculum', pages: '84–85' },
+                { type: 'link', label: 'BLS Occupational Outlook Handbook', url: 'https://www.bls.gov/ooh/' },
             ],
             footer: FOOTER,
         }],
@@ -189,10 +197,10 @@ Help me identify:
         resolvers: [{
             when: {},
             recommendation: 'Select a standard occupational classification taxonomy, framework or platform that has skills aligned to occupation titles.',
-            links: [
-                { label: 'Consult Internal Library', url: null },
-                { label: 'O*NET', url: 'https://www.onetonline.org/' },
-                { label: 'Lightcast Skills Library', url: 'https://lightcast.io/open-skills/categories' },
+            resources: [
+                { type: 'reference', label: 'Consult Internal Library' },
+                { type: 'link', label: 'O*NET', url: 'https://www.onetonline.org/' },
+                { type: 'link', label: 'Lightcast Skills Library', url: 'https://lightcast.io/open-skills/categories' },
             ],
             footer: FOOTER,
         }],
