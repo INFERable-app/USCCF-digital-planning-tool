@@ -33,34 +33,14 @@ export const edges = {
     // Context for CED-01 (Q3_1) — 4 options, different targets
     'ced01-already-identified': { id: 'ced01-already-identified', label: 'We have already identified an industry focus for an employer collaborative.', targetNodeId: 'resource-ai-identify-partners' },
     'ced01-need-focus': { id: 'ced01-need-focus', label: 'We need to identify an industry focus for an employer collaborative.', targetNodeId: 'resource-tpm-57-58' },
-    'ced01-need-employers': { id: 'ced01-need-employers', label: 'We need to identify employers to invite to join the collaborative.', targetNodeId: 'followup-outreach' },
+    'ced01-need-employers': { id: 'ced01-need-employers', label: 'We need to identify employers to invite to join the collaborative.', targetNodeId: 'resource-tpm-59-64' },
     'ced01-want-expand': { id: 'ced01-want-expand', label: 'We want to expand the number of employers in the collaborative.', targetNodeId: 'resource-ai-identify-partners' },
 
     // Context for CED-02 (Q3_2) — 1 option
-    'ced02-same-industry': { id: 'ced02-same-industry', label: 'The employers in the collaborative are from the same industry or occupation cluster.', targetNodeId: 'followup-facilitation' },
+    'ced02-same-industry': { id: 'ced02-same-industry', label: 'The employers in the collaborative are from the same industry or occupation cluster.', targetNodeId: 'resource-ced02' },
 
     // Context for CED-03 (Q3_3) — 1 option
-    'ced03-need-framework': { id: 'ced03-need-framework', label: 'The collaborative network needs a common skills framework aligned to occupations.', targetNodeId: 'followup-competency' },
-
-    // Q4_1: Do you need outreach materials?
-    'outreach-yes': { id: 'outreach-yes', label: 'Yes', targetNodeId: 'resource-tpm-59-64', storeKey: 'outreach', value: 'yes' },
-    'outreach-no': { id: 'outreach-no', label: 'No', targetNodeId: 'end', storeKey: 'outreach', value: 'no' },
-
-    // Q4_2: Do you need facilitation support?
-    'facilitation-yes': { id: 'facilitation-yes', label: 'Yes', targetNodeId: 'resource-tpm-74-78', storeKey: 'facilitation', value: 'yes' },
-    'facilitation-no': { id: 'facilitation-no', label: 'No', targetNodeId: 'followup-labor-data', storeKey: 'facilitation', value: 'no' },
-
-    // Q4_3: Do you have labor market data?
-    'labor-data-no': { id: 'labor-data-no', label: 'No', targetNodeId: 'resource-tpm-84-85-bls', storeKey: 'laborData', value: 'no' },
-    'labor-data-yes': { id: 'labor-data-yes', label: 'Yes', targetNodeId: 'end', storeKey: 'laborData', value: 'yes' },
-
-    // Q4_4: Do you need sample competency frameworks?
-    'competency-yes': { id: 'competency-yes', label: 'Yes', targetNodeId: 'resource-internal-library', storeKey: 'competency', value: 'yes' },
-    'competency-no': { id: 'competency-no', label: 'No', targetNodeId: 'followup-taxonomy', storeKey: 'competency', value: 'no' },
-
-    // Q4_5: Do you need skills taxonomy resources?
-    'taxonomy-yes': { id: 'taxonomy-yes', label: 'Yes', targetNodeId: 'resource-onet-lightcast', storeKey: 'taxonomy', value: 'yes' },
-    'taxonomy-no': { id: 'taxonomy-no', label: 'No', targetNodeId: 'end', storeKey: 'taxonomy', value: 'no' },
+    'ced03-need-framework': { id: 'ced03-need-framework', label: 'The collaborative network needs a common skills framework aligned to occupations.', targetNodeId: 'resource-ced03' },
 };
 
 // ── Nodes ────────────────────────────────────────────────────────────────────
@@ -138,61 +118,6 @@ export const nodes = {
         edgeIds: ['ced03-need-framework'],
     },
 
-    // Q4_1
-    'followup-outreach': {
-        id: 'followup-outreach',
-        type: 'radioSurvey',
-        layout: 'compact',
-        challengeBar: true,
-        question: 'Do you need outreach materials?',
-        submitLabel: 'Next',
-        edgeIds: ['outreach-yes', 'outreach-no'],
-    },
-
-    // Q4_2
-    'followup-facilitation': {
-        id: 'followup-facilitation',
-        type: 'radioSurvey',
-        layout: 'compact',
-        challengeBar: true,
-        question: 'Do you need facilitation support?',
-        submitLabel: 'Next',
-        edgeIds: ['facilitation-yes', 'facilitation-no'],
-    },
-
-    // Q4_3
-    'followup-labor-data': {
-        id: 'followup-labor-data',
-        type: 'radioSurvey',
-        layout: 'compact',
-        challengeBar: true,
-        question: 'Do you have labor market data?',
-        submitLabel: 'Next',
-        edgeIds: ['labor-data-no', 'labor-data-yes'],
-    },
-
-    // Q4_4
-    'followup-competency': {
-        id: 'followup-competency',
-        type: 'radioSurvey',
-        layout: 'compact',
-        challengeBar: true,
-        question: 'Do you need sample competency frameworks?',
-        submitLabel: 'Next',
-        edgeIds: ['competency-yes', 'competency-no'],
-    },
-
-    // Q4_5
-    'followup-taxonomy': {
-        id: 'followup-taxonomy',
-        type: 'radioSurvey',
-        layout: 'compact',
-        challengeBar: true,
-        question: 'Do you need skills taxonomy resources?',
-        submitLabel: 'Next',
-        edgeIds: ['taxonomy-yes', 'taxonomy-no'],
-    },
-
     // ── Resource nodes (terminal) ───────────────────────────────────────────
     'resource-ai-identify-partners': {
         id: 'resource-ai-identify-partners',
@@ -236,49 +161,40 @@ Help me identify:
         resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 59–64', footer: FOOTER }],
     },
 
-    'resource-tpm-74-78': {
-        id: 'resource-tpm-74-78',
+    // CED-02: facilitation support + labor market data on one screen
+    'resource-ced02': {
+        id: 'resource-ced02',
         type: 'results',
         layout: 'compact',
         challengeBar: true,
         edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'TPM Academy Curriculum p. 74–78', footer: FOOTER }],
+        resolvers: [{
+            when: {},
+            links: [
+                { label: 'TPM Academy Curriculum p. 74–78', url: null },
+                { label: 'TPM Academy Curriculum p. 84–85', url: null },
+                { label: 'BLS Occupational Outlook Handbook', url: 'https://www.bls.gov/ooh/' },
+            ],
+            footer: FOOTER,
+        }],
     },
 
-    'resource-tpm-84-85-bls': {
-        id: 'resource-tpm-84-85-bls',
+    // CED-03: skills taxonomy framework on one screen
+    'resource-ced03': {
+        id: 'resource-ced03',
         type: 'results',
         layout: 'compact',
         challengeBar: true,
         edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'TPM Academy p. 84–85 & BLS.gov', footer: FOOTER }],
-    },
-
-    'resource-internal-library': {
-        id: 'resource-internal-library',
-        type: 'results',
-        layout: 'compact',
-        challengeBar: true,
-        edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'Consult Internal Library', footer: FOOTER }],
-    },
-
-    'resource-onet-lightcast': {
-        id: 'resource-onet-lightcast',
-        type: 'results',
-        layout: 'compact',
-        challengeBar: true,
-        edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'O*NET & Lightcast Skills Library', footer: FOOTER }],
-    },
-
-    // ── End node ────────────────────────────────────────────────────────────
-    'end': {
-        id: 'end',
-        type: 'results',
-        layout: 'compact',
-        challengeBar: true,
-        edgeIds: [],
-        resolvers: [{ when: {}, recommendation: "You've completed this section.", footer: FOOTER }],
+        resolvers: [{
+            when: {},
+            recommendation: 'Select a standard occupational classification taxonomy, framework or platform that has skills aligned to occupation titles.',
+            links: [
+                { label: 'Consult Internal Library', url: null },
+                { label: 'O*NET', url: 'https://www.onetonline.org/' },
+                { label: 'Lightcast Skills Library', url: 'https://lightcast.io/open-skills/categories' },
+            ],
+            footer: FOOTER,
+        }],
     },
 };

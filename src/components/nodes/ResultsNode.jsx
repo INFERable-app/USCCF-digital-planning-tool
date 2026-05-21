@@ -21,6 +21,11 @@ export default function ResultsNode({ node, answers, onBack, onRestart }) {
 				)}
 				{result.videoUrl && <VideoCard url={result.videoUrl} alt={result.videoAlt} />}
 				{result.bodyText && <p className="body-text">{result.bodyText}</p>}
+				{result.links && result.links.map((item, i) => (
+					item.url
+						? <a key={i} href={item.url} className="btn-primary" target="_blank" rel="noopener noreferrer">{item.label}</a>
+						: <p key={i} className="results-recommendation">{item.label}</p>
+				))}
 				{result.cta && (
 					<a
 						href={result.cta.url}
