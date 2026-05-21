@@ -200,7 +200,22 @@ export const nodes = {
         layout: 'compact',
         challengeBar: true,
         edgeIds: [],
-        resolvers: [{ when: {}, recommendation: 'AI Prompt – Identify Partners', footer: FOOTER }],
+        resolvers: [{
+            when: {},
+            recommendation: 'AI Prompt Template – Identify Employers and Industry Partners for a Regional Collaborative',
+            promptBlock: {
+                label: 'Core Prompt',
+                text: `I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].
+
+Help me identify:
+• Major employers in this industry in the region
+• Small and mid-sized employers that may be important partners
+• Local industry associations and trade organizations
+• Chambers of commerce and economic development organizations connected to this industry
+• Employer groups already collaborating on workforce or skills initiatives`,
+            },
+            footer: FOOTER,
+        }],
     },
 
     'resource-tpm-57-58': {

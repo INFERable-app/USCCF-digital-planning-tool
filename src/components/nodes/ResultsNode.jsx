@@ -1,6 +1,7 @@
 import CompactHeader from '../shared/CompactHeader.jsx';
 import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import VideoCard from '../shared/VideoCard.jsx';
+import PromptBlock from '../shared/PromptBlock.jsx';
 import { challengeLabels } from '../../graph/wizardGraph.js';
 import { resolveResult } from '../../graph/resolveResult.js';
 
@@ -15,6 +16,9 @@ export default function ResultsNode({ node, answers, onBack, onRestart }) {
 			<div className="survey-content">
 				<p className="results-label">Recommended next step:</p>
 				<p className="results-recommendation">{result.recommendation}</p>
+				{result.promptBlock && (
+					<PromptBlock label={result.promptBlock.label} text={result.promptBlock.text} />
+				)}
 				{result.videoUrl && <VideoCard url={result.videoUrl} alt={result.videoAlt} />}
 				{result.bodyText && <p className="body-text">{result.bodyText}</p>}
 				{result.cta && (
