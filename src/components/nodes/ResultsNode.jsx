@@ -1,3 +1,4 @@
+import '../shared/survey.css';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import VideoCard from '../shared/VideoCard.jsx';

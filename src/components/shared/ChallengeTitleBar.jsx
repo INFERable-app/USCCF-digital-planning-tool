@@ -1,3 +1,4 @@
+import './ChallengeTitleBar.css';
 export default function ChallengeTitleBar({ challengeLabel }) {
 	return (
 		<div className="challenge-title-bar">

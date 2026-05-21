@@ -1,0 +1,34 @@
+/* ── Compact header (survey / results screens) ────────────────────────────── */
+.screen-compact .compact-header {
+	position: relative;
+	height: 200px;
+	flex-shrink: 0;
+	background: white;
+	overflow: hidden;
+}
+
+.screen-compact .compact-header .header-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 134px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 79px 6px 0 6px;
+	background: white;
+}
+
+.screen-compact .compact-header .app-title {
+	position: absolute;
+	top: 159px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-family: 'Economica', sans-serif;
+	font-size: 26px;
+	font-weight: 400;
+	color: #b23c38;
+	white-space: nowrap;
+}

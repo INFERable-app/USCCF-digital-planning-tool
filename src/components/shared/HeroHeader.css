@@ -1,0 +1,107 @@
+/* ── Full hero header (Welcome / Category / Role / Challenge) ─────────────── */
+.top-hero {
+	position: relative;
+	width: 100%;
+	height: 460px;
+	flex-shrink: 0;
+	overflow: hidden;
+	background: white;
+}
+
+.header-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 134px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 79px 6px 0 6px;
+	z-index: 2;
+	background: white;
+}
+
+.logo {
+	height: 55px;
+	width: auto;
+	object-fit: contain;
+}
+
+.profile-icon {
+	width: 45px;
+	height: 45px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+.app-title {
+	position: absolute;
+	top: 159px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-family: 'Economica', sans-serif;
+	font-size: 26px;
+	font-weight: 400;
+	color: #b23c38;
+	white-space: nowrap;
+	z-index: 2;
+}
+
+.hero-image-wrap {
+	position: absolute;
+	left: 17px;
+	right: 17px;
+	top: 202px;
+	height: 258px;
+	overflow: hidden;
+}
+
+.hero-image {
+	width: 100%;
+	height: 152%;
+	object-fit: cover;
+	object-position: top center;
+}
+
+/* ── Bottom section (hero screens) ───────────────────────────────────────── */
+.bottom-section {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	padding: 16px 17px 32px;
+	gap: 16px;
+	overflow-y: auto;
+}
+
+.welcome-heading {
+	font-family: 'Economica', sans-serif;
+	font-size: 30px;
+	font-weight: 700;
+	color: #000;
+	line-height: 1.1;
+}
+
+.welcome-body {
+	font-family: 'Economica', sans-serif;
+	font-size: 28px;
+	font-weight: 400;
+	color: #b23c38;
+	line-height: 1.25;
+}
+
+.question-text {
+	font-family: 'Economica', sans-serif;
+	font-size: 28px;
+	font-weight: 400;
+	color: #000;
+	line-height: 1.2;
+}
+
+.choice-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 4px;
+}

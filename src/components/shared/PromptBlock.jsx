@@ -1,3 +1,4 @@
+import './PromptBlock.css';
 import { useState } from 'react';
 
 function fallbackCopy(text, onSuccess) {

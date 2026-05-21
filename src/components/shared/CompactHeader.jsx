@@ -1,3 +1,4 @@
+import './CompactHeader.css';
 const IMG_LOGO = '/images/uscoc-logo.png';
 const IMG_PROFILE = '/images/profile-icon.png';
 

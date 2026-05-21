@@ -1,3 +1,4 @@
+import './ResourceItem.css';
 export default function ResourceItem({ item }) {
 	if (item.type === 'pdf') {
 		const content = (

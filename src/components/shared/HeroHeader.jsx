@@ -1,3 +1,4 @@
+import './HeroHeader.css';
 const IMG_LOGO = '/images/uscoc-logo.png';
 const IMG_PROFILE = '/images/profile-icon.png';
 const IMG_TPM_MAN = '/images/tpm-man.jpg';

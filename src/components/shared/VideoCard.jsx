@@ -1,3 +1,4 @@
+import './VideoCard.css';
 const IMG_VIDEO_THUMB = '/images/video-thumbnail.jpg';
 
 export default function VideoCard({ url, alt }) {
