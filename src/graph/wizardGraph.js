@@ -167,7 +167,7 @@ export const nodes = {
         resolvers: [{
             when: {},
             recommendation: 'The following activity can help you take steps towards determining the focus of a collaborative.',
-            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '57–58', url: `${TPM_PDF}#page=57` }],
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '57–58', url: `${TPM_PDF}#page=243` }],
             footer: FOOTER,
         }],
     },
@@ -181,7 +181,7 @@ export const nodes = {
         resolvers: [{
             when: {},
             bodyText: `When standing up a collaborative, consider the following:\n• Who will host the collaborative?\n• What will be the size and geographic scope of the collaborative?\n• How will the collaborative be financed?\n• How will the collaborative share information?`,
-            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '59–64', url: `${TPM_PDF}#page=59` }],
+            resources: [{ type: 'pdf', label: 'TPM Academy Curriculum', pages: '59–64', url: `${TPM_PDF}#page=245` }],
             footer: FOOTER,
         }],
     },
