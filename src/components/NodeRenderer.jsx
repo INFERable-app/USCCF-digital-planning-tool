@@ -17,7 +17,7 @@ const NODE_COMPONENTS = {
 
 export default function NodeRenderer({ node, answers, advance, onBack, onRestart }) {
 	const NodeComponent = NODE_COMPONENTS[node.type];
-	const nodeEdges = node.edgeIds.map((id) => edges[id]);
+	const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
 
 	return (
 		<NodeComponent

@@ -81,7 +81,8 @@ export const nodes = {
         layout: 'hero',
         challengeBar: false,
         question: 'What is your primary role?',
-        edgeIds: ['pick-role-coord', 'pick-role-align', 'pick-role-track', 'pick-role-other'],
+        // edgeIds: ['pick-role-coord', 'pick-role-align', 'pick-role-track', 'pick-role-other'],
+        edgeIds: ['pick-role-coord'],
     },
 
     // Q2
