@@ -349,7 +349,8 @@
             body: JSON.stringify({
               ref: 'main',
               inputs: {
-                change_description: description
+                change_description: description,
+                json_content: JSON.stringify(graphData)
               }
             })
           }
