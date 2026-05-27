@@ -193,6 +193,11 @@
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('repo-badge').innerText = `${ownerName}/${repoName}`;
       
+      const savedToken = localStorage.getItem('workflowToken');
+      if (savedToken) {
+        document.getElementById('workflow-token').value = savedToken;
+      }
+
       // Workflow form submission
       document.getElementById('workflow-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -235,7 +240,6 @@
     // Workflow Trigger Functions
     function openWorkflowModal() {
       document.getElementById('workflow-modal').classList.remove('hidden');
-      document.getElementById('workflow-token').value = '';
       document.getElementById('workflow-description').value = '';
       document.getElementById('workflow-message').classList.add('hidden');
     }
@@ -275,6 +279,9 @@
           submitBtn.innerText = 'Deploy to Main';
           return;
         }
+
+        // Persist token locally for future deploys
+        localStorage.setItem('workflowToken', token);
 
         // Trigger workflow
         const response = await fetch(
