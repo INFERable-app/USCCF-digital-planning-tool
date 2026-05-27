@@ -20,22 +20,11 @@
     </div>
     
     <div class="flex items-center space-x-3 text-sm gap-2">
-      <input type="password" id="gh-token" placeholder="GitHub Fine-Grained Token" class="bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-      <button onclick="saveDataToGitHub()" id="btn-save" class="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-medium px-4 py-1.5 rounded shadow transition-all" disabled>
-        <span>Save Changes</span>
-      </button>
-      <button onclick="openWorkflowModal()" id="btn-trigger" class="bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-medium px-4 py-1.5 rounded shadow transition-all" disabled>
+      <button onclick="openWorkflowModal()" id="btn-trigger" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-1.5 rounded shadow transition-all">
         <span>🚀 Deploy</span>
       </button>
     </div>
   </header>
-
-  <div id="auth-alert" class="bg-amber-50 border-b border-amber-200 px-6 py-2.5 text-sm text-amber-800 flex items-center justify-between">
-    <div class="flex items-center space-x-2">
-      <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4v2m9-15a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      <span><strong>Read-Only Mode:</strong> Enter a valid GitHub fine-grained personal access token above to enable editing and modifications.</span>
-    </div>
-  </div>
 
   <!-- Workflow Trigger Modal -->
   <div id="workflow-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -105,7 +94,7 @@
       <div id="panel-nodes" class="p-4 space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-slate-700">Nodes Collection</h3>
-          <button onclick="createNewNode()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all" disabled>+ Add Node</button>
+          <button onclick="createNewNode()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all">+ Add Node</button>
         </div>
         <div id="nodes-list" class="space-y-2"></div>
       </div>
@@ -113,7 +102,7 @@
       <div id="panel-edges" class="p-4 space-y-4 hidden">
         <div class="flex justify-between items-center">
           <h3 class="font-bold text-slate-700">Edges Collection</h3>
-          <button onclick="createNewEdge()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all" disabled>+ Add Edge</button>
+          <button onclick="createNewEdge()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all">+ Add Edge</button>
         </div>
         <div id="edges-list" class="space-y-2"></div>
       </div>
@@ -204,15 +193,6 @@
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('repo-badge').innerText = `${ownerName}/${repoName}`;
       
-      // Monitor Token Entry changes to unlock write-actions safely
-      document.getElementById('gh-token').addEventListener('input', (e) => {
-        const hasToken = e.target.value.trim().length > 0;
-        document.querySelectorAll('.edit-action').forEach(el => el.disabled = !hasToken);
-        document.getElementById('btn-save').disabled = !hasToken;
-        document.getElementById('btn-trigger').disabled = !hasToken;
-        document.getElementById('auth-alert').style.display = hasToken ? 'none' : 'flex';
-      });
-
       // Workflow form submission
       document.getElementById('workflow-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -249,46 +229,6 @@
       } catch (err) {
         alert("Error initialization failure: " + err.message);
         console.error(err);
-      }
-    }
-
-    async function saveDataToGitHub() {
-      const token = document.getElementById('gh-token').value.trim();
-      if(!token) return alert("Operation rejected. Fine-grained cryptographic write token missing.");
-
-      const btn = document.getElementById('btn-save');
-      btn.innerText = "Syncing Data...";
-      btn.disabled = true;
-
-      try {
-        const response = await fetch(`https://api.github.com/repos/${ownerName}/${repoName}/contents/${DATA_FILENAME}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: "wizards-engine: operational mutation update via live graph constructor",
-            content: btoa(unescape(encodeURIComponent(JSON.stringify(graphData, null, 2)))),
-            sha: currentFileSha
-          })
-        });
-
-        if(response.status === 409) {
-          throw new Error("Conflict protection triggered! Your local changes outpaced the main repository branch data. Refreshing state model.");
-        }
-        if(!response.ok) throw new Error("API storage write update rejected. Verify repository scopes on your token.");
-
-        const responseData = await response.json();
-        currentFileSha = responseData.content.sha; // Capture structural revision update
-        alert("Graph sync completed successfully.");
-        renderMermaidDiagram();
-      } catch(err) {
-        alert("Save transaction fault: " + err.message);
-        loadDataFromGitHub(); // Force state fallback reconciliation sync loop
-      } finally {
-        btn.innerText = "Save Changes";
-        btn.disabled = false;
       }
     }
 
@@ -421,7 +361,7 @@
               <div class="font-mono text-xs font-bold text-slate-700">${id}</div>
               <div class="text-xs text-slate-400 capitalize">${node.type || 'undefined'} · ${node.layout || 'compact'}</div>
             </div>
-            <button onclick="event.stopPropagation(); deleteComponent('node', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity text-lg" disabled>−</button>
+            <button onclick="event.stopPropagation(); deleteComponent('node', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity text-lg">−</button>
           </div>`;
       });
 
@@ -435,7 +375,7 @@
               <div class="font-mono text-xs font-bold text-slate-700">${id}</div>
               <div class="text-xs text-slate-400 truncate max-w-[220px]">"${edge.label || ''}" ➔ ${edge.targetNodeId || '?'}</div>
             </div>
-            <button onclick="event.stopPropagation(); deleteComponent('edge', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity text-lg" disabled>−</button>
+            <button onclick="event.stopPropagation(); deleteComponent('edge', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity text-lg">−</button>
           </div>`;
       });
     }
@@ -518,7 +458,7 @@
       selectedItemType = type;
       selectedItemId = id;
       
-      const isEditable = document.getElementById('gh-token').value.trim().length > 0;
+      const isEditable = true;
       document.getElementById('editor-title').innerText = `Editing Properties: ${type.toUpperCase()} / ${id}`;
       
       const form = document.getElementById('editor-form');
@@ -607,7 +547,7 @@
 
       renderSidebarLists();
       renderMermaidDiagram();
-      alert("Local mutations applied. Click 'Save Changes' top-right to commit updates back to GitHub or 'Deploy' to trigger the workflow.");
+      alert("Local mutations applied. Click 'Deploy' to commit updates to GitHub via the workflow.");
     }
 
     function closeEditor() {
