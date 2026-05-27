@@ -7,7 +7,9 @@
       "challengeBar": false,
       "heading": "Welcome to the planning tool.",
       "body": "After answering a few quick questions we can get you started.",
-      "edgeIds": ["cta-start"]
+      "edgeIds": [
+        "cta-start"
+      ]
     },
     "challenge": {
       "id": "challenge",
@@ -15,7 +17,9 @@
       "layout": "hero",
       "challengeBar": false,
       "question": "What challenge do you want to address?",
-      "edgeIds": ["pick-ced-01"]
+      "edgeIds": [
+        "pick-ced-01"
+      ]
     }
   },
   "edges": {
