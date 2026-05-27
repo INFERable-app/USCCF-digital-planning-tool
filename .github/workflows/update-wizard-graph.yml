@@ -1,24 +1,15 @@
 name: Update Wizard Graph
 
 on:
-  # Trigger manually from GitHub UI
   workflow_dispatch:
     inputs:
       change_description:
         description: 'Describe the changes to wizardGraph.json'
         required: true
         type: string
-  
-  # Or trigger on push to a specific branch (e.g., graph-updates)
-  push:
-    branches:
-      - graph-updates
-    paths:
-      - 'wizardGraph.json'
 
 permissions:
-  contents: write  # Only allow writing to repository contents
-  pull-requests: write  # Allow creating/updating PRs
+  contents: write
 
 jobs:
   update-wizard-graph:
@@ -29,7 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate JSON syntax
         run: |
@@ -41,9 +31,8 @@ jobs:
 
       - name: Verify file integrity
         run: |
-          # Ensure required fields exist
           jq -e '.nodes and .edges' wizardGraph.json > /dev/null || exit 1
-          echo "✅ wizardGraph.json has valid structure (nodes and edges)"
+          echo "✅ wizardGraph.json has valid structure"
 
       - name: Configure Git
         run: |
@@ -53,18 +42,11 @@ jobs:
       - name: Commit changes to main
         run: |
           if git diff --quiet wizardGraph.json; then
-            echo "No changes detected in wizardGraph.json"
+            echo "No changes detected"
           else
             git add wizardGraph.json
             git commit -m "chore: update wizardGraph.json
-            
-            Reason: ${{ inputs.change_description || 'Automated update' }}
-            Triggered by: ${{ github.actor }}"
+
+            Reason: ${{ inputs.change_description }}"
             git push origin main
           fi
-
-      - name: Report completion
-        run: |
-          echo "✅ Wizard Graph update workflow completed"
-          echo "📝 File: wizardGraph.json"
-          echo "🔐 Only this file was modified"
