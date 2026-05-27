@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizard Graph Architect</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'neutral' });
+    window.mermaid = mermaid;
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <header class="bg-slate-900 text-white px-6 py-4 flex flex-wrap items-center justify-between shadow-md gap-4">
+    <div class="flex items-center space-x-3">
+      <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Wizard Graph Architect</span>
+      <span class="bg-slate-800 text-xs px-2.5 py-1 rounded-full text-slate-300 font-mono border border-slate-700" id="repo-badge">Loading repo...</span>
+    </div>
+    
+    <div class="flex items-center space-x-3 text-sm">
+      <input type="password" id="gh-token" placeholder="GitHub Fine-Grained Token" class="bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 transition-all">
+      <button onclick="saveDataToGitHub()" id="btn-save" class="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-medium px-4 py-1.5 rounded shadow transition-all flex items-center space-x-2" disabled>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="auth-alert" class="bg-amber-50 border-b border-amber-200 px-6 py-2.5 text-sm text-amber-800 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <span><strong>Read-Only Mode:</strong> Enter a valid GitHub fine-grained personal access token above to enable editing and modifications.</span>
+    </div>
+  </div>
+
+  <main class="flex-1 flex overflow-hidden">
+    
+    <section class="w-96 border-r border-slate-200 bg-white flex flex-col overflow-y-auto shadow-sm">
+      
+      <div class="flex border-b border-slate-200 bg-slate-50 sticky top-0 z-10">
+        <button onclick="switchTab('nodes')" id="tab-nodes" class="flex-1 py-3 text-center text-sm font-semibold border-b-2 border-blue-600 text-blue-600 transition-all">Nodes</button>
+        <button onclick="switchTab('edges')" id="tab-edges" class="flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Edges</button>
+      </div>
+
+      <div id="panel-nodes" class="p-4 space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-slate-700">Nodes Collection</h3>
+          <button onclick="createNewNode()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all" disabled>+ Add Node</button>
+        </div>
+        <div id="nodes-list" class="space-y-2"></div>
+      </div>
+
+      <div id="panel-edges" class="p-4 space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-slate-700">Edges Collection</h3>
+          <button onclick="createNewEdge()" class="edit-action text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-medium shadow-sm transition-all" disabled>+ Add Edge</button>
+        </div>
+        <div id="edges-list" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <section class="flex-1 flex flex-col bg-slate-100 relative overflow-hidden">
+      
+      <div class="flex-1 p-6 overflow-auto flex items-center justify-center min-h-[50%] bg-white border-b border-slate-200 shadow-inner pattern-grid">
+        <div id="mermaid-container" class="w-full h-full flex items-center justify-center">
+          <div id="graph-div" class="opacity-0 transition-opacity duration-300"></div>
+        </div>
+      </div>
+
+      <div class="h-[40%] bg-slate-50 border-t border-slate-200 flex flex-col shadow-lg z-10">
+        <div class="bg-slate-200/60 px-4 py-2 border-b border-slate-300 flex justify-between items-center">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-600 font-mono" id="editor-title">Properties Inspector (Select a node or edge)</span>
+          <button onclick="closeEditor()" class="text-slate-400 hover:text-slate-600 text-sm font-bold">&times;</button>
+        </div>
+        <div id="editor-form" class="p-4 overflow-y-auto flex-1 text-sm bg-white grid grid-cols-1 md:grid-cols-2 gap-4 alignment-stretch">
+          <div class="text-slate-400 italic col-span-full flex items-center justify-center">Click any element in the sidebar collections to inspect or configure properties.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .pattern-grid {
+      background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+    }
+  </style>
+
+  <script>
+    // Global State Container
+    let graphData = { nodes: {}, edges: {} };
+    let currentFileSha = null;
+    let activeTab = 'nodes';
+    let selectedItemId = null;
+    let selectedItemType = null; // 'node' or 'edge'
+
+    // Automatically resolve GitHub Context paths based on deployment URL structure
+    const pathParts = window.location.pathname.split('/');
+    const repoName = pathParts[2] || 'YOUR-REPO-NAME'; 
+    const ownerName = pathParts[1] || 'YOUR-USERNAME';
+    const DATA_FILENAME = 'wizardGraph.json';
+
+    // UI Orchestration Mechanics
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById('repo-badge').innerText = `${ownerName}/${repoName}`;
+      
+      // Monitor Token Entry changes to unlock write-actions safely
+      document.getElementById('gh-token').addEventListener('input', (e) => {
+        const hasToken = e.target.value.trim().length > 0;
+        document.querySelectorAll('.edit-action').forEach(el => el.disabled = !hasToken);
+        document.getElementById('btn-save').disabled = !hasToken;
+        document.getElementById('auth-alert').style.display = hasToken ? 'none' : 'flex';
+      });
+
+      loadDataFromGitHub();
+    });
+
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('tab-nodes').className = tab === 'nodes' ? 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-blue-600 text-blue-600 transition-all' : 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all';
+      document.getElementById('tab-edges').className = tab === 'edges' ? 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-blue-600 text-blue-600 transition-all' : 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all';
+      
+      document.getElementById('panel-nodes').classList.toggle('hidden', tab !== 'nodes');
+      document.getElementById('panel-edges').classList.toggle('hidden', tab !== 'edges');
+    }
+
+    // Storage Interface Operations
+    async function loadDataFromGitHub() {
+      try {
+        // Query the GitHub Content API explicitly to pull both content payload and its tracking SHA header
+        const res = await fetch(`https://api.github.com/repos/${ownerName}/${repoName}/contents/${DATA_FILENAME}`);
+        if (!res.ok) throw new Error("Could not find centralized graph configuration metadata inside repository target root.");
+        
+        const metadata = await res.json();
+        currentFileSha = metadata.sha;
+        // Handle base64 conversions safely over UTF-8 bounds
+        const rawContent = decodeURIComponent(atob(metadata.content).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        graphData = JSON.parse(rawContent);
+        
+        renderSidebarLists();
+        renderMermaidDiagram();
+      } catch (err) {
+        alert("Error initialization failure: " + err.message);
+        console.error(err);
+      }
+    }
+
+    async function saveDataToGitHub() {
+      const token = document.getElementById('gh-token').value.trim();
+      if(!token) return alert("Operation rejected. Fine-grained cryptographic write token missing.");
+
+      const btn = document.getElementById('btn-save');
+      btn.innerText = "Syncing Data...";
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`https://api.github.com/repos/${ownerName}/${repoName}/contents/${DATA_FILENAME}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: "wizards-engine: operational mutation update via live graph constructor",
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(graphData, null, 2)))),
+            sha: currentFileSha
+          })
+        });
+
+        if(response.status === 409) {
+          throw new Error("Conflict protection triggered! Your local changes outpaced the main repository branch data. Refreshing state model.");
+        }
+        if(!response.ok) throw new Error("API storage write update rejected. Verify repository scopes on your token.");
+
+        const responseData = await response.json();
+        currentFileSha = responseData.content.sha; // Capture structural revision update
+        alert("Graph sync completed successfully.");
+        renderMermaidDiagram();
+      } catch(err) {
+        alert("Save transaction fault: " + err.message);
+        loadDataFromGitHub(); // Force state fallback reconciliation sync loop
+      } finally {
+        btn.innerText = "Save Changes";
+        btn.disabled = false;
+      }
+    }
+
+    // UI List Render Engines
+    function renderSidebarLists() {
+      const nList = document.getElementById('nodes-list');
+      nList.innerHTML = '';
+      Object.keys(graphData.nodes).forEach(id => {
+        const node = graphData.nodes[id];
+        nList.innerHTML += `
+          <div onclick="openInspector('node', '${id}')" class="p-2.5 rounded bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 cursor-pointer transition-all flex justify-between items-center group">
+            <div>
+              <div class="font-mono text-xs font-bold text-slate-700">${id}</div>
+              <div class="text-xs text-slate-400 capitalize">${node.type || 'undefined'} · ${node.layout || 'compact'}</div>
+            </div>
+            <button onclick="event.stopPropagation(); deleteComponent('node', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity font-bold text-sm" ${document.getElementById('gh-token').value ? '' : 'disabled'}>&times;</button>
+          </div>`;
+      });
+
+      const eList = document.getElementById('edges-list');
+      eList.innerHTML = '';
+      Object.keys(graphData.edges).forEach(id => {
+        const edge = graphData.edges[id];
+        eList.innerHTML += `
+          <div onclick="openInspector('edge', '${id}')" class="p-2.5 rounded bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 cursor-pointer transition-all flex justify-between items-center group">
+            <div>
+              <div class="font-mono text-xs font-bold text-slate-700">${id}</div>
+              <div class="text-xs text-slate-400 truncate max-w-[220px]">"${edge.label || ''}" ➔ ${edge.targetNodeId || '?'}</div>
+            </div>
+            <button onclick="event.stopPropagation(); deleteComponent('edge', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity font-bold text-sm" ${document.getElementById('gh-token').value ? '' : 'disabled'}>&times;</button>
+          </div>`;
+      });
+    }
+
+    // Dynamic Diagram Generator
+    async function renderMermaidDiagram() {
+      const container = document.getElementById('mermaid-container');
+      container.innerHTML = '<div id="graph-div" class="opacity-0"></div>';
+      
+      let code = "graph TD\n";
+      
+      // Trace Structural Edge Vectors
+      Object.keys(graphData.nodes).forEach(nodeId => {
+        const node = graphData.nodes[nodeId];
+        const edgeIds = node.edgeIds || [];
+        
+        // Render isolated terminal nodes safely
+        code += `  ${nodeId}["📦 ${nodeId}<br/><small>(${node.type})</small>"]\n`;
+        
+        edgeIds.forEach(edgeId => {
+          const edge = graphData.edges[edgeId];
+          if(edge) {
+            const label = edge.label ? `|"${edge.label.replace(/"/g, '#quot;')}"|` : '';
+            code += `  ${nodeId} -->${label} ${edge.targetNodeId || 'MISSING_NODE'}\n`;
+          }
+        });
+      });
+
+      try {
+        const { render } = window.mermaid;
+        const { svg } = await render('graph-div-svg', code);
+        const target = document.getElementById('graph-div');
+        target.innerHTML = svg;
+        target.classList.remove('opacity-0');
+      } catch (err) {
+        document.getElementById('graph-div').innerHTML = `<div class="p-4 bg-rose-50 text-rose-800 rounded border border-rose-200 text-xs font-mono"><strong>Mermaid Render Sync Error:</strong><br/>${err.message}</div>`;
+        document.getElementById('graph-div').classList.remove('opacity-0');
+      }
+    }
+
+    // Mutation Data Actions
+    function createNewNode() {
+      const id = prompt("Provide alpha-numeric identifier for new target node:");
+      if(!id) return;
+      if(graphData.nodes[id]) return alert("An structural element with that key definition already stands.");
+      
+      graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
+      renderSidebarLists();
+      openInspector('node', id);
+    }
+
+    function createNewEdge() {
+      const id = prompt("Provide alpha-numeric identifier for new route edge link:");
+      if(!id) return;
+      if(graphData.edges[id]) return alert("An assignment condition with that key definition already stands.");
+      
+      graphData.edges[id] = { id, label: "Action Interaction Label", targetNodeId: Object.keys(graphData.nodes)[0] || "" };
+      renderSidebarLists();
+      openInspector('edge', id);
+    }
+
+    function deleteComponent(type, id) {
+      if(!confirm(`Are you certain you want to purge ${type} "${id}" structurally?`)) return;
+      if(type === 'node') {
+        delete graphData.nodes[id];
+      } else {
+        delete graphData.edges[id];
+        // Mutate and clean out dependency structural link arrays from parent nodes
+        Object.keys(graphData.nodes).forEach(nId => {
+          graphData.nodes[nId].edgeIds = (graphData.nodes[nId].edgeIds || []).filter(e => e !== id);
+        });
+      }
+      if(selectedItemId === id) closeEditor();
+      renderSidebarLists();
+      renderMermaidDiagram();
+    }
+
+    // Inspector Control Panel UI Generation
+    function openInspector(type, id) {
+      selectedItemType = type;
+      selectedItemId = id;
+      
+      const isEditable = document.getElementById('gh-token').value.trim().length > 0;
+      document.getElementById('editor-title').innerText = `Editing Properties: ${type.toUpperCase()} / ${id}`;
+      
+      const form = document.getElementById('editor-form');
+      form.innerHTML = '';
+
+      if (type === 'node') {
+        const node = graphData.nodes[id];
+        form.innerHTML = `
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Node Layout Strategy</label>
+            <select id="edit-node-layout" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
+              <option value="compact" ${node.layout === 'compact' ? 'selected' : ''}>Compact Layout</option>
+              <option value="hero" ${node.layout === 'hero' ? 'selected' : ''}>Hero Layout</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Screen Type Template</label>
+            <select id="edit-node-type" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
+              <option value="welcome" ${node.type === 'welcome' ? 'selected' : ''}>welcome</option>
+              <option value="multiChoice" ${node.type === 'multiChoice' ? 'selected' : ''}>multiChoice</option>
+              <option value="radioSurvey" ${node.type === 'radioSurvey' ? 'selected' : ''}>radioSurvey</option>
+              <option value="checkboxSurvey" ${node.type === 'checkboxSurvey' ? 'selected' : ''}>checkboxSurvey</option>
+              <option value="videoInfo" ${node.type === 'videoInfo' ? 'selected' : ''}>videoInfo</option>
+              <option value="results" ${node.type === 'results' ? 'selected' : ''}>results</option>
+            </select>
+          </div>
+          <div class="space-y-1 md:col-span-2">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Context Target Header Content (Question / Heading / Body Text)</label>
+            <input type="text" id="edit-node-text" value="${node.question || node.heading || node.body || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium" ${isEditable ? '' : 'disabled'}>
+          </div>
+          <div class="space-y-1 md:col-span-2">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Assigned Edge Flow Ordering (Comma Separated IDs)</label>
+            <input type="text" id="edit-node-edges" value="${(node.edgeIds || []).join(', ')}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" ${isEditable ? '' : 'disabled'}>
+          </div>
+        `;
+      } else {
+        const edge = graphData.edges[id];
+        form.innerHTML = `
+          <div class="space-y-1 md:col-span-2">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Interactive Label Text</label>
+            <input type="text" id="edit-edge-label" value="${edge.label || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase">Target Navigation Target Node</label>
+            <select id="edit-edge-target" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" ${isEditable ? '' : 'disabled'}>
+              ${Object.keys(graphData.nodes).map(nId => `<option value="${nId}" ${edge.targetNodeId === nId ? 'selected' : ''}>${nId}</option>`).join('')}
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-500 uppercase">State Store Key Context Allocation Target</label>
+            <input type="text" id="edit-edge-key" value="${edge.storeKey || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" placeholder="e.g. challenge" ${isEditable ? '' : 'disabled'}>
+          </div>
+        `;
+      }
+
+      // Append Save action button directly inside the layout inspector safely if auth token is active
+      if (isEditable) {
+        form.innerHTML += `
+          <div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end">
+            <button onclick="commitInspectorChanges()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">Apply Property Updates</button>
+          </div>`;
+      }
+    }
+
+    function commitInspectorChanges() {
+      if(!selectedItemId) return;
+      
+      if(selectedItemType === 'node') {
+        const node = graphData.nodes[selectedItemId];
+        node.layout = document.getElementById('edit-node-layout').value;
+        node.type = document.getElementById('edit-node-type').value;
+        
+        const txt = document.getElementById('edit-node-text').value;
+        if (node.type === 'welcome') node.heading = txt;
+        else if (node.type === 'multiChoice' || node.type === 'radioSurvey' || node.type === 'checkboxSurvey') node.question = txt;
+        else node.body = txt;
+
+        const edgesStr = document.getElementById('edit-node-edges').value;
+        node.edgeIds = edgesStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      } else {
+        const edge = graphData.edges[selectedItemId];
+        edge.label = document.getElementById('edit-edge-label').value;
+        edge.targetNodeId = document.getElementById('edit-edge-target').value;
+        edge.storeKey = document.getElementById('edit-edge-key').value || undefined;
+      }
+
+      renderSidebarLists();
+      renderMermaidDiagram();
+      alert("Local mutations applied. Click 'Save Changes' top-right to commit updates back to GitHub.");
+    }
+
+    function closeEditor() {
+      selectedItemId = null;
+      selectedItemType = null;
+      document.getElementById('editor-title').innerText = "Properties Inspector (Select a node or edge)";
+      document.getElementById('editor-form').innerHTML = `<div class="text-slate-400 italic col-span-full flex items-center justify-center">Click any element in the sidebar collections to inspect or configure properties.</div>`;
+    }
+  </script>
+</body>
+</html>

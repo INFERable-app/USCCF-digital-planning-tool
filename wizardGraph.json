@@ -1,0 +1,35 @@
+{
+  "nodes": {
+    "welcome": {
+      "id": "welcome",
+      "type": "welcome",
+      "layout": "hero",
+      "challengeBar": false,
+      "heading": "Welcome to the planning tool.",
+      "body": "After answering a few quick questions we can get you started.",
+      "edgeIds": ["cta-start"]
+    },
+    "challenge": {
+      "id": "challenge",
+      "type": "multiChoice",
+      "layout": "hero",
+      "challengeBar": false,
+      "question": "What challenge do you want to address?",
+      "edgeIds": ["pick-ced-01"]
+    }
+  },
+  "edges": {
+    "cta-start": {
+      "id": "cta-start",
+      "label": "Let's get started!",
+      "targetNodeId": "challenge",
+      "storeKey": "category",
+      "value": "employer"
+    },
+    "pick-ced-01": {
+      "id": "pick-ced-01",
+      "label": "Establish/Expand employer collaborative network",
+      "targetNodeId": "welcome"
+    }
+  }
+}
