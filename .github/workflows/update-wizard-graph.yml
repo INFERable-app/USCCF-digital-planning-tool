@@ -7,6 +7,10 @@ on:
         description: 'Describe the changes to wizardGraph.json'
         required: true
         type: string
+      json_content:
+        description: 'The updated JSON content'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,15 +27,14 @@ jobs:
 
       - name: Validate JSON syntax
         run: |
-          if ! jq empty wizardGraph.json; then
-            echo "❌ Invalid JSON syntax in wizardGraph.json"
+          if ! echo '${{ inputs.json_content }}' | jq empty; then
+            echo "❌ Invalid JSON syntax"
             exit 1
           fi
-          echo "✅ JSON syntax is valid"
 
       - name: Verify file integrity
         run: |
-          jq -e '.nodes and .edges' wizardGraph.json > /dev/null || exit 1
+          echo '${{ inputs.json_content }}' | jq -e '.nodes and .edges' > /dev/null || exit 1
           echo "✅ wizardGraph.json has valid structure"
 
       - name: Configure Git
@@ -39,14 +42,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit changes to main
+      - name: Update ONLY wizardGraph.json
         run: |
-          if git diff --quiet wizardGraph.json; then
-            echo "No changes detected"
-          else
-            git add wizardGraph.json
-            git commit -m "chore: update wizardGraph.json
-
-            Reason: ${{ inputs.change_description }}"
-            git push origin main
+          # Write the JSON content
+          echo '${{ inputs.json_content }}' | jq '.' > wizardGraph.json
+          
+          # Verify ONLY this file changed
+          if [ $(git diff --name-only | wc -l) -ne 1 ]; then
+            echo "❌ ERROR: More than one file was modified!"
+            exit 1
           fi
+          
+          if [ "$(git diff --name-only)" != "wizardGraph.json" ]; then
+            echo "❌ ERROR: Modified file is not wizardGraph.json!"
+            exit 1
+          fi
+
+      - name: Commit changes
+        run: |
+          git add wizardGraph.json
+          git commit -m "chore: update wizardGraph.json
+          
+          Reason: ${{ inputs.change_description }}"
+          git push origin main
