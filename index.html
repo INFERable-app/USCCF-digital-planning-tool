@@ -552,96 +552,127 @@
       renderMermaidDiagram();
     }
 
+    function escapeAttr(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
     // Inspector Control Panel UI Generation
     function openInspector(type, id) {
       selectedItemType = type;
       selectedItemId = id;
-      
-      const isEditable = true;
       document.getElementById('editor-title').innerText = `Editing Properties: ${type.toUpperCase()} / ${id}`;
-      
+
       const form = document.getElementById('editor-form');
-      form.innerHTML = '';
+      const f = (label, content, span2 = false) =>
+        `<div class="space-y-1${span2 ? ' md:col-span-2' : ''}">${label ? `<label class="block text-xs font-bold text-slate-500 uppercase">${label}</label>` : ''}${content}</div>`;
+      const inp = (id, val, cls='') =>
+        `<input type="text" id="${id}" value="${escapeAttr(val)}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 ${cls}">`;
+      const sel = (id, opts) =>
+        `<select id="${id}" class="w-full bg-slate-50 border border-slate-300 rounded p-2">${opts}</select>`;
+      const chk = (id, checked, label) =>
+        `<div class="flex items-center gap-2"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} class="w-4 h-4"><label for="${id}" class="text-xs font-bold text-slate-500 uppercase">${label}</label></div>`;
+
+      let html = '';
 
       if (type === 'node') {
         const node = graphData.nodes[id];
-        form.innerHTML = `
-          <div class="space-y-1">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Node Layout Strategy</label>
-            <select id="edit-node-layout" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
-              <option value="compact" ${node.layout === 'compact' ? 'selected' : ''}>Compact Layout</option>
-              <option value="hero" ${node.layout === 'hero' ? 'selected' : ''}>Hero Layout</option>
-            </select>
-          </div>
-          <div class="space-y-1">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Screen Type Template</label>
-            <select id="edit-node-type" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
-              <option value="welcome" ${node.type === 'welcome' ? 'selected' : ''}>welcome</option>
-              <option value="multiChoice" ${node.type === 'multiChoice' ? 'selected' : ''}>multiChoice</option>
-              <option value="radioSurvey" ${node.type === 'radioSurvey' ? 'selected' : ''}>radioSurvey</option>
-              <option value="checkboxSurvey" ${node.type === 'checkboxSurvey' ? 'selected' : ''}>checkboxSurvey</option>
-              <option value="videoInfo" ${node.type === 'videoInfo' ? 'selected' : ''}>videoInfo</option>
-              <option value="results" ${node.type === 'results' ? 'selected' : ''}>results</option>
-            </select>
-          </div>
-          <div class="space-y-1 md:col-span-2">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Context Target Header Content (Question / Heading / Body Text)</label>
-            <input type="text" id="edit-node-text" value="${node.question || node.heading || node.body || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium" ${isEditable ? '' : 'disabled'}>
-          </div>
-          <div class="space-y-1 md:col-span-2">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Assigned Edge Flow Ordering (Comma Separated IDs)</label>
-            <input type="text" id="edit-node-edges" value="${(node.edgeIds || []).join(', ')}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" ${isEditable ? '' : 'disabled'}>
-          </div>
-        `;
+        const t = node.type || 'multiChoice';
+
+        // Common fields
+        html += f('Layout', sel('edit-node-layout',
+          ['compact','hero'].map(v => `<option value="${v}" ${node.layout===v?'selected':''}>${v}</option>`).join('')
+        ));
+        html += f('Type', sel('edit-node-type',
+          ['welcome','multiChoice','radioSurvey','checkboxSurvey','videoInfo','results']
+            .map(v => `<option value="${v}" ${t===v?'selected':''}>${v}</option>`).join('')
+        ));
+        html += `<div class="md:col-span-2">${chk('edit-node-challengebar', node.challengeBar, 'Show Challenge Bar')}</div>`;
+
+        // Type-specific fields
+        if (t === 'welcome') {
+          html += f('Heading', inp('edit-node-heading', node.heading || ''), true);
+          html += f('Body', inp('edit-node-body', node.body || ''), true);
+        } else if (t === 'multiChoice') {
+          html += f('Question', inp('edit-node-question', node.question || ''), true);
+        } else if (t === 'radioSurvey') {
+          html += f('Question', inp('edit-node-question', node.question || ''), true);
+          html += f('Submit Label', inp('edit-node-submitlabel', node.submitLabel || '', ''), false);
+        } else if (t === 'checkboxSurvey') {
+          html += f('Question', inp('edit-node-question', node.question || ''), true);
+          html += f('Submit Label', inp('edit-node-submitlabel', node.submitLabel || ''));
+          html += f('Submit Edge ID', inp('edit-node-submitedgeid', node.submitEdgeId || '', 'font-mono'));
+        } else if (t === 'videoInfo') {
+          html += f('Video URL', inp('edit-node-videourl', node.videoUrl || '', 'font-mono'), true);
+          html += f('Video Alt Text', inp('edit-node-videoalt', node.videoAlt || ''), true);
+        } else if (t === 'results') {
+          html += f('Resolvers (JSON)',
+            `<textarea id="edit-node-resolvers" rows="8" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono text-xs">${escapeHtml(JSON.stringify(node.resolvers||[], null, 2))}</textarea>`,
+            true
+          );
+        }
+
+        html += f('Edge IDs (comma-separated)', inp('edit-node-edges', (node.edgeIds||[]).join(', '), 'font-mono'), true);
+
       } else {
         const edge = graphData.edges[id];
-        form.innerHTML = `
-          <div class="space-y-1 md:col-span-2">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Interactive Label Text</label>
-            <input type="text" id="edit-edge-label" value="${edge.label || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2" ${isEditable ? '' : 'disabled'}>
-          </div>
-          <div class="space-y-1">
-            <label class="block text-xs font-bold text-slate-500 uppercase">Target Navigation Target Node</label>
-            <select id="edit-edge-target" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" ${isEditable ? '' : 'disabled'}>
-              ${Object.keys(graphData.nodes).map(nId => `<option value="${nId}" ${edge.targetNodeId === nId ? 'selected' : ''}>${nId}</option>`).join('')}
-            </select>
-          </div>
-          <div class="space-y-1">
-            <label class="block text-xs font-bold text-slate-500 uppercase">State Store Key Context Allocation Target</label>
-            <input type="text" id="edit-edge-key" value="${edge.storeKey || ''}" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono" placeholder="e.g. challenge" ${isEditable ? '' : 'disabled'}>
-          </div>
-        `;
+        html += f('Label', inp('edit-edge-label', edge.label || ''), true);
+        html += f('Target Node', sel('edit-edge-target',
+          Object.keys(graphData.nodes).map(nId => `<option value="${nId}" ${edge.targetNodeId===nId?'selected':''}>${nId}</option>`).join('')
+        ));
+        html += f('Store Key', inp('edit-edge-key', edge.storeKey || '', 'font-mono'));
+        html += f('Value', inp('edit-edge-value', edge.value || '', 'font-mono'));
+        html += `<div class="md:col-span-2">${chk('edit-edge-disabled', !!edge.disabled, 'Disabled')}</div>`;
       }
 
-      // Append Save action button directly inside the layout inspector safely if auth token is active
-      if (isEditable) {
-        form.innerHTML += `
-          <div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end">
-            <button onclick="commitInspectorChanges()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">Apply Changes</button>
-          </div>`;
-      }
+      html += `<div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end">
+        <button onclick="commitInspectorChanges()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">Apply Changes</button>
+      </div>`;
+
+      form.innerHTML = html;
     }
 
     function commitInspectorChanges() {
-      if(!selectedItemId) return;
-      
-      if(selectedItemType === 'node') {
+      if (!selectedItemId) return;
+
+      if (selectedItemType === 'node') {
         const node = graphData.nodes[selectedItemId];
         node.layout = document.getElementById('edit-node-layout').value;
         node.type = document.getElementById('edit-node-type').value;
-        
-        const txt = document.getElementById('edit-node-text').value;
-        if (node.type === 'welcome') node.heading = txt;
-        else if (node.type === 'multiChoice' || node.type === 'radioSurvey' || node.type === 'checkboxSurvey') node.question = txt;
-        else node.body = txt;
+        node.challengeBar = document.getElementById('edit-node-challengebar').checked;
+        node.edgeIds = document.getElementById('edit-node-edges').value.split(',').map(s => s.trim()).filter(Boolean);
 
-        const edgesStr = document.getElementById('edit-node-edges').value;
-        node.edgeIds = edgesStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        if (node.type === 'welcome') {
+          node.heading = document.getElementById('edit-node-heading').value;
+          node.body = document.getElementById('edit-node-body').value;
+        } else if (['multiChoice','radioSurvey','checkboxSurvey'].includes(node.type)) {
+          node.question = document.getElementById('edit-node-question').value;
+          if (node.type !== 'multiChoice') {
+            node.submitLabel = document.getElementById('edit-node-submitlabel').value || undefined;
+          }
+          if (node.type === 'checkboxSurvey') {
+            node.submitEdgeId = document.getElementById('edit-node-submitedgeid').value || undefined;
+          }
+        } else if (node.type === 'videoInfo') {
+          node.videoUrl = document.getElementById('edit-node-videourl').value;
+          node.videoAlt = document.getElementById('edit-node-videoalt').value || undefined;
+        } else if (node.type === 'results') {
+          try {
+            node.resolvers = JSON.parse(document.getElementById('edit-node-resolvers').value);
+          } catch {
+            alert('Invalid JSON in Resolvers field — changes not saved.');
+            return;
+          }
+        }
       } else {
         const edge = graphData.edges[selectedItemId];
         edge.label = document.getElementById('edit-edge-label').value;
         edge.targetNodeId = document.getElementById('edit-edge-target').value;
         edge.storeKey = document.getElementById('edit-edge-key').value || undefined;
+        edge.value = document.getElementById('edit-edge-value').value || undefined;
+        edge.disabled = document.getElementById('edit-edge-disabled').checked || undefined;
       }
 
       renderSidebarLists();
