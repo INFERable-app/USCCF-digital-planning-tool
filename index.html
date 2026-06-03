@@ -186,6 +186,9 @@
       40% { opacity: 0.8; }
       60% { opacity: 1; }
     }
+
+    .port-handle { pointer-events: all; }
+    .edge-hit-area { pointer-events: all; cursor: pointer; }
   </style>
 
   <script>
@@ -206,6 +209,7 @@
     // Zoom & Pan
     let zoomLevel = 1, panX = 0, panY = 0;
     let isPanning = false, panStartX, panStartY, hasPanned = false;
+    let connectMode = null;
 
     function applyTransform() {
       const el = document.getElementById('graph-div');
@@ -236,6 +240,7 @@
 
       container.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
+        if (e.target.closest && e.target.closest('.port-handle')) return;
         isPanning = true;
         hasPanned = false;
         panStartX = e.clientX - panX;
@@ -512,6 +517,7 @@
             switchTab('nodes');
             openInspector('node', el.dataset.nodeId);
           });
+          addInteractiveOverlay(svgEl);
         }
 
         // Auto-fit: scale so the diagram fills ~85% of the container
@@ -697,6 +703,181 @@
       renderSidebarLists();
       renderMermaidDiagram();
       alert("Local mutations applied. Click 'Deploy' to commit updates to GitHub via the workflow.");
+    }
+
+    function screenToSvg(svgEl, clientX, clientY) {
+      const pt = svgEl.createSVGPoint();
+      pt.x = clientX;
+      pt.y = clientY;
+      return pt.matrixTransform(svgEl.getScreenCTM().inverse());
+    }
+
+    function addInteractiveOverlay(svgEl) {
+      // Arrowhead marker for rubber-band line
+      let defs = svgEl.querySelector('defs');
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svgEl.insertBefore(defs, svgEl.firstChild);
+      }
+      const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+      marker.setAttribute('id', 'rubber-arrow');
+      marker.setAttribute('markerWidth', '8');
+      marker.setAttribute('markerHeight', '6');
+      marker.setAttribute('refX', '6');
+      marker.setAttribute('refY', '3');
+      marker.setAttribute('orient', 'auto');
+      const arrowPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      arrowPathEl.setAttribute('d', 'M0,0 L0,6 L8,3 z');
+      arrowPathEl.setAttribute('fill', '#6366f1');
+      marker.appendChild(arrowPathEl);
+      defs.appendChild(marker);
+
+      // Rubber-band line
+      const rubberLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      rubberLine.setAttribute('stroke', '#6366f1');
+      rubberLine.setAttribute('stroke-width', '2.5');
+      rubberLine.setAttribute('stroke-dasharray', '8,5');
+      rubberLine.setAttribute('marker-end', 'url(#rubber-arrow)');
+      rubberLine.style.display = 'none';
+      rubberLine.style.pointerEvents = 'none';
+      svgEl.appendChild(rubberLine);
+
+      // Port handle per node — bottom-center, invisible until hover
+      Object.keys(graphData.nodes).forEach(nodeId => {
+        const nodeEl = svgEl.querySelector(`[data-node-id="${nodeId}"]`);
+        if (!nodeEl) return;
+        const r = nodeEl.getBoundingClientRect();
+        const portPos = screenToSvg(svgEl, r.left + r.width / 2, r.bottom);
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', portPos.x);
+        circle.setAttribute('cy', portPos.y);
+        circle.setAttribute('r', '7');
+        circle.setAttribute('fill', '#6366f1');
+        circle.setAttribute('stroke', 'white');
+        circle.setAttribute('stroke-width', '2');
+        circle.setAttribute('opacity', '0');
+        circle.style.cursor = 'crosshair';
+        circle.style.transition = 'opacity 0.15s';
+        circle.dataset.portSource = nodeId;
+        circle.classList.add('port-handle');
+        svgEl.appendChild(circle);
+
+        nodeEl.addEventListener('mouseenter', () => {
+          if (!connectMode) circle.setAttribute('opacity', '0.85');
+        });
+        nodeEl.addEventListener('mouseleave', (ev) => {
+          if (!connectMode && ev.relatedTarget !== circle) circle.setAttribute('opacity', '0');
+        });
+        circle.addEventListener('mouseenter', () => circle.setAttribute('opacity', '1'));
+        circle.addEventListener('mouseleave', () => {
+          if (!connectMode) circle.setAttribute('opacity', '0');
+        });
+      });
+
+      // Port mousedown → rubber-band connect mode
+      svgEl.addEventListener('mousedown', (e) => {
+        const port = e.target.closest('.port-handle');
+        if (!port) return;
+        e.stopPropagation();
+
+        const srcId = port.dataset.portSource;
+        const startPt = screenToSvg(svgEl, e.clientX, e.clientY);
+        connectMode = { sourceNodeId: srcId };
+
+        svgEl.querySelectorAll('.port-handle').forEach(h => {
+          h.setAttribute('opacity', h.dataset.portSource !== srcId ? '0.4' : '0.85');
+        });
+
+        rubberLine.setAttribute('x1', startPt.x);
+        rubberLine.setAttribute('y1', startPt.y);
+        rubberLine.setAttribute('x2', startPt.x);
+        rubberLine.setAttribute('y2', startPt.y);
+        rubberLine.style.display = '';
+
+        const onMove = (ev) => {
+          const pt = screenToSvg(svgEl, ev.clientX, ev.clientY);
+          rubberLine.setAttribute('x2', pt.x);
+          rubberLine.setAttribute('y2', pt.y);
+          svgEl.querySelectorAll('[data-node-id]').forEach(n => (n.style.filter = ''));
+          const over = ev.target.closest('[data-node-id]');
+          if (over && over.dataset.nodeId !== srcId) over.style.filter = 'brightness(0.82)';
+        };
+
+        const onUp = (ev) => {
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('mouseup', onUp);
+          rubberLine.style.display = 'none';
+          svgEl.querySelectorAll('[data-node-id]').forEach(n => (n.style.filter = ''));
+          svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0'));
+          const tgtEl = ev.target.closest('[data-node-id]');
+          const tgtId = tgtEl?.dataset.nodeId;
+          connectMode = null;
+          if (tgtId && tgtId !== srcId) createEdgeFromDrag(srcId, tgtId);
+        };
+
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      });
+
+      wireEdgeClickHandlers(svgEl);
+    }
+
+    function wireEdgeClickHandlers(svgEl) {
+      const pairCount = {};
+      Object.keys(graphData.nodes).forEach(srcId => {
+        (graphData.nodes[srcId].edgeIds || []).forEach(edgeId => {
+          const edge = graphData.edges[edgeId];
+          if (!edge) return;
+          const key = `${srcId}:${edge.targetNodeId}`;
+          const idx = pairCount[key] || 0;
+          pairCount[key] = idx + 1;
+
+          const edgeGroupEl = svgEl.querySelector(`[id="L-${srcId}-${edge.targetNodeId}-${idx}"]`);
+          if (!edgeGroupEl) return;
+          const origPath = edgeGroupEl.querySelector('path');
+          if (!origPath) return;
+
+          // Transparent wide path as click/hover target
+          const hitPath = origPath.cloneNode(false);
+          hitPath.setAttribute('stroke', 'rgba(99,102,241,0.01)');
+          hitPath.setAttribute('fill', 'none');
+          hitPath.setAttribute('stroke-width', '14');
+          hitPath.removeAttribute('marker-end');
+          hitPath.removeAttribute('marker-start');
+          hitPath.dataset.edgeId = edgeId;
+          hitPath.classList.add('edge-hit-area');
+          edgeGroupEl.appendChild(hitPath);
+
+          hitPath.addEventListener('click', (ev) => {
+            if (hasPanned) return;
+            ev.stopPropagation();
+            switchTab('edges');
+            openInspector('edge', edgeId);
+          });
+          hitPath.addEventListener('mouseenter', () => {
+            origPath.style.stroke = '#6366f1';
+            origPath.style.strokeWidth = '2.5';
+          });
+          hitPath.addEventListener('mouseleave', () => {
+            origPath.style.stroke = '';
+            origPath.style.strokeWidth = '';
+          });
+        });
+      });
+    }
+
+    function createEdgeFromDrag(srcId, tgtId) {
+      let edgeId = `e_${srcId}_${tgtId}`;
+      let n = 1;
+      while (graphData.edges[edgeId]) edgeId = `e_${srcId}_${tgtId}_${n++}`;
+      graphData.edges[edgeId] = { id: edgeId, label: '', targetNodeId: tgtId };
+      graphData.nodes[srcId].edgeIds = [...(graphData.nodes[srcId].edgeIds || []), edgeId];
+      renderSidebarLists();
+      renderMermaidDiagram().then(() => {
+        switchTab('edges');
+        openInspector('edge', edgeId);
+      });
     }
 
     function closeEditor() {
