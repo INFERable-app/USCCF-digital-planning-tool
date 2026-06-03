@@ -815,8 +815,8 @@
           rubberLine.style.display = 'none';
           svgEl.querySelectorAll('[data-node-id]').forEach(n => (n.style.filter = ''));
           svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0'));
-          const tgtEl = ev.target.closest('[data-node-id]');
-          const tgtId = tgtEl?.dataset.nodeId;
+          const tgtEl = ev.target.closest('[data-node-id]') || ev.target.closest('.port-handle');
+          const tgtId = tgtEl?.dataset.nodeId || tgtEl?.dataset.portSource;
           connectMode = null;
           if (tgtId && tgtId !== srcId) createEdgeFromDrag(srcId, tgtId);
         };
@@ -838,6 +838,7 @@
         .forEach((origPath, i) => {
           const edgeId = orderedEdgeIds[i];
           origPath.style.pointerEvents = 'stroke';
+          origPath.style.cursor = 'pointer';
           origPath.addEventListener('mouseenter', () => {
             origPath.style.stroke = '#6366f1';
             origPath.style.strokeWidth = '3px';
@@ -847,8 +848,70 @@
             origPath.style.strokeWidth = '';
           });
           if (!edgeId) return;
+
+          let wasDragged = false;
+
+          origPath.addEventListener('mousedown', (ev) => {
+            if (ev.button !== 0) return;
+            ev.stopPropagation();
+            hasPanned = false;
+            const srcId = Object.keys(graphData.nodes).find(nId =>
+              (graphData.nodes[nId].edgeIds || []).includes(edgeId)
+            );
+            if (!srcId) return;
+            const dragStartX = ev.clientX, dragStartY = ev.clientY;
+            let dragging = false;
+
+            const onMove = (mv) => {
+              if (!dragging && Math.hypot(mv.clientX - dragStartX, mv.clientY - dragStartY) > 5) {
+                dragging = true;
+                wasDragged = true;
+                connectMode = { sourceNodeId: srcId };
+                const srcEl = svgEl.querySelector(`[data-node-id="${srcId}"]`);
+                if (srcEl) {
+                  const r = srcEl.getBoundingClientRect();
+                  const p = screenToSvg(svgEl, r.left + r.width / 2, r.bottom);
+                  rubberLine.setAttribute('x1', p.x);
+                  rubberLine.setAttribute('y1', p.y);
+                }
+                rubberLine.style.display = '';
+                svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0.4'));
+              }
+              if (dragging) {
+                const pt = screenToSvg(svgEl, mv.clientX, mv.clientY);
+                rubberLine.setAttribute('x2', pt.x);
+                rubberLine.setAttribute('y2', pt.y);
+                svgEl.querySelectorAll('[data-node-id]').forEach(n => n.style.filter = '');
+                const over = mv.target.closest('[data-node-id]');
+                if (over && over.dataset.nodeId !== srcId) over.style.filter = 'brightness(0.82)';
+              }
+            };
+
+            const onUp = (up) => {
+              window.removeEventListener('mousemove', onMove);
+              window.removeEventListener('mouseup', onUp);
+              rubberLine.style.display = 'none';
+              svgEl.querySelectorAll('[data-node-id]').forEach(n => n.style.filter = '');
+              svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0'));
+              connectMode = null;
+              if (dragging) {
+                const tgtEl = up.target.closest('[data-node-id]') || up.target.closest('.port-handle');
+                const newTgtId = tgtEl?.dataset.nodeId || tgtEl?.dataset.portSource;
+                if (newTgtId && newTgtId !== srcId) {
+                  graphData.edges[edgeId].targetNodeId = newTgtId;
+                  renderSidebarLists();
+                  renderMermaidDiagram();
+                }
+              }
+              setTimeout(() => { wasDragged = false; }, 0);
+            };
+
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+          });
+
           origPath.addEventListener('click', (ev) => {
-            if (hasPanned) return;
+            if (wasDragged) return;
             ev.stopPropagation();
             switchTab('edges');
             openInspector('edge', edgeId);
