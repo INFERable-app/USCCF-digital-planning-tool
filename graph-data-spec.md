@@ -15,6 +15,7 @@ All nodes share these fields:
 | Field          | Required | Type     | Values                                                                                   |
 | -------------- | -------- | -------- | ---------------------------------------------------------------------------------------- |
 | `id`           | ✓        | string   | Unique.                                                                                  |
+| `label`        |          | string   | Human-readable display name for the graph editor. Falls back to `id` if omitted.        |
 | `type`         | ✓        | string   | `"welcome"` `"multiChoice"` `"radioSurvey"` `"checkboxSurvey"` `"videoInfo"` `"results"` |
 | `layout`       | ✓        | string   | `"hero"` (large header + photo) or `"compact"` (small header)                            |
 | `challengeBar` | ✓        | boolean  | Show the blue challenge title bar.                                                       |

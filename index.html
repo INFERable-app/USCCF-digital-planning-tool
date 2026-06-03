@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizard Graph Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'neutral' });
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'neutral', flowchart: { padding: 20 } });
     window.mermaid = mermaid;
   </script>
 </head>
@@ -138,6 +140,13 @@
     #mermaid-container { cursor: grab; user-select: none; }
     #mermaid-container.is-panning { cursor: grabbing; }
     #graph-div { transform-origin: center center; }
+    #graph-div [data-node-id] rect { transition: filter 0.15s; }
+    #graph-div [data-node-id]:hover rect { filter: brightness(0.93); }
+    #graph-div svg text {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif !important;
+      letter-spacing: 0.02em;
+      fill: #475569;
+    }
     
     .message {
       border-radius: 6px;
@@ -425,8 +434,8 @@
         nList.innerHTML += `
           <div onclick="openInspector('node', '${id}')" class="p-2.5 rounded bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-blue-50/30 cursor-pointer transition-all flex justify-between items-start group">
             <div>
-              <div class="font-mono text-xs font-bold text-slate-700">${id}</div>
-              <div class="text-xs text-slate-400 capitalize">${node.type || 'undefined'} · ${node.layout || 'compact'}</div>
+              <div class="text-xs font-bold text-slate-700">${node.label || id}</div>
+              <div class="font-mono text-xs text-slate-400">${id} · ${node.type || 'undefined'}</div>
             </div>
             <button onclick="event.stopPropagation(); deleteComponent('node', '${id}')" class="edit-action text-slate-300 hover:text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity text-lg">−</button>
           </div>`;
@@ -454,14 +463,16 @@
       container.innerHTML = '<div id="graph-div" class="opacity-0"></div>';
       
       let code = "graph TD\n";
-      
-      // Trace Structural Edge Vectors
+      code += "  classDef default fill:#f8fafc,stroke:#cbd5e1,color:#475569,min-width:180px\n";
+
       Object.keys(graphData.nodes).forEach(nodeId => {
         const node = graphData.nodes[nodeId];
         const edgeIds = node.edgeIds || [];
-        
-        // Render isolated terminal nodes safely
-        code += `  ${nodeId}["📦 ${nodeId}<br/><small>(${node.type})</small>"]\n`;
+
+        const displayLabel = (node.label || nodeId).replace(/"/g, '#quot;');
+        const idLine = node.label ? `<br/><small style="opacity:0.45">${nodeId}</small>` : '';
+        const typeLine = `<br/><small><i style="opacity:0.55">${node.type}</i></small>`;
+        code += `  ${nodeId}["📦 ${displayLabel}${idLine}${typeLine}"]\n`;
         
         edgeIds.forEach(edgeId => {
           const edge = graphData.edges[edgeId];
@@ -478,6 +489,12 @@
         const target = document.getElementById('graph-div');
         target.innerHTML = svg;
         target.classList.remove('opacity-0');
+
+        // Rounded corners on node rects
+        target.querySelectorAll('.node rect').forEach(rect => {
+          rect.setAttribute('rx', '10');
+          rect.setAttribute('ry', '10');
+        });
 
         // Wire node clicks → inspector (stamp nodeId once, read on click)
         const svgEl = target.querySelector('svg');
@@ -582,6 +599,7 @@
         const t = node.type || 'multiChoice';
 
         // Common fields
+        html += f('Display Label', inp('edit-node-label', node.label || ''), true);
         html += f('Layout', sel('edit-node-layout',
           ['compact','hero'].map(v => `<option value="${v}" ${node.layout===v?'selected':''}>${v}</option>`).join('')
         ));
@@ -639,6 +657,7 @@
 
       if (selectedItemType === 'node') {
         const node = graphData.nodes[selectedItemId];
+        node.label = document.getElementById('edit-node-label').value || undefined;
         node.layout = document.getElementById('edit-node-layout').value;
         node.type = document.getElementById('edit-node-type').value;
         node.challengeBar = document.getElementById('edit-node-challengebar').checked;
