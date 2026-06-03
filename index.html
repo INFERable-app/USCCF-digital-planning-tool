@@ -196,7 +196,7 @@
 
     // Zoom & Pan
     let zoomLevel = 1, panX = 0, panY = 0;
-    let isPanning = false, panStartX, panStartY;
+    let isPanning = false, panStartX, panStartY, hasPanned = false;
 
     function applyTransform() {
       const el = document.getElementById('graph-div');
@@ -228,6 +228,7 @@
       container.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
         isPanning = true;
+        hasPanned = false;
         panStartX = e.clientX - panX;
         panStartY = e.clientY - panY;
         container.classList.add('is-panning');
@@ -235,6 +236,7 @@
 
       window.addEventListener('mousemove', (e) => {
         if (!isPanning) return;
+        hasPanned = true;
         panX = e.clientX - panStartX;
         panY = e.clientY - panStartY;
         applyTransform();
@@ -476,6 +478,25 @@
         const target = document.getElementById('graph-div');
         target.innerHTML = svg;
         target.classList.remove('opacity-0');
+
+        // Wire node clicks → inspector (stamp nodeId once, read on click)
+        const svgEl = target.querySelector('svg');
+        if (svgEl) {
+          Object.keys(graphData.nodes).forEach(nodeId => {
+            const el = svgEl.querySelector(`[id^="flowchart-${nodeId}-"]`);
+            if (!el) return;
+            el.dataset.nodeId = nodeId;
+            el.style.cursor = 'pointer';
+          });
+          svgEl.addEventListener('click', (e) => {
+            if (hasPanned) return;
+            const el = e.target.closest('[data-node-id]');
+            if (!el) return;
+            switchTab('nodes');
+            openInspector('node', el.dataset.nodeId);
+          });
+        }
+
         // Auto-fit: scale so the diagram fills ~85% of the container
         requestAnimationFrame(() => {
           const containerEl = document.getElementById('mermaid-container');
