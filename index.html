@@ -772,6 +772,7 @@
         circle.addEventListener('mouseenter', () => circle.setAttribute('opacity', '1'));
         circle.addEventListener('mouseleave', () => {
           if (!connectMode) circle.setAttribute('opacity', '0');
+          else if (circle.dataset.portSource !== connectMode.sourceNodeId) circle.setAttribute('opacity', '0.4');
         });
       });
 
