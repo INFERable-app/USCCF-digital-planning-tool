@@ -13,13 +13,19 @@
 	top: 0;
 	left: 0;
 	right: 0;
-	height: 134px;
+	height: 72px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 79px 6px 0 6px;
+	padding: 12px 16px 0;
 	z-index: 2;
 	background: white;
+}
+
+.header-start {
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 
 .logo {
@@ -37,11 +43,10 @@
 
 .app-title {
 	position: absolute;
-	top: 159px;
+	top: 82px;
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-family: 'Economica', sans-serif;
 	font-size: 26px;
 	font-weight: 400;
 	color: #b23c38;
@@ -53,8 +58,8 @@
 	position: absolute;
 	left: 17px;
 	right: 17px;
-	top: 202px;
-	height: 258px;
+	top: 120px;
+	bottom: 0;
 	overflow: hidden;
 }
 
@@ -76,7 +81,6 @@
 }
 
 .welcome-heading {
-	font-family: 'Economica', sans-serif;
 	font-size: 30px;
 	font-weight: 700;
 	color: #000;
@@ -84,7 +88,6 @@
 }
 
 .welcome-body {
-	font-family: 'Economica', sans-serif;
 	font-size: 28px;
 	font-weight: 400;
 	color: #b23c38;
@@ -92,7 +95,6 @@
 }
 
 .question-text {
-	font-family: 'Economica', sans-serif;
 	font-size: 28px;
 	font-weight: 400;
 	color: #000;
@@ -104,4 +106,56 @@
 	flex-direction: column;
 	gap: 8px;
 	margin-top: 4px;
+}
+
+/* ── Desktop layout ───────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+	/* Dissolve .top-hero so its children become direct grid items of .screen */
+	.top-hero {
+		display: contents;
+	}
+
+	/* Header bar: full-width top row */
+	.top-hero .header-bar {
+		grid-column: 1 / -1;
+		grid-row: 1;
+		position: static;
+		height: auto;
+		padding: 16px 24px;
+		border-bottom: 1px solid #e8e8e8;
+	}
+
+	/* Hero image: left column, spans rows 2 and 3 */
+	.top-hero .hero-image-wrap {
+		grid-column: 1;
+		grid-row: 2 / 4;
+		position: static;
+		left: auto;
+		right: auto;
+		top: auto;
+		bottom: auto;
+		height: auto;
+	}
+	.top-hero .hero-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top center;
+	}
+
+	/* App title: top of right column */
+	.top-hero .app-title {
+		grid-column: 2;
+		grid-row: 2;
+		position: static;
+		top: auto;
+		text-align: left;
+		padding: 28px 40px 8px;
+	}
+
+	/* Content area: right column main row */
+	.bottom-section {
+		grid-column: 2;
+		grid-row: 3;
+	}
 }

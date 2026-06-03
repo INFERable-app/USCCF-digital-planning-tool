@@ -9,7 +9,6 @@
 }
 
 .body-text {
-	font-family: 'Economica', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
 	color: #000;
@@ -18,7 +17,6 @@
 }
 
 .survey-question {
-	font-family: 'Economica', sans-serif;
 	font-size: 24px;
 	font-weight: 700;
 	color: #000;
@@ -97,7 +95,6 @@
 
 .radio-option span,
 .checkbox-option span {
-	font-family: 'Economica', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
 	color: #000;
@@ -106,14 +103,12 @@
 
 /* ── Results ──────────────────────────────────────────────────────────────── */
 .results-label {
-	font-family: 'Economica', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
 	color: #000;
 }
 
 .results-recommendation {
-	font-family: 'Economica', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
 	color: #b23d38;
@@ -121,7 +116,6 @@
 }
 
 .results-footer {
-	font-family: 'Economica', sans-serif;
 	font-size: 20px;
 	font-weight: 400;
 	color: #000;
