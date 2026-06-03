@@ -147,7 +147,7 @@
       letter-spacing: 0.02em;
       fill: #475569;
     }
-    #graph-div .edgePaths path { stroke-width: 2px !important; }
+    #graph-div .edgePaths path { stroke-width: 4px !important; }
     
     .message {
       border-radius: 6px;
@@ -609,6 +609,7 @@
         const t = node.type || 'multiChoice';
 
         // Common fields
+        html += f('Node ID', inp('edit-node-id', id, 'font-mono'), true);
         html += f('Display Label', inp('edit-node-label', node.label || ''), true);
         html += f('Layout', sel('edit-node-layout',
           ['compact','hero'].map(v => `<option value="${v}" ${node.layout===v?'selected':''}>${v}</option>`).join('')
@@ -646,6 +647,7 @@
 
       } else {
         const edge = graphData.edges[id];
+        html += f('Edge ID', inp('edit-edge-id', id, 'font-mono'), true);
         html += f('Label', inp('edit-edge-label', edge.label || ''), true);
         html += f('Target Node', sel('edit-edge-target',
           Object.keys(graphData.nodes).map(nId => `<option value="${nId}" ${edge.targetNodeId===nId?'selected':''}>${nId}</option>`).join('')
@@ -666,6 +668,14 @@
       if (!selectedItemId) return;
 
       if (selectedItemType === 'node') {
+        const newId = document.getElementById('edit-node-id').value.trim();
+        if (newId && newId !== selectedItemId) {
+          if (graphData.nodes[newId]) { alert(`Node ID "${newId}" already exists.`); return; }
+          graphData.nodes[newId] = { ...graphData.nodes[selectedItemId], id: newId };
+          delete graphData.nodes[selectedItemId];
+          Object.values(graphData.edges).forEach(e => { if (e.targetNodeId === selectedItemId) e.targetNodeId = newId; });
+          selectedItemId = newId;
+        }
         const node = graphData.nodes[selectedItemId];
         node.label = document.getElementById('edit-node-label').value || undefined;
         node.layout = document.getElementById('edit-node-layout').value;
@@ -696,6 +706,17 @@
           }
         }
       } else {
+        const newId = document.getElementById('edit-edge-id').value.trim();
+        if (newId && newId !== selectedItemId) {
+          if (graphData.edges[newId]) { alert(`Edge ID "${newId}" already exists.`); return; }
+          graphData.edges[newId] = { ...graphData.edges[selectedItemId], id: newId };
+          delete graphData.edges[selectedItemId];
+          Object.values(graphData.nodes).forEach(n => {
+            const i = (n.edgeIds || []).indexOf(selectedItemId);
+            if (i !== -1) n.edgeIds[i] = newId;
+          });
+          selectedItemId = newId;
+        }
         const edge = graphData.edges[selectedItemId];
         edge.label = document.getElementById('edit-edge-label').value;
         edge.targetNodeId = document.getElementById('edit-edge-target').value;
@@ -809,15 +830,23 @@
           if (over && over.dataset.nodeId !== srcId) over.style.filter = 'brightness(0.82)';
         };
 
-        const onUp = (ev) => {
+        const cancelConnect = () => {
           window.removeEventListener('mousemove', onMove);
           window.removeEventListener('mouseup', onUp);
+          window.removeEventListener('keydown', onConnectKey);
           rubberLine.style.display = 'none';
           svgEl.querySelectorAll('[data-node-id]').forEach(n => (n.style.filter = ''));
           svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0'));
+          connectMode = null;
+        };
+
+        const onConnectKey = (ev) => { if (ev.key === 'Escape') cancelConnect(); };
+        window.addEventListener('keydown', onConnectKey);
+
+        const onUp = (ev) => {
           const tgtEl = ev.target.closest('[data-node-id]') || ev.target.closest('.port-handle');
           const tgtId = tgtEl?.dataset.nodeId || tgtEl?.dataset.portSource;
-          connectMode = null;
+          cancelConnect();
           if (tgtId && tgtId !== srcId) createEdgeFromDrag(srcId, tgtId);
         };
 
@@ -874,27 +903,50 @@
                   rubberLine.setAttribute('x1', p.x);
                   rubberLine.setAttribute('y1', p.y);
                 }
+                rubberLine.style.stroke = '#f59e0b';
                 rubberLine.style.display = '';
+                origPath.style.opacity = '0.25';
                 svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0.4'));
               }
               if (dragging) {
-                const pt = screenToSvg(svgEl, mv.clientX, mv.clientY);
-                rubberLine.setAttribute('x2', pt.x);
-                rubberLine.setAttribute('y2', pt.y);
+                const over = mv.target.closest('[data-node-id]') || mv.target.closest('.port-handle');
+                const overNodeId = over?.dataset.nodeId || over?.dataset.portSource;
                 svgEl.querySelectorAll('[data-node-id]').forEach(n => n.style.filter = '');
-                const over = mv.target.closest('[data-node-id]');
-                if (over && over.dataset.nodeId !== srcId) over.style.filter = 'brightness(0.82)';
+                let x2, y2;
+                if (overNodeId && overNodeId !== srcId) {
+                  over.style.filter = 'brightness(0.82)';
+                  const nodeEl = svgEl.querySelector(`[data-node-id="${overNodeId}"]`);
+                  const r = nodeEl.getBoundingClientRect();
+                  const snap = screenToSvg(svgEl, r.left + r.width / 2, r.bottom);
+                  x2 = snap.x; y2 = snap.y;
+                } else {
+                  const pt = screenToSvg(svgEl, mv.clientX, mv.clientY);
+                  x2 = pt.x; y2 = pt.y;
+                }
+                rubberLine.setAttribute('x2', x2);
+                rubberLine.setAttribute('y2', y2);
               }
             };
 
-            const onUp = (up) => {
+            const cleanup = () => {
               window.removeEventListener('mousemove', onMove);
               window.removeEventListener('mouseup', onUp);
+              window.removeEventListener('keydown', onKey);
               rubberLine.style.display = 'none';
+              rubberLine.style.stroke = '';
+              origPath.style.opacity = '';
               svgEl.querySelectorAll('[data-node-id]').forEach(n => n.style.filter = '');
               svgEl.querySelectorAll('.port-handle').forEach(h => h.setAttribute('opacity', '0'));
               connectMode = null;
-              if (dragging) {
+            };
+
+            const onKey = (ev) => { if (ev.key === 'Escape') { dragging = false; cleanup(); } };
+            window.addEventListener('keydown', onKey);
+
+            const onUp = (up) => {
+              const wasActuallyDragging = dragging;
+              cleanup();
+              if (wasActuallyDragging) {
                 const tgtEl = up.target.closest('[data-node-id]') || up.target.closest('.port-handle');
                 const newTgtId = tgtEl?.dataset.nodeId || tgtEl?.dataset.portSource;
                 if (newTgtId && newTgtId !== srcId) {
