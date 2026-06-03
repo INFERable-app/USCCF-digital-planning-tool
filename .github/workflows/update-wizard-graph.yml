@@ -26,15 +26,19 @@ jobs:
           ref: main
 
       - name: Validate JSON syntax
-        run: |
-          if ! echo '${{ inputs.json_content }}' | jq empty; then
-            echo "❌ Invalid JSON syntax"
-            exit 1
+        env:
+          JSON_CONTENT: ${{ inputs.json_content }}
+        run: |          
+          if ! printf "%s" "$JSON_CONTENT" | jq empty; then            
+            echo "❌ Invalid JSON syntax"            
+            exit 1          
           fi
 
       - name: Verify file integrity
-        run: |
-          echo '${{ inputs.json_content }}' | jq -e '.nodes and .edges' > /dev/null || exit 1
+        env:
+          JSON_CONTENT: ${{ inputs.json_content }}
+        run: |          
+          printf "%s" "$JSON_CONTENT" | jq -e '.nodes and .edges' > /dev/null || exit 1          
           echo "✅ wizardGraph.json has valid structure"
 
       - name: Configure Git
@@ -43,9 +47,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update ONLY wizardGraph.json
-        run: |
+        env:
+          JSON_CONTENT: ${{ inputs.json_content }}
+        run: |          
           # Write the JSON content
-          echo '${{ inputs.json_content }}' | jq '.' > wizardGraph.json
+          printf "%s" "$JSON_CONTENT" | jq '.' > wizardGraph.json
           
           # Verify ONLY this file changed
           if [ $(git diff --name-only | wc -l) -ne 1 ]; then
