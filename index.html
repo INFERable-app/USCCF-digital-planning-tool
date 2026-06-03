@@ -147,6 +147,7 @@
       letter-spacing: 0.02em;
       fill: #475569;
     }
+    #graph-div .edgePaths path { stroke-width: 2px !important; }
     
     .message {
       border-radius: 6px;
@@ -188,7 +189,6 @@
     }
 
     .port-handle { pointer-events: all; }
-    .edge-hit-area { pointer-events: all; cursor: pointer; }
   </style>
 
   <script>
@@ -234,7 +234,11 @@
       container.addEventListener('wheel', (e) => {
         e.preventDefault();
         const delta = e.deltaY < 0 ? 1.1 : 0.9;
-        zoomLevel = Math.min(Math.max(zoomLevel * delta, 0.1), 10);
+        const newZoom = Math.min(Math.max(zoomLevel * delta, 0.05), 50);
+        const ratio = newZoom / zoomLevel;
+        panX *= ratio;
+        panY *= ratio;
+        zoomLevel = newZoom;
         applyTransform();
       }, { passive: false });
 
@@ -821,51 +825,20 @@
         window.addEventListener('mouseup', onUp);
       });
 
-      wireEdgeClickHandlers(svgEl);
-    }
-
-    function wireEdgeClickHandlers(svgEl) {
-      const pairCount = {};
-      Object.keys(graphData.nodes).forEach(srcId => {
-        (graphData.nodes[srcId].edgeIds || []).forEach(edgeId => {
-          const edge = graphData.edges[edgeId];
-          if (!edge) return;
-          const key = `${srcId}:${edge.targetNodeId}`;
-          const idx = pairCount[key] || 0;
-          pairCount[key] = idx + 1;
-
-          const edgeGroupEl = svgEl.querySelector(`[id="L-${srcId}-${edge.targetNodeId}-${idx}"]`);
-          if (!edgeGroupEl) return;
-          const origPath = edgeGroupEl.querySelector('path');
-          if (!origPath) return;
-
-          // Transparent wide path as click/hover target
-          const hitPath = origPath.cloneNode(false);
-          hitPath.setAttribute('stroke', 'rgba(99,102,241,0.01)');
-          hitPath.setAttribute('fill', 'none');
-          hitPath.setAttribute('stroke-width', '14');
-          hitPath.removeAttribute('marker-end');
-          hitPath.removeAttribute('marker-start');
-          hitPath.dataset.edgeId = edgeId;
-          hitPath.classList.add('edge-hit-area');
-          edgeGroupEl.appendChild(hitPath);
-
-          hitPath.addEventListener('click', (ev) => {
-            if (hasPanned) return;
-            ev.stopPropagation();
-            switchTab('edges');
-            openInspector('edge', edgeId);
-          });
-          hitPath.addEventListener('mouseenter', () => {
+      // Edge hover highlight
+      [...svgEl.querySelectorAll('.edgePaths path')]
+        .filter(p => p.getAttribute('d'))
+        .forEach(origPath => {
+          origPath.style.pointerEvents = 'stroke';
+          origPath.addEventListener('mouseenter', () => {
             origPath.style.stroke = '#6366f1';
-            origPath.style.strokeWidth = '2.5';
+            origPath.style.strokeWidth = '3px';
           });
-          hitPath.addEventListener('mouseleave', () => {
+          origPath.addEventListener('mouseleave', () => {
             origPath.style.stroke = '';
             origPath.style.strokeWidth = '';
           });
         });
-      });
     }
 
     function createEdgeFromDrag(srcId, tgtId) {
