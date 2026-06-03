@@ -28,7 +28,7 @@ export default function PromptBlock({ label, text }) {
 	return (
 		<div className="prompt-block">
 			<div className="prompt-block-bar">
-				<span className="prompt-block-label">{label}</span>
+				<span className="prompt-block-label">✏ {label}</span>
 				<button className="prompt-block-copy" onClick={handleCopy}>
 					{copied ? 'Copied ✓' : 'Copy'}
 				</button>
@@ -39,6 +39,7 @@ export default function PromptBlock({ label, text }) {
 				onChange={e => setValue(e.target.value)}
 				spellCheck={false}
 			/>
+			<div className="prompt-block-hint">click to edit</div>
 		</div>
 	);
 }
