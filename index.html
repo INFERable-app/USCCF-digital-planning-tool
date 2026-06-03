@@ -825,10 +825,18 @@
         window.addEventListener('mouseup', onUp);
       });
 
-      // Edge hover highlight
+      // Edge hover + click — build ID list in same order as the Mermaid code
+      const orderedEdgeIds = [];
+      Object.keys(graphData.nodes).forEach(srcId => {
+        (graphData.nodes[srcId].edgeIds || []).forEach(edgeId => {
+          if (graphData.edges[edgeId]) orderedEdgeIds.push(edgeId);
+        });
+      });
+
       [...svgEl.querySelectorAll('.edgePaths path')]
         .filter(p => p.getAttribute('d'))
-        .forEach(origPath => {
+        .forEach((origPath, i) => {
+          const edgeId = orderedEdgeIds[i];
           origPath.style.pointerEvents = 'stroke';
           origPath.addEventListener('mouseenter', () => {
             origPath.style.stroke = '#6366f1';
@@ -837,6 +845,13 @@
           origPath.addEventListener('mouseleave', () => {
             origPath.style.stroke = '';
             origPath.style.strokeWidth = '';
+          });
+          if (!edgeId) return;
+          origPath.addEventListener('click', (ev) => {
+            if (hasPanned) return;
+            ev.stopPropagation();
+            switchTab('edges');
+            openInspector('edge', edgeId);
           });
         });
     }
