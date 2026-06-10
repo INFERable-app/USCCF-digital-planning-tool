@@ -280,7 +280,7 @@ body {
 	/* Screen grid: header row | content row, two columns */
 	.screen {
 		display: grid;
-		grid-template-columns: 52% 48%;
+		grid-template-columns: 40% 60%;
 		grid-template-rows: auto 1fr;
 		height: 100dvh;
 	}
@@ -293,11 +293,12 @@ body {
 	/* Desktop button sizing */
 	.btn-primary {
 		width: fit-content;
-		font-size: 22px;
-		padding: 12px 48px;
+		font-size: 26px;
+		padding: 14px 56px;
 	}
 
 	.btn-choice {
-		font-size: 22px;
+		font-size: 28px;
+		padding: 18px 24px;
 	}
 }
