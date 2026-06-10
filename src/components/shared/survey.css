@@ -9,7 +9,7 @@
 }
 
 .body-text {
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: 400;
 	color: #000;
 	line-height: 1.3;
@@ -17,7 +17,7 @@
 }
 
 .survey-question {
-	font-size: 24px;
+	font-size: 19px;
 	font-weight: 700;
 	color: #000;
 	line-height: 1.2;
@@ -95,7 +95,7 @@
 
 .radio-option span,
 .checkbox-option span {
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: 400;
 	color: #000;
 	line-height: 1.3;
@@ -103,27 +103,27 @@
 
 /* ── Results ──────────────────────────────────────────────────────────────── */
 .results-label {
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: 400;
 	color: #000;
 }
 
 .results-recommendation {
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: 400;
 	color: #b23d38;
 	line-height: 1.3;
 }
 
 .results-footer {
-	font-size: 20px;
+	font-size: 16px;
 	font-weight: 400;
 	color: #000;
 	line-height: 1.3;
 }
 
 .link-label {
-	font-size: 18px;
+	font-size: 16px;
 }
 
 .inline-link {

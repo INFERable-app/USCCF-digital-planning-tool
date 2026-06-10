@@ -6,7 +6,7 @@
 
 body {
 	background: #c8c8c8;
-	font-family: 'Economica', sans-serif;
+	font-family: 'Roboto', sans-serif;
 }
 
 /* ── Shell ────────────────────────────────────────────────────────────────── */
@@ -159,8 +159,8 @@ body {
 	padding: 10px 32px;
 	background: #8d2f38;
 	color: white;
-	font-family: 'Economica', sans-serif;
-	font-size: 30px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
 	font-weight: 700;
 	border: none;
 	border-radius: 6px;
@@ -195,8 +195,8 @@ body {
 	padding: 10px 32px;
 	background: transparent;
 	color: #8d2f38;
-	font-family: 'Economica', sans-serif;
-	font-size: 22px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
 	font-weight: 400;
 	border: 2px solid #8d2f38;
 	border-radius: 6px;
@@ -222,8 +222,8 @@ body {
 	padding: 10px 16px;
 	background: #8d2f38;
 	color: white;
-	font-family: 'Economica', sans-serif;
-	font-size: 28px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 20px;
 	font-weight: 700;
 	border: none;
 	border-radius: 6px;
@@ -254,8 +254,8 @@ body {
 	background: none;
 	border: none;
 	cursor: pointer;
-	font-family: 'Economica', sans-serif;
-	font-size: 18px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
 	color: #8d2f38;
 	padding: 0;
 	line-height: 1;
@@ -316,12 +316,12 @@ body {
 	/* Desktop button sizing */
 	.btn-primary {
 		width: fit-content;
-		font-size: 26px;
+		font-size: 20px;
 		padding: 14px 56px;
 	}
 
 	.btn-choice {
-		font-size: 28px;
+		font-size: 20px;
 		padding: 18px 24px;
 	}
 }

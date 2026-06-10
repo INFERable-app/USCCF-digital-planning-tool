@@ -36,7 +36,7 @@
 }
 
 .signin-title {
-	font-size: 26px;
+	font-size: 20px;
 	font-weight: 700;
 	color: #b23c38;
 	text-align: center;
@@ -60,8 +60,8 @@
 	background: white;
 	border: 1.5px solid #d0d0d0;
 	border-radius: 999px;
-	font-family: 'Economica', sans-serif;
-	font-size: 20px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
 	font-weight: 700;
 	color: #000;
 	cursor: pointer;
@@ -83,8 +83,8 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	font-family: 'Economica', sans-serif;
-	font-size: 18px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
 	color: #000;
 	cursor: pointer;
 	user-select: none;
@@ -105,13 +105,13 @@
 }
 
 .signin-disclaimer {
-	font-size: 15px;
+	font-size: 14px;
 	color: #b23c38;
 	line-height: 1.45;
 }
 
 .signin-error {
-	font-size: 15px;
+	font-size: 14px;
 	color: #c0392b;
 	background: #fdf0ef;
 	border-radius: 6px;
