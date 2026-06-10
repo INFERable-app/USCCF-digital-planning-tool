@@ -277,16 +277,27 @@ body {
 		display: none;
 	}
 
-	/* Screen grid: header row | title row | content row, two equal columns */
+	/* Screen grid: header row | content row, two columns */
 	.screen {
 		display: grid;
-		grid-template-columns: 50% 50%;
-		grid-template-rows: auto auto 1fr;
+		grid-template-columns: 52% 48%;
+		grid-template-rows: auto 1fr;
 		height: 100dvh;
 	}
 
-	/* Compact screens add a fourth row for the bottom CTA */
+	/* Compact screens: header | challenge bar | content | CTA */
 	.screen-compact {
 		grid-template-rows: auto auto 1fr auto;
+	}
+
+	/* Desktop button sizing */
+	.btn-primary {
+		width: fit-content;
+		font-size: 22px;
+		padding: 12px 48px;
+	}
+
+	.btn-choice {
+		font-size: 22px;
 	}
 }

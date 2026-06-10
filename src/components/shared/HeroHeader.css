@@ -125,10 +125,15 @@
 		border-bottom: 1px solid #e8e8e8;
 	}
 
-	/* Hero image: left column, spans rows 2 and 3 */
+	/* App title hidden on desktop — heading inside bottom-section is sufficient */
+	.top-hero .app-title {
+		display: none;
+	}
+
+	/* Hero image: left column, full content row */
 	.top-hero .hero-image-wrap {
 		grid-column: 1;
-		grid-row: 2 / 4;
+		grid-row: 2;
 		position: static;
 		left: auto;
 		right: auto;
@@ -143,19 +148,34 @@
 		object-position: top center;
 	}
 
-	/* App title: top of right column */
-	.top-hero .app-title {
-		grid-column: 2;
-		grid-row: 2;
-		position: static;
-		top: auto;
-		text-align: left;
-		padding: 28px 40px 8px;
-	}
-
-	/* Content area: right column main row */
+	/* Content area: right column, vertically centered */
 	.bottom-section {
 		grid-column: 2;
-		grid-row: 3;
+		grid-row: 2;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 56px 64px;
+		gap: 24px;
+		overflow-y: auto;
+	}
+
+	.welcome-heading {
+		font-size: 46px;
+		line-height: 1.05;
+	}
+
+	.welcome-body {
+		font-size: 26px;
+		line-height: 1.35;
+	}
+
+	.question-text {
+		font-size: 34px;
+		line-height: 1.15;
+	}
+
+	.choice-list {
+		gap: 12px;
 	}
 }

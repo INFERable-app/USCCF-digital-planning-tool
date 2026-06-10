@@ -76,13 +76,16 @@
 	.screen-compact .challenge-title-bar {
 		grid-column: 2;
 		grid-row: 2;
+		padding: 24px 64px 16px;
 	}
 	.screen-compact .survey-content {
 		grid-column: 2;
 		grid-row: 3;
+		padding: 0 64px;
 	}
 	.screen-compact .bottom-cta {
 		grid-column: 2;
 		grid-row: 4;
+		padding: 12px 64px 32px;
 	}
 }
