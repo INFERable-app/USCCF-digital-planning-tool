@@ -16,14 +16,14 @@
 .breadcrumb-step {
 	display: flex;
 	align-items: center;
-	height: 41px;
+	height: 52px;
 	cursor: pointer;
 }
 
 .breadcrumb-dot-wrap {
 	position: relative;
-	width: 13px;
-	height: 13px;
+	width: 17px;
+	height: 17px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -32,8 +32,8 @@
 
 .breadcrumb-dot {
 	position: relative;
-	width: 10px;
-	height: 10px;
+	width: 12px;
+	height: 12px;
 	border-radius: 50%;
 	background: #c4a3a6;
 	flex-shrink: 0;
@@ -41,14 +41,14 @@
 }
 
 .breadcrumb-dot--current {
-	width: 13px;
-	height: 13px;
+	width: 17px;
+	height: 17px;
 	background: #8d2f38;
 }
 
 .breadcrumb-dot--dimmed {
-	width: 10px;
-	height: 10px;
+	width: 12px;
+	height: 12px;
 	background: #c07079;
 }
 
@@ -63,7 +63,7 @@
 	width: 1px;
 	background: #bbb;
 	opacity: 0;
-	transition: opacity 0.15s ease;
+	transition: opacity 0.35s ease;
 	pointer-events: none;
 }
 
@@ -78,14 +78,14 @@
 	left: 50%;
 	transform: translateX(-50%);
 	font-family: 'Roboto', sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 400;
 	color: #444;
 	letter-spacing: 0.04em;
 	white-space: nowrap;
 	pointer-events: none;
 	opacity: 0;
-	transition: opacity 0.15s ease;
+	transition: opacity 0.35s ease;
 }
 
 .breadcrumb-label--visible {
@@ -94,16 +94,16 @@
 
 .breadcrumb-line {
 	display: block;
-	width: 28px;
-	height: 3px;
+	width: 36px;
+	height: 4px;
 	background: #c4a3a6;
 	flex-shrink: 0;
 }
 
 .breadcrumb-step--active .breadcrumb-dot {
 	background: #9a7275;
-	width: 13px;
-	height: 13px;
+	width: 17px;
+	height: 17px;
 }
 
 .breadcrumb-step--active .breadcrumb-line {
@@ -114,5 +114,11 @@
 	.breadcrumb {
 		position: fixed;
 		bottom: 16px;
+	}
+}
+
+@media (min-width: 768px) {
+	.breadcrumb {
+		left: 40%;
 	}
 }
