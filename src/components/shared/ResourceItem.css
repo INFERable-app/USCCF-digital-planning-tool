@@ -1,0 +1,47 @@
+/* ── Resource items ───────────────────────────────────────────────────────── */
+.resource-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px 14px;
+	border: 1px solid #d0d0d0;
+	border-radius: 4px;
+	background: #fafafa;
+	text-decoration: none;
+	color: #000;
+	transition: background 0.15s ease;
+}
+
+.resource-card--link:hover,
+.resource-card--pdf[href]:hover {
+	background: #f0f0f0;
+}
+
+.resource-label {
+	font-size: 15px;
+	font-weight: 400;
+	color: #000;
+	line-height: 1.2;
+	flex: 1;
+}
+
+.resource-pdf-badge {
+	flex-shrink: 0;
+	background: #8d2f38;
+	color: white;
+	font-size: 11px;
+	font-weight: 700;
+	padding: 3px 8px;
+	border-radius: 3px;
+	white-space: nowrap;
+	letter-spacing: 0.02em;
+}
+
+.resource-link-arrow {
+	flex-shrink: 0;
+	color: #8d2f38;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1;
+}

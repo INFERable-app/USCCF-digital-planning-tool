@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       change_description:
-        description: 'Describe the changes to wizardGraph.json'
+        description: 'Describe the changes to docs/wizardGraph.json'
         required: true
         type: string
       json_content:
@@ -39,19 +39,19 @@ jobs:
           JSON_CONTENT: ${{ inputs.json_content }}
         run: |          
           printf "%s" "$JSON_CONTENT" | jq -e '.nodes and .edges' > /dev/null || exit 1          
-          echo "✅ wizardGraph.json has valid structure"
+          echo "✅ docs/wizardGraph.json has valid structure"
 
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update ONLY wizardGraph.json
+      - name: Update ONLY docs/wizardGraph.json
         env:
           JSON_CONTENT: ${{ inputs.json_content }}
         run: |          
           # Write the JSON content
-          printf "%s" "$JSON_CONTENT" | jq '.' > wizardGraph.json
+          printf "%s" "$JSON_CONTENT" | jq '.' > docs/wizardGraph.json
           
           # Verify ONLY this file changed
           if [ $(git diff --name-only | wc -l) -ne 1 ]; then
@@ -59,15 +59,15 @@ jobs:
             exit 1
           fi
           
-          if [ "$(git diff --name-only)" != "wizardGraph.json" ]; then
-            echo "❌ ERROR: Modified file is not wizardGraph.json!"
+          if [ "$(git diff --name-only)" != "docs/wizardGraph.json" ]; then
+            echo "❌ ERROR: Modified file is not docs/wizardGraph.json!"
             exit 1
           fi
 
       - name: Commit changes
         run: |
-          git add wizardGraph.json
-          git commit -m "chore: update wizardGraph.json
+          git add docs/wizardGraph.json
+          git commit -m "chore: update docs/wizardGraph.json
           
           Reason: ${{ inputs.change_description }}"
           git push origin main
