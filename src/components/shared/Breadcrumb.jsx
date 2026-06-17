@@ -22,7 +22,18 @@ export default function Breadcrumb({ history, currentNodeId, nodes, onJumpTo }) 
 					const question = nodes[id]?.question ?? '';
 					const showLabel = hoveredId ? id === hoveredId : isCurrent;
 					const hoverHandlers = !isCurrent
-						? { onMouseEnter: () => setHoveredId(id), onMouseLeave: () => setHoveredId(null), onClick: () => onJumpTo(id) }
+						? {
+							onMouseEnter: () => setHoveredId(id),
+							onMouseLeave: () => setHoveredId(null),
+							onClick: () => {
+								if (hoveredId === id) {
+									onJumpTo(id);
+									setHoveredId(null);
+								} else {
+									setHoveredId(id);
+								}
+							},
+						}
 						: {};
 					return (
 						<span key={id} className={`breadcrumb-step ${!isCurrent && id === hoveredId ? 'breadcrumb-step--active' : ''}`} {...hoverHandlers}>
