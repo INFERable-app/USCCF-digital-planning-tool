@@ -1,7 +1,7 @@
 import './Breadcrumb.css';
 import { useState } from 'react';
 
-const SKIP_TYPES = new Set(['welcome', 'results']);
+const SKIP_TYPES = new Set(['welcome']);
 
 export default function Breadcrumb({ history, currentNodeId, nodes, onJumpTo }) {
 	const [hoveredId, setHoveredId] = useState(null);
@@ -19,7 +19,7 @@ export default function Breadcrumb({ history, currentNodeId, nodes, onJumpTo }) 
 				{steps.map((id, i) => {
 					const isCurrent = i === steps.length - 1;
 					const isLast = i === steps.length - 1;
-					const question = nodes[id]?.question ?? '';
+					const question = nodes[id]?.question || (nodes[id]?.type === 'results' ? 'Result' : '');
 					const showLabel = hoveredId ? id === hoveredId : isCurrent;
 					const hoverHandlers = !isCurrent
 						? {
