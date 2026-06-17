@@ -9,18 +9,20 @@
 }
 
 .body-text {
-	font-size: 18px;
+	font-size: 19px;
 	font-weight: 400;
 	color: #000;
-	line-height: 1.3;
+	line-height: 1.45;
+	letter-spacing: 0.02em;
 	white-space: pre-wrap;
 }
 
 .survey-question {
-	font-size: 19px;
+	font-size: 21px;
 	font-weight: 700;
 	color: #000;
-	line-height: 1.2;
+	line-height: 1.3;
+	letter-spacing: 0.02em;
 }
 
 /* ── Radio & checkbox options ─────────────────────────────────────────────── */
@@ -95,35 +97,39 @@
 
 .radio-option span,
 .checkbox-option span {
-	font-size: 18px;
+	font-size: 19px;
 	font-weight: 400;
 	color: #000;
-	line-height: 1.3;
+	line-height: 1.4;
+	letter-spacing: 0.02em;
 }
 
 /* ── Results ──────────────────────────────────────────────────────────────── */
 .results-label {
-	font-size: 18px;
+	font-size: 19px;
 	font-weight: 400;
 	color: #000;
+	letter-spacing: 0.02em;
 }
 
 .results-recommendation {
-	font-size: 18px;
+	font-size: 19px;
 	font-weight: 400;
 	color: #b23d38;
-	line-height: 1.3;
+	line-height: 1.4;
+	letter-spacing: 0.02em;
 }
 
 .results-footer {
-	font-size: 16px;
+	font-size: 17px;
 	font-weight: 400;
 	color: #000;
-	line-height: 1.3;
+	line-height: 1.4;
+	letter-spacing: 0.02em;
 }
 
 .link-label {
-	font-size: 16px;
+	font-size: 17px;
 }
 
 .inline-link {
