@@ -32,6 +32,14 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
+	function jumpTo(nodeId) {
+		const idx = history.indexOf(nodeId);
+		if (idx === -1) return;
+		setHistory(history.slice(0, idx));
+		setCurrentNodeId(nodeId);
+		window.scrollTo(0, 0);
+	}
+
 	function restart() {
 		setCurrentNodeId(startNodeId);
 		setAnswers({});
@@ -47,5 +55,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, answers, history, advance, back, restart };
+	return { node, currentNodeId, answers, history, advance, back, jumpTo, restart };
 }

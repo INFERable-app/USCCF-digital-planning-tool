@@ -271,7 +271,7 @@ body {
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
 .bottom-cta {
 	flex-shrink: 0;
-	padding: 12px 17px 28px;
+	padding: 12px 17px 90px;
 }
 
 /* ── Desktop layout (≥ 768px) ─────────────────────────────────────────────── */
