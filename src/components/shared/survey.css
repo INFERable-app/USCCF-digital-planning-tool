@@ -136,3 +136,23 @@
 	color: #8d2f38;
 	word-break: break-all;
 }
+
+.prompt-warning {
+	padding: 10px 14px;
+	background: #fff8f0;
+	border-left: 4px solid #e36200;
+	border-radius: 4px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	color: #7a3800;
+	line-height: 1.5;
+	letter-spacing: 0.01em;
+}
+
+.prompt-warning-title {
+	display: block;
+	font-weight: 700;
+	color: #e36200;
+	margin-bottom: 3px;
+	letter-spacing: 0.04em;
+}
