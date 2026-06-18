@@ -3,11 +3,7 @@
 	flex-direction: column;
 	background: white;
 	padding: 20px 16px;
-	border-right: 1px solid #e8e8e8;
 	overflow-y: auto;
-	opacity: 1;
-	visibility: visible;
-	transition: opacity 0.25s ease, visibility 0s 0s;
 }
 
 .resource-sidebar__heading-row {

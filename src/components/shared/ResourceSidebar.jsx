@@ -37,6 +37,7 @@ export default function ResourceSidebar() {
 	const filtered = isAll ? null : staticResources.filter(r => r.categories.includes(activeTab));
 
 	return (
+		<div className="resource-sidebar-track">
 		<aside className="resource-sidebar" aria-label="Resource library">
 			<div className="resource-sidebar__heading-row">
 				<h2 className="resource-sidebar__title">Resources</h2>
@@ -80,5 +81,6 @@ export default function ResourceSidebar() {
 				}
 			</div>
 		</aside>
+		</div>
 	);
 }

@@ -404,10 +404,7 @@ body {
 
 	.drawer-closed .top-hero .resource-sidebar,
 	.drawer-closed .compact-header .resource-sidebar {
-		opacity: 0;
-		visibility: hidden;
-		overflow: hidden;
-		transition: opacity 0.25s ease, visibility 0s 0.25s;
+		transform: translateX(-100%);
 	}
 
 	/* ── Breadcrumb centering when drawer closed ──────────────────────────────── */

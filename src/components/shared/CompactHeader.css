@@ -63,13 +63,25 @@
 		display: none;
 	}
 
-	/* Resource sidebar: left column, spans rows 2 to end */
-	.screen-compact .compact-header .resource-sidebar {
+	/* Track: occupies the grid column, clips the sliding sidebar */
+	.screen-compact .compact-header .resource-sidebar-track {
 		display: flex;
 		grid-column: 1;
 		grid-row: 2 / -1;
 		min-height: 0;
+		overflow: hidden;
+		border-right: 1px solid #e8e8e8;
+	}
+
+	/* Sidebar: fixed width so content never reflows; slides via transform */
+	.screen-compact .compact-header .resource-sidebar {
+		display: flex;
+		width: 40vw;
+		box-sizing: border-box;
+		flex-shrink: 0;
 		overflow-y: auto;
+		transform: translateX(0);
+		transition: transform 0.35s ease;
 	}
 
 	/* Right-column elements — dynamic horizontal padding keeps content
