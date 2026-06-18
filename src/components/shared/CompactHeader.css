@@ -96,5 +96,7 @@
 		grid-column: 2;
 		grid-row: 3;
 		padding: 12px max(64px, calc((100% - 772px) / 2)) 90px;
+		display: flex;
+		justify-content: flex-end;
 	}
 }
