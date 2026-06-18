@@ -95,6 +95,7 @@
 		grid-column: 2;
 		grid-row: 3;
 		padding: 0 max(64px, calc((100% - 772px) / 2));
+		align-self: center;
 	}
 	.screen-compact .bottom-cta {
 		grid-column: 2;
