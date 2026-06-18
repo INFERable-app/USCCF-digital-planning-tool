@@ -58,34 +58,47 @@
 		display: none;
 	}
 
-	/* Hero image: left column, spans rows 2 to end */
+	/* Hero image: hidden on desktop — sidebar takes its place */
 	.compact-hero-wrap {
-		display: block;
-		grid-column: 1;
-		grid-row: 2 / -1;
-		overflow: hidden;
-	}
-	.compact-hero-wrap .hero-image {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: top center;
+		display: none;
 	}
 
-	/* Right-column elements */
+	/* Track: occupies the grid column, clips the sliding sidebar */
+	.screen-compact .compact-header .resource-sidebar-track {
+		display: flex;
+		grid-column: 1;
+		grid-row: 2 / -1;
+		min-height: 0;
+		overflow: hidden;
+		border-right: 1px solid #e8e8e8;
+	}
+
+	/* Sidebar: fixed width so content never reflows; slides via transform */
+	.screen-compact .compact-header .resource-sidebar {
+		display: flex;
+		width: 40vw;
+		box-sizing: border-box;
+		flex-shrink: 0;
+		overflow-y: auto;
+		transform: translateX(0);
+		transition: transform 0.35s ease;
+	}
+
+	/* Right-column elements — dynamic horizontal padding keeps content
+	   centered as the grid column animates open/closed. */
 	.screen-compact .challenge-title-bar {
 		grid-column: 2;
 		grid-row: 2;
-		padding: 24px 64px 16px;
+		padding: 24px max(64px, calc((100% - 772px) / 2)) 16px;
 	}
 	.screen-compact .survey-content {
 		grid-column: 2;
 		grid-row: 3;
-		padding: 0 64px;
+		padding: 0 max(64px, calc((100% - 772px) / 2));
 	}
 	.screen-compact .bottom-cta {
 		grid-column: 2;
 		grid-row: 4;
-		padding: 12px 64px 90px;
+		padding: 12px max(64px, calc((100% - 772px) / 2)) 90px;
 	}
 }

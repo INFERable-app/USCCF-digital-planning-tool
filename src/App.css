@@ -57,7 +57,7 @@ body {
 }
 
 /* ── Phone frame (screen glass) ───────────────────────────────────────────── */
-.phone-frame {
+.app-screen {
 	position: relative;
 	width: 402px;
 	height: 874px;
@@ -131,7 +131,7 @@ body {
 	.phone-chrome::after {
 		display: none;
 	}
-	.phone-frame {
+	.app-screen {
 		width: 100%;
 		height: auto;
 		min-height: 100dvh;
@@ -268,6 +268,12 @@ body {
 	text-decoration: underline;
 }
 
+/* ── Sidebar toggle buttons (hidden on mobile) ───────────────────────────── */
+.sidebar-close-btn,
+.sidebar-open-btn {
+	display: none;
+}
+
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
 .bottom-cta {
 	flex-shrink: 0;
@@ -292,7 +298,7 @@ body {
 	.phone-chrome::after {
 		display: none;
 	}
-	.phone-frame {
+	.app-screen {
 		width: 100%;
 		height: 100dvh;
 		border-radius: 0;
@@ -326,5 +332,84 @@ body {
 	.btn-choice {
 		font-size: 20px;
 		padding: 18px 24px;
+	}
+
+	/* ── Grid transition ─────────────────────────────────────────────────────── */
+	.screen {
+		transition: grid-template-columns 0.35s ease;
+	}
+
+	/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
+	/* Close button lives in the sidebar heading row, right side */
+	.sidebar-close-btn {
+		display: flex;
+		background: none;
+		border: none;
+		border-radius: 6px;
+		padding: 4px;
+		cursor: pointer;
+		color: #8d2f38;
+		transition: background 0.15s ease;
+	}
+
+	.sidebar-close-btn:hover {
+		background: #f5e8e9;
+	}
+
+	/* Open button lives in the content column — shown only when sidebar is closed */
+	.sidebar-open-btn {
+		display: none;
+	}
+
+	.top-hero .sidebar-open-btn,
+	.compact-header .sidebar-open-btn {
+		grid-column: 2;
+		grid-row: 2;
+		align-self: start;
+		justify-self: start;
+		z-index: 5;
+		background: none;
+		border: none;
+		border-radius: 6px;
+		padding: 4px;
+		cursor: pointer;
+		color: #8d2f38;
+		transition: background 0.15s ease;
+	}
+
+	.top-hero .sidebar-open-btn {
+		margin-top: 20px;
+		margin-left: 20px;
+	}
+
+	.compact-header .sidebar-open-btn {
+		margin-top: 24px;
+		margin-left: 20px;
+	}
+
+	.top-hero .sidebar-open-btn:hover,
+	.compact-header .sidebar-open-btn:hover {
+		background: #f5e8e9;
+	}
+
+	.drawer-closed .top-hero .sidebar-open-btn,
+	.drawer-closed .compact-header .sidebar-open-btn {
+		display: flex;
+	}
+
+	/* ── Drawer-closed layout ─────────────────────────────────────────────────── */
+	.drawer-closed .screen {
+		grid-template-columns: 0% 100%;
+	}
+
+	.drawer-closed .top-hero .resource-sidebar,
+	.drawer-closed .compact-header .resource-sidebar {
+		transform: translateX(-100%);
+	}
+
+	/* ── Breadcrumb centering when drawer closed ──────────────────────────────── */
+	/* left: 0 restores full-width container so justify-content: center truly centers */
+	.drawer-closed .breadcrumb {
+		left: 0;
 	}
 }
