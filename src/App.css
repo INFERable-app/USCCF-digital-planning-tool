@@ -280,6 +280,15 @@ body {
 	padding: 12px 17px 90px;
 }
 
+.cta-back {
+	display: none;
+}
+
+/* Hide hero-screen CTA row on mobile (back button already in header) */
+.screen:not(.screen-compact) .bottom-cta {
+	display: none;
+}
+
 /* ── Desktop layout (≥ 768px) ─────────────────────────────────────────────── */
 @media (min-width: 768px) {
 	/* Dissolve phone chrome */
@@ -303,27 +312,27 @@ body {
 		height: 100dvh;
 		border-radius: 0;
 		overflow: unset;
+		display: flex;
+		flex-direction: column;
 	}
 	.dynamic-island,
 	.home-indicator {
 		display: none;
 	}
 
-	/* Screen grid: header row | content row, two columns */
+	/* Screen grid: header row | content row | CTA row, two columns */
 	.screen {
 		display: grid;
 		grid-template-columns: 40% 60%;
-		grid-template-rows: auto 1fr;
-		height: 100dvh;
-	}
-
-	/* Compact screens: header | content | CTA */
-	.screen-compact {
 		grid-template-rows: auto 1fr auto;
+		flex: 1;
+		min-height: 0;
+		height: auto;
 	}
 
-	/* Desktop button sizing */
-	.btn-primary {
+	/* CTA row buttons only — scoped so content-area buttons stay full-width */
+	.bottom-cta .btn-primary,
+	.bottom-cta .btn-secondary {
 		width: fit-content;
 		font-size: 20px;
 		padding: 14px 56px;
@@ -408,8 +417,7 @@ body {
 	}
 
 	/* ── Breadcrumb centering when drawer closed ──────────────────────────────── */
-	/* left: 0 restores full-width container so justify-content: center truly centers */
 	.drawer-closed .breadcrumb {
-		left: 0;
+		margin-left: 0;
 	}
 }

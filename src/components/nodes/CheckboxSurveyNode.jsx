@@ -37,6 +37,11 @@ export default function CheckboxSurveyNode({ node, nodeEdges, answers, advance, 
 				</div>
 			</div>
 			<div className="bottom-cta">
+				{onBack && (
+					<button className="btn-secondary cta-back" onClick={onBack}>
+						‹ Back
+					</button>
+				)}
 				<button
 					className="btn-primary"
 					onClick={() => advance(node.submitEdgeId, [...selected])}

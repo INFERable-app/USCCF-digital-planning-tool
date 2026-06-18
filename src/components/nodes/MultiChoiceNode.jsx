@@ -13,6 +13,13 @@ export default function MultiChoiceNode({ node, nodeEdges, advance, onBack }) {
 					))}
 				</div>
 			</div>
+			<div className="bottom-cta">
+				{onBack && (
+					<button className="btn-secondary cta-back" onClick={onBack}>
+						‹ Back
+					</button>
+				)}
+			</div>
 		</div>
 	);
 }

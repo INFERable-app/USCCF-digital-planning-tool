@@ -133,6 +133,11 @@
 		display: none;
 	}
 
+	/* Back button hidden on desktop — replaced by CTA back button in content area */
+	.top-hero .btn-back {
+		display: none;
+	}
+
 	/* Hero image: hidden on desktop — sidebar takes its place */
 	.top-hero .hero-image-wrap {
 		display: none;
@@ -142,7 +147,7 @@
 	.top-hero .resource-sidebar-track {
 		display: flex;
 		grid-column: 1;
-		grid-row: 2;
+		grid-row: 2 / -1;
 		min-height: 0;
 		overflow: hidden;
 		border-right: 1px solid #e8e8e8;
@@ -158,6 +163,14 @@
 		overflow-y: auto;
 		transform: translateX(0);
 		transition: transform 0.35s ease;
+	}
+
+	/* CTA row: back button for hero screens */
+	.screen:not(.screen-compact) .bottom-cta {
+		grid-column: 2;
+		grid-row: 3;
+		display: flex;
+		padding: 12px max(72px, calc((100% - 756px) / 2)) 24px;
 	}
 
 	/* Content area: right column, vertically centered.

@@ -28,6 +28,11 @@ export default function RadioSurveyNode({ node, nodeEdges, answers, advance, onB
 				</div>
 			</div>
 			<div className="bottom-cta">
+				{onBack && (
+					<button className="btn-secondary cta-back" onClick={onBack}>
+						‹ Back
+					</button>
+				)}
 				<button
 					className="btn-primary"
 					onClick={() => selectedEdgeId && advance(selectedEdgeId)}
