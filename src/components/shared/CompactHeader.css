@@ -72,20 +72,21 @@
 		overflow-y: auto;
 	}
 
-	/* Right-column elements */
+	/* Right-column elements — dynamic horizontal padding keeps content
+	   centered as the grid column animates open/closed. */
 	.screen-compact .challenge-title-bar {
 		grid-column: 2;
 		grid-row: 2;
-		padding: 24px 64px 16px;
+		padding: 24px max(64px, calc((100% - 772px) / 2)) 16px;
 	}
 	.screen-compact .survey-content {
 		grid-column: 2;
 		grid-row: 3;
-		padding: 0 64px;
+		padding: 0 max(64px, calc((100% - 772px) / 2));
 	}
 	.screen-compact .bottom-cta {
 		grid-column: 2;
 		grid-row: 4;
-		padding: 12px 64px 90px;
+		padding: 12px max(64px, calc((100% - 772px) / 2)) 90px;
 	}
 }

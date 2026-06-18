@@ -5,6 +5,17 @@
 	padding: 20px 16px;
 	border-right: 1px solid #e8e8e8;
 	overflow-y: auto;
+	opacity: 1;
+	visibility: visible;
+	transition: opacity 0.25s ease, visibility 0s 0s;
+}
+
+.resource-sidebar__heading-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 14px;
+	flex-shrink: 0;
 }
 
 .resource-sidebar__title {
@@ -12,9 +23,7 @@
 	font-size: 18px;
 	font-weight: 700;
 	color: #8d2f38;
-	margin-bottom: 14px;
 	letter-spacing: 0.02em;
-	flex-shrink: 0;
 }
 
 .resource-sidebar__tabs {

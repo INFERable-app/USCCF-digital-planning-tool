@@ -147,5 +147,6 @@
 @media (min-width: 768px) {
 	.breadcrumb {
 		left: 40%;
+		transition: left 0.35s ease;
 	}
 }
