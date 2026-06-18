@@ -14,8 +14,8 @@ export default function ResultsNode({ node, answers, onBack, onRestart }) {
     return (
         <div className="screen screen-compact">
             <CompactHeader onBack={onBack} />
-            {node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
             <div className="survey-content">
+                {node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
                 {result.recommendation && (
                     <>
                         <p className="results-label">Recommended next step:</p>

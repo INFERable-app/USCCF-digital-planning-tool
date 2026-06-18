@@ -1,8 +1,7 @@
 /* ── Challenge title bar ──────────────────────────────────────────────────── */
 .challenge-title-bar {
 	flex-shrink: 0;
-	padding: 10px 17px 0;
-	height: 100px;
+	padding: 0 0 24px;
 	position: relative;
 }
 

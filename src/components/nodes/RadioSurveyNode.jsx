@@ -12,8 +12,8 @@ export default function RadioSurveyNode({ node, nodeEdges, answers, advance, onB
 	return (
 		<div className="screen screen-compact">
 			<CompactHeader onBack={onBack} />
-			{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 			<div className="survey-content">
+				{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 				{node.intro && <p className="body-text">{node.intro}</p>}
 				<p className="survey-question">{node.question}</p>
 				<div className="radio-list">
