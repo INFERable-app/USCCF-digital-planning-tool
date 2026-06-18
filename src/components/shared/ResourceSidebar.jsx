@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { staticResources } from '../../data/staticResources.js';
 import ResourceItem from './ResourceItem.jsx';
+import { useDrawer } from '../../contexts/DrawerContext.jsx';
+import { ChevronLeft } from 'lucide-react';
 import './ResourceSidebar.css';
 
 const TABS = [
@@ -29,13 +31,19 @@ function ResourceEntry({ item }) {
 
 export default function ResourceSidebar() {
 	const [activeTab, setActiveTab] = useState('all');
+	const { toggle } = useDrawer();
 
 	const isAll = activeTab === 'all';
 	const filtered = isAll ? null : staticResources.filter(r => r.categories.includes(activeTab));
 
 	return (
 		<aside className="resource-sidebar" aria-label="Resource library">
-			<h2 className="resource-sidebar__title">Resources</h2>
+			<div className="resource-sidebar__heading-row">
+				<h2 className="resource-sidebar__title">Resources</h2>
+				<button className="sidebar-close-btn" onClick={toggle} aria-label="Close resource panel">
+					<ChevronLeft size={20} />
+				</button>
+			</div>
 			<div className="resource-sidebar__tabs" role="tablist" aria-label="Filter resources by category">
 				{TABS.map(tab => (
 					<button
