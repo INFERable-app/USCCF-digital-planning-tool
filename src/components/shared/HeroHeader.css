@@ -130,22 +130,19 @@
 		display: none;
 	}
 
-	/* Hero image: left column, full content row */
+	/* Hero image: hidden on desktop — sidebar takes its place */
 	.top-hero .hero-image-wrap {
+		display: none;
+	}
+
+	/* Resource sidebar: left column, full content row */
+	.top-hero .resource-sidebar {
+		display: flex;
 		grid-column: 1;
 		grid-row: 2;
-		position: static;
-		left: auto;
-		right: auto;
-		top: auto;
-		bottom: auto;
 		height: auto;
-	}
-	.top-hero .hero-image {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: top center;
+		min-height: 0;
+		overflow-y: auto;
 	}
 
 	/* Content area: right column, vertically centered */
