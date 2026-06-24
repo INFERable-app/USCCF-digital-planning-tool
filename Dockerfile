@@ -9,7 +9,17 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 ARG VITE_GOOGLE_CLIENT_ID
+ARG VITE_LRS_URL
+ARG VITE_LRS_USERNAME
+ARG VITE_LRS_SECRET
+ARG VITE_XAPI_ACTIVITY_BASE
+ARG VITE_XAPI_PSEUDOANON
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ENV VITE_LRS_URL=$VITE_LRS_URL
+ENV VITE_LRS_USERNAME=$VITE_LRS_USERNAME
+ENV VITE_LRS_SECRET=$VITE_LRS_SECRET
+ENV VITE_XAPI_ACTIVITY_BASE=$VITE_XAPI_ACTIVITY_BASE
+ENV VITE_XAPI_PSEUDOANON=$VITE_XAPI_PSEUDOANON
 RUN pnpm build
 
 # ── Serve ────────────────────────────────────────────────────────────────────

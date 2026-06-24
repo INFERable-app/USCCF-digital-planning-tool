@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import { XapiProvider } from './contexts/XapiContext.jsx';
 import './App.css';
 import App from './App.jsx';
 
@@ -9,7 +10,9 @@ createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
 			<AuthProvider>
-				<App />
+				<XapiProvider>
+					<App />
+				</XapiProvider>
 			</AuthProvider>
 		</GoogleOAuthProvider>
 	</StrictMode>
