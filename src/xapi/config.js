@@ -33,15 +33,20 @@ function readEnv(key) {
 	return import.meta.env?.[key];
 }
 
+function readEnvFlag(key) {
+	return readEnv(key) === 'true';
+}
+
 export function resolveXapiConfig() {
 	const url = normalizeLrsURL(firstNonEmpty(readEnv('VITE_LRS_URL')));
 	const username = firstNonEmpty(readEnv('VITE_LRS_USERNAME'));
 	const password = firstNonEmpty(readEnv('VITE_LRS_SECRET'));
 	const activityBase = firstNonEmpty(readEnv('VITE_XAPI_ACTIVITY_BASE'));
+	const pseudoAnon = readEnvFlag('VITE_XAPI_PSEUDOANON');
 
 	if (!url || !username || !password) {
-		return { enabled: false, activityBase: activityBase ?? null };
+		return { enabled: false, activityBase: activityBase ?? null, pseudoAnon };
 	}
 
-	return { enabled: true, url, username, password, activityBase: activityBase ?? null };
+	return { enabled: true, url, username, password, activityBase: activityBase ?? null, pseudoAnon };
 }

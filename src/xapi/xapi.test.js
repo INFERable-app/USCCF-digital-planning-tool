@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeLrsURL } from './config.js';
-import { buildActorFromUser } from './actors.js';
+import { buildActorFromUser, buildIdentifiedActorFromUser, resolveActor } from './actors.js';
 import { buildAnsweredStatement } from './statements.js';
 import { createActivityIds } from './activityIds.js';
 
@@ -30,9 +30,9 @@ describe('normalizeLrsURL', () => {
 	});
 });
 
-describe('buildActorFromUser', () => {
+describe('buildIdentifiedActorFromUser', () => {
 	it('uses mbox only (xAPI max-one-ifi)', () => {
-		const actor = buildActorFromUser({
+		const actor = buildIdentifiedActorFromUser({
 			email: 'user@example.com',
 			sub: 'google-sub-123',
 			name: 'Test User'
@@ -44,7 +44,43 @@ describe('buildActorFromUser', () => {
 	});
 
 	it('requires email', () => {
-		assert.throws(() => buildActorFromUser({ sub: 'x' }), /email is required/);
+		assert.throws(() => buildIdentifiedActorFromUser({ sub: 'x' }), /email is required/);
+	});
+});
+
+describe('resolveActor', () => {
+	it('uses pseudonymous actor for all statements when pseudoAnon is enabled', () => {
+		const actor = resolveActor({
+			user: { email: 'user@example.com', name: 'Test User' },
+			pseudoAnon: true,
+			homePage: 'https://example.com/pseudoanon',
+			sessionId: 'session-abc'
+		});
+
+		assert.deepEqual(actor, {
+			account: { homePage: 'https://example.com/pseudoanon', name: 'session-abc' }
+		});
+		assert.equal('mbox' in actor, false);
+	});
+
+	it('uses mbox when pseudoAnon is disabled and user is signed in', () => {
+		const actor = resolveActor({
+			user: { email: 'user@example.com', name: 'Test User' },
+			pseudoAnon: false
+		});
+
+		assert.equal(actor.mbox, 'mailto:user@example.com');
+	});
+
+	it('returns null when pseudoAnon is disabled and user is absent', () => {
+		assert.equal(resolveActor({ pseudoAnon: false }), null);
+	});
+});
+
+describe('buildActorFromUser', () => {
+	it('remains an alias for identified actors', () => {
+		const actor = buildActorFromUser({ email: 'user@example.com' });
+		assert.equal(actor.mbox, 'mailto:user@example.com');
 	});
 });
 

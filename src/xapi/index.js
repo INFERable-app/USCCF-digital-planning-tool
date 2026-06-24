@@ -6,7 +6,13 @@ export {
 	buildAnsweredStatement,
 	buildInteractedStatement
 } from './statements.js';
-export { buildActorFromUser } from './actors.js';
+export {
+	buildActorFromUser,
+	buildIdentifiedActorFromUser,
+	buildPseudonymousActor,
+	resolveActor,
+	getPseudonymousHomePage
+} from './actors.js';
 export { activityIds, createActivityIds } from './activityIds.js';
 export { resolveXapiConfig, normalizeLrsURL } from './config.js';
 export { sendTestStatement } from './testStatement.js';

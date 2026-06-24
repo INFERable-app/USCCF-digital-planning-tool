@@ -12,8 +12,11 @@ Copy `.env.example` and set:
 | `VITE_LRS_USERNAME`       | Basic auth username                                                       |
 | `VITE_LRS_SECRET`         | Basic auth password                                                       |
 | `VITE_XAPI_ACTIVITY_BASE` | Base IRI for activity IDs (e.g. `https://your-domain.example/activities`) |
+| `VITE_XAPI_PSEUDOANON`    | When `true`, all statements use a session-scoped pseudonymous actor (no email), even for signed-in users |
 
 If any of `VITE_LRS_URL`, `VITE_LRS_USERNAME`, or `VITE_LRS_SECRET` is missing, xAPI is disabled and the app runs normally.
+
+When `VITE_XAPI_PSEUDOANON=false` (default), statements require a signed-in user and use `mbox` from the user's email. When `true`, every statement uses `{ account: { homePage: "{origin}/pseudoanon", name: "{session-uuid}" } }` stored in `sessionStorage` for the browser tab session — no PII is sent to the LRS.
 
 **Security:** Phase 1 embeds LRS credentials in the client bundle. Use sandbox keys only. See [Phase 2 migration](#phase-2-server-proxy) before production.
 
@@ -25,7 +28,7 @@ URLs ending in `/xapi` are automatically normalized to `/xapi/statements`.
 | ------------------------------ | ------------------------------------------ |
 | `src/xapi/client.js`           | HTTP transport (`XapiClient`)              |
 | `src/xapi/statements.js`       | Statement builders                         |
-| `src/xapi/actors.js`           | Actor from Google OAuth user               |
+| `src/xapi/actors.js`           | `resolveActor()`, identified and pseudonymous actor builders |
 | `src/xapi/activityIds.js`      | Stable activity IRIs for graph nodes/edges |
 | `src/xapi/config.js`           | Env resolution and URL normalization       |
 | `src/contexts/XapiContext.jsx` | React `sendStatement()` + `isEnabled`      |
@@ -60,7 +63,7 @@ Example (future wiring in `advance()`):
 ```javascript
 sendStatement(
 	buildAnsweredStatement({
-		actor: buildActorFromUser(user),
+		actor: getActor(),
 		activityId: activityIds.node('challenge'),
 		response: 'ced-01'
 	})
@@ -71,16 +74,15 @@ sendStatement(
 
 ```javascript
 import { useXapi } from '../contexts/XapiContext.jsx';
-import { buildAnsweredStatement, buildActorFromUser, activityIds } from '../xapi/index.js';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { buildAnsweredStatement, activityIds } from '../xapi/index.js';
 
-const { sendStatement, isEnabled } = useXapi();
-const { user } = useAuth();
+const { sendStatement, isEnabled, getActor } = useXapi();
 
-if (isEnabled && user) {
+const actor = getActor();
+if (isEnabled && actor) {
 	sendStatement(
 		buildAnsweredStatement({
-			actor: buildActorFromUser(user),
+			actor,
 			activityId: activityIds.node('challenge'),
 			response: 'ced-01'
 		})
@@ -90,13 +92,13 @@ if (isEnabled && user) {
 
 ## Dev smoke test
 
-With LRS env vars set and a signed-in user, open the browser console in dev mode:
+With LRS env vars set, open the browser console in dev mode:
 
 ```javascript
 await window.__xapiSendTest();
 ```
 
-Sends an `experienced` statement for the `welcome` node.
+Sends an `experienced` statement for the `welcome` node. Requires sign-in unless `VITE_XAPI_PSEUDOANON=true`.
 
 ## Future hook points
 

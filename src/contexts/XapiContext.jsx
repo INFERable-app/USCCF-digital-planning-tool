@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useCallback, useEffect } from 'react';
-import { XapiClient, resolveXapiConfig, sendTestStatement } from '../xapi/index.js';
+import { XapiClient, resolveXapiConfig, resolveActor, sendTestStatement } from '../xapi/index.js';
 import { useAuth } from './AuthContext.jsx';
 
 const XapiContext = createContext(null);
@@ -24,6 +24,10 @@ export function XapiProvider({ children }) {
 
 	const isEnabled = Boolean(client);
 
+	const getActor = useCallback(() => {
+		return resolveActor({ user, pseudoAnon: config.pseudoAnon });
+	}, [user, config.pseudoAnon]);
+
 	const sendStatement = useCallback(
 		(statement) => {
 			if (!client) return;
@@ -38,11 +42,7 @@ export function XapiProvider({ children }) {
 		if (!import.meta.env.DEV || !isEnabled) return;
 
 		window.__xapiSendTest = () => {
-			if (!user) {
-				console.warn('xAPI test: sign in first');
-				return Promise.reject(new Error('Not signed in'));
-			}
-			return sendTestStatement({ client, user })
+			return sendTestStatement({ client, user, pseudoAnon: config.pseudoAnon })
 				.then((result) => {
 					console.log('xAPI test statement sent:', result);
 					return result;
@@ -56,10 +56,14 @@ export function XapiProvider({ children }) {
 		return () => {
 			delete window.__xapiSendTest;
 		};
-	}, [client, isEnabled, user]);
+	}, [client, isEnabled, user, config.pseudoAnon]);
 
 	return (
-		<XapiContext.Provider value={{ sendStatement, isEnabled }}>{children}</XapiContext.Provider>
+		<XapiContext.Provider
+			value={{ sendStatement, isEnabled, pseudoAnon: config.pseudoAnon, getActor }}
+		>
+			{children}
+		</XapiContext.Provider>
 	);
 }
 

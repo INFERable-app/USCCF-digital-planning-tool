@@ -8,6 +8,7 @@ services:
         VITE_LRS_USERNAME: ${VITE_LRS_USERNAME}
         VITE_LRS_SECRET: ${VITE_LRS_SECRET}
         VITE_XAPI_ACTIVITY_BASE: ${VITE_XAPI_ACTIVITY_BASE}
+        VITE_XAPI_PSEUDOANON: ${VITE_XAPI_PSEUDOANON}
     container_name: usccf-planning-tool
     ports:
       - "8080:80"

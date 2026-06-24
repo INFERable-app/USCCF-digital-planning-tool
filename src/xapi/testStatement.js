@@ -1,5 +1,5 @@
 import { buildExperiencedStatement } from './statements.js';
-import { buildActorFromUser } from './actors.js';
+import { resolveActor } from './actors.js';
 import { activityIds } from './activityIds.js';
 
 /**
@@ -7,16 +7,18 @@ import { activityIds } from './activityIds.js';
  * Callable from the browser console when xAPI is enabled:
  *   await window.__xapiSendTest()
  */
-export async function sendTestStatement({ client, user }) {
+export async function sendTestStatement({ client, user, pseudoAnon = false }) {
 	if (!client) {
 		throw new Error('xAPI client is not configured');
 	}
-	if (!user) {
-		throw new Error('user must be signed in to send a test statement');
+
+	const actor = resolveActor({ user, pseudoAnon });
+	if (!actor) {
+		throw new Error('no actor available — sign in or enable VITE_XAPI_PSEUDOANON');
 	}
 
 	const statement = buildExperiencedStatement({
-		actor: buildActorFromUser(user),
+		actor,
 		activityId: activityIds.node('welcome')
 	});
 
