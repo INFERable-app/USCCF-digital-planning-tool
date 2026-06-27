@@ -1,7 +1,4 @@
 import './SignInScreen.css';
-import { useState } from 'react';
-import { useGoogleLogin } from '@react-oauth/google';
-import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const IMG_LOGO = '/images/uscoc-logo.png';
 
@@ -36,30 +33,6 @@ function AppleIcon() {
 }
 
 export default function SignInScreen() {
-	const { signIn } = useAuth();
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [staySignedIn, setStaySignedIn] = useState(true);
-
-	const googleLogin = useGoogleLogin({
-		onSuccess: async (tokenResponse) => {
-			try {
-				const profile = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-					headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-				}).then(r => r.json());
-				signIn(profile, staySignedIn);
-			} catch {
-				setError('Sign-in failed. Please try again.');
-			} finally {
-				setLoading(false);
-			}
-		},
-		onError: () => {
-			setError('Sign-in failed. Please try again.');
-			setLoading(false);
-		},
-	});
-
 	return (
 		<div className="signin-screen">
 			<div className="signin-card">
@@ -73,11 +46,10 @@ export default function SignInScreen() {
 					<div className="signin-providers">
 						<button
 							className="signin-provider-btn"
-							onClick={() => { setError(null); setLoading(true); googleLogin(); }}
-							disabled={loading}
+							onClick={() => { window.location.href = '/auth/login'; }}
 						>
 							<GoogleIcon />
-							<span>{loading ? 'Signing in…' : 'Continue with Google'}</span>
+							<span>Continue with Google</span>
 						</button>
 						<button className="signin-provider-btn" disabled>
 							<MicrosoftIcon />
@@ -88,17 +60,6 @@ export default function SignInScreen() {
 							<span>Continue with Apple</span>
 						</button>
 					</div>
-
-					{error && <p className="signin-error">{error}</p>}
-
-					<label className="signin-stay">
-						<input
-							type="checkbox"
-							checked={staySignedIn}
-							onChange={e => setStaySignedIn(e.target.checked)}
-						/>
-						<span>Stay signed in</span>
-					</label>
 
 					<hr className="signin-divider" />
 

@@ -8,9 +8,11 @@ import SignInScreen from './components/auth/SignInScreen.jsx';
 import { nodes } from './graph/wizardGraph.js';
 
 function AppContent() {
-	const { user } = useAuth();
+	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
 	const { node, currentNodeId, answers, history, advance, back, jumpTo, restart } = useGraphEngine();
+
+	if (loading) return null;
 
 	return (
 		<div className="app-shell">
