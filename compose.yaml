@@ -7,3 +7,17 @@ services:
     container_name: usccf-planning-tool
     ports:
       - "8080:80"
+
+  neo4j:
+    image: neo4j:5
+    container_name: usccf-neo4j
+    environment:
+      NEO4J_AUTH: none
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  neo4j_data:

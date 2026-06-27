@@ -7,7 +7,7 @@ import type { GraphRepository } from './types.js';
 
 const repo: GraphRepository =
   config.GRAPH_BACKEND === 'neo4j'
-    ? createNeo4jRepository(config.NEO4J_URI, config.NEO4J_USER, config.NEO4J_PASSWORD)
+    ? createNeo4jRepository()
     : stubRepository;
 
 const router = Router();

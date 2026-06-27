@@ -47,6 +47,12 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
+	function restore(progress) {
+		setCurrentNodeId(progress.currentNodeId);
+		setAnswers(progress.answers);
+		setHistory(progress.history);
+	}
+
 	// No dependency array — always registers a fresh closure so back() sees
 	// the latest history state without stale capture issues.
 	useEffect(() => {
@@ -55,5 +61,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, currentNodeId, answers, history, advance, back, jumpTo, restart };
+	return { node, currentNodeId, answers, history, advance, back, jumpTo, restart, restore };
 }
