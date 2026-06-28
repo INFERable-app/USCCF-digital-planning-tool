@@ -10,7 +10,7 @@ const envSchema = z.object({
   NEO4J_URI: z.string().default('bolt://localhost:7687'),
   NEO4J_USER: z.string().default('neo4j'),
   NEO4J_PASSWORD: z.string().default(''),
-  GRAPH_BACKEND: z.enum(['stub', 'neo4j']).default('stub'),
+  GRAPH_BACKEND: z.enum(['stub', 'neo4j']).default('neo4j'),
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
   NODE_ENV: z.string().default('development'),
 });
