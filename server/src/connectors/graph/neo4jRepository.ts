@@ -1,5 +1,6 @@
 import { getDriver } from '../neo4j/driver.js';
 import type { GraphRepository, WizardGraph, GraphNode, GraphEdge } from './types.js';
+import { nodeToProps, edgeToRelProps } from './graphUtils.js';
 
 function buildNode(props: Record<string, unknown>, edgeIds: string[]): GraphNode {
   const { resolversJson, ...rest } = props;
@@ -87,6 +88,41 @@ export function createNeo4jRepository(): GraphRepository {
         const relProps = record.get('r').properties as Record<string, unknown>;
         const targetNodeId = record.get('targetNodeId') as string;
         return buildEdge(relProps, targetNodeId);
+      } finally {
+        await session.close();
+      }
+    },
+
+    async replaceGraph(graph: WizardGraph): Promise<void> {
+      const session = getDriver().session();
+      try {
+        await session.run('MATCH ()-[r:OPTION]->() DELETE r');
+        await session.run('MATCH (n:WizardNode) DELETE n');
+
+        for (const node of Object.values(graph.nodes)) {
+          await session.run('MERGE (n:WizardNode {id: $id}) SET n = $props', {
+            id: node.id,
+            props: nodeToProps(node as unknown as Record<string, unknown>),
+          });
+        }
+
+        for (const node of Object.values(graph.nodes)) {
+          const edgeIds = node.edgeIds ?? [];
+          for (let i = 0; i < edgeIds.length; i++) {
+            const edge = graph.edges[edgeIds[i]];
+            if (!edge) continue;
+            await session.run(
+              `MATCH (src:WizardNode {id: $srcId}), (tgt:WizardNode {id: $tgtId})
+               CREATE (src)-[r:OPTION]->(tgt)
+               SET r = $props`,
+              {
+                srcId: node.id,
+                tgtId: edge.targetNodeId,
+                props: edgeToRelProps(edge as unknown as Record<string, unknown>, i),
+              }
+            );
+          }
+        }
       } finally {
         await session.close();
       }

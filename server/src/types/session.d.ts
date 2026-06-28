@@ -12,5 +12,6 @@ declare module 'express-session' {
       code_verifier: string;
       state: string;
     };
+    returnTo?: string;
   }
 }

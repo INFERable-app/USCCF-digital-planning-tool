@@ -23,4 +23,9 @@ export const stubRepository: GraphRepository = {
   async getEdge(id: string) {
     return graph.edges[id] ?? null;
   },
+  async replaceGraph(newGraph: WizardGraph) {
+    graph.nodes = newGraph.nodes;
+    graph.edges = newGraph.edges;
+    graph.startNodeId = newGraph.startNodeId;
+  },
 };

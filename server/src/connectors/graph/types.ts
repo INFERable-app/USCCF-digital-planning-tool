@@ -26,4 +26,5 @@ export interface GraphRepository {
   getWizardGraph(): Promise<WizardGraph>;
   getNode(id: string): Promise<GraphNode | null>;
   getEdge(id: string): Promise<GraphEdge | null>;
+  replaceGraph(graph: WizardGraph): Promise<void>;
 }

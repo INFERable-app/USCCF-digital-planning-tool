@@ -3,9 +3,9 @@ import { useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import CheckboxEdge from '../edges/CheckboxEdge.jsx';
-import { challengeLabels, edges } from '../../graph/wizardGraph.js';
+import { challengeLabels } from '../../graph/wizardGraph.js';
 
-export default function CheckboxSurveyNode({ node, nodeEdges, answers, advance, onBack }) {
+export default function CheckboxSurveyNode({ node, edges, nodeEdges, answers, advance, onBack }) {
 	const [selected, setSelected] = useState(new Set());
 	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 	const submitEdge = edges[node.submitEdgeId];

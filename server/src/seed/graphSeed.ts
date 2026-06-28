@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { getDriver } from '../connectors/neo4j/driver.js';
+import { nodeToProps, edgeToRelProps } from '../connectors/graph/graphUtils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const raw = readFileSync(resolve(__dirname, '../../../docs/wizardGraph.json'), 'utf8');
@@ -10,29 +11,6 @@ const graphData = JSON.parse(raw) as {
   edges: Record<string, Record<string, unknown>>;
 };
 
-function nodeToProps(node: Record<string, unknown>): Record<string, unknown> {
-  const { edgeIds, resolvers, ...rest } = node;
-  void edgeIds;
-  const props: Record<string, unknown> = {};
-  for (const [key, val] of Object.entries(rest)) {
-    if (val !== undefined) props[key] = val;
-  }
-  if (resolvers !== undefined) {
-    props.resolversJson = JSON.stringify(resolvers);
-  }
-  return props;
-}
-
-function edgeToRelProps(
-  edge: Record<string, unknown>,
-  order: number
-): Record<string, unknown> {
-  const props: Record<string, unknown> = { id: edge.id, label: edge.label, order };
-  if (edge.storeKey !== undefined) props.storeKey = edge.storeKey;
-  if (edge.value !== undefined) props.value = edge.value;
-  if (edge.disabled !== undefined) props.disabled = edge.disabled;
-  return props;
-}
 
 async function seed() {
   const driver = getDriver();

@@ -1,12 +1,25 @@
 import { useState, useEffect } from 'react';
-import { startNodeId, nodes, edges } from './wizardGraph.js';
 
 export function useGraphEngine() {
-	const [currentNodeId, setCurrentNodeId] = useState(startNodeId);
+	const [graph, setGraph] = useState(null);
+	const [currentNodeId, setCurrentNodeId] = useState(null);
 	const [answers, setAnswers] = useState({});
 	const [history, setHistory] = useState([]);
 
-	const node = nodes[currentNodeId];
+	useEffect(() => {
+		fetch('/api/graph', { credentials: 'include' })
+			.then(r => { if (!r.ok) throw new Error(`Graph fetch failed: ${r.status}`); return r.json(); })
+			.then(data => {
+				setGraph(data);
+				setCurrentNodeId(data.startNodeId);
+			})
+			.catch(console.error);
+	}, []);
+
+	const nodes = graph?.nodes ?? {};
+	const edges = graph?.edges ?? {};
+	const startNodeId = graph?.startNodeId ?? null;
+	const node = currentNodeId ? nodes[currentNodeId] : null;
 
 	function advance(edgeId, dynamicValue) {
 		const edge = edges[edgeId];
@@ -61,5 +74,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, currentNodeId, answers, history, advance, back, jumpTo, restart, restore };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, restart, restore };
 }

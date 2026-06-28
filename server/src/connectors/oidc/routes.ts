@@ -54,7 +54,9 @@ router.get('/callback', async (req, res) => {
       name: typeof claims.name === 'string' ? claims.name : '',
       picture: typeof claims.picture === 'string' ? claims.picture : undefined,
     };
-    res.redirect(new URL(config.GOOGLE_REDIRECT_URI).origin);
+    const returnTo = req.session.returnTo ?? new URL(config.GOOGLE_REDIRECT_URI).origin;
+    delete req.session.returnTo;
+    res.redirect(returnTo);
   } catch (err) {
     console.error('/auth/callback error:', err);
     res.status(500).json({ error: 'Auth callback failed' });
@@ -77,7 +79,8 @@ router.get('/me', (req, res) => {
     res.status(401).json({ error: 'Not authenticated' });
     return;
   }
-  res.json(req.session.user);
+  const admins = config.ADMIN_EMAILS.split(',').map((s) => s.trim()).filter(Boolean);
+  res.json({ ...req.session.user, isAdmin: admins.includes(req.session.user.email) });
 });
 
 export default router;

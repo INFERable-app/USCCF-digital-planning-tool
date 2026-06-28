@@ -7,12 +7,10 @@ import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
 import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
-import { nodes, startNodeId } from './graph/wizardGraph.js';
-
 function AppContent() {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, currentNodeId, answers, history, advance, back, jumpTo, restart, restore } = useGraphEngine();
+	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, restart, restore } = useGraphEngine();
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
@@ -53,7 +51,7 @@ function AppContent() {
 		restart();
 	}
 
-	if (loading || (user && savedProgress === undefined)) return null;
+	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
 	return (
 		<div className="app-shell">
@@ -72,6 +70,7 @@ function AppContent() {
 					) : (
 						<NodeRenderer
 							node={node}
+							edges={edges}
 							answers={answers}
 							advance={advance}
 							onBack={back}

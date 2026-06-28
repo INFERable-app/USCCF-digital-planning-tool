@@ -1,4 +1,3 @@
-import { edges } from '../graph/wizardGraph.js';
 import WelcomeNode from './nodes/WelcomeNode.jsx';
 import MultiChoiceNode from './nodes/MultiChoiceNode.jsx';
 import RadioSurveyNode from './nodes/RadioSurveyNode.jsx';
@@ -15,13 +14,14 @@ const NODE_COMPONENTS = {
 	results: ResultsNode,
 };
 
-export default function NodeRenderer({ node, answers, advance, onBack, onRestart }) {
+export default function NodeRenderer({ node, edges, answers, advance, onBack, onRestart }) {
 	const NodeComponent = NODE_COMPONENTS[node.type];
 	const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
 
 	return (
 		<NodeComponent
 			node={node}
+			edges={edges}
 			nodeEdges={nodeEdges}
 			answers={answers}
 			advance={advance}

@@ -13,6 +13,7 @@ const envSchema = z.object({
   GRAPH_BACKEND: z.enum(['stub', 'neo4j']).default('neo4j'),
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
   NODE_ENV: z.string().default('development'),
+  ADMIN_EMAILS: z.string().default(''),
 });
 
 const parsed = envSchema.safeParse(process.env);
