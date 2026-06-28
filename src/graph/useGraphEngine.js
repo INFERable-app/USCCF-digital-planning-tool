@@ -11,7 +11,7 @@ export function useGraphEngine() {
 			.then(r => { if (!r.ok) throw new Error(`Graph fetch failed: ${r.status}`); return r.json(); })
 			.then(data => {
 				setGraph(data);
-				setCurrentNodeId(data.startNodeId);
+				setCurrentNodeId(prev => prev === null ? data.startNodeId : prev);
 			})
 			.catch(console.error);
 	}, []);

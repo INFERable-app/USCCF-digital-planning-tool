@@ -16,6 +16,7 @@ export function AuthProvider({ children }) {
 
 	const signOut = useCallback(async () => {
 		await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+		sessionStorage.removeItem('session-user');
 		setUser(null);
 	}, []);
 

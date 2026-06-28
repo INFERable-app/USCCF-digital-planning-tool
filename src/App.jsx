@@ -22,7 +22,15 @@ function AppContent() {
 			.then(r => r.ok ? r.json() : null)
 			.then(data => {
 				setSavedProgress(data);
-				if (data) setShowResume(true);
+				if (data) {
+					const isRefresh = sessionStorage.getItem('session-user') === user.sub;
+					if (isRefresh) {
+						restore(data);
+					} else {
+						setShowResume(true);
+					}
+				}
+				sessionStorage.setItem('session-user', user.sub);
 			})
 			.catch(() => setSavedProgress(null));
 	}, [user]);
