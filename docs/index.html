@@ -68,6 +68,28 @@
     </div>
   </div>
 
+  <!-- Add Connected Node Modal -->
+  <div id="connect-node-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-2xl max-w-sm w-full p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-slate-900">Add Connected Node</h2>
+        <button onclick="closeConnectNodeModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+      </div>
+      <label class="block text-sm font-semibold text-slate-700 mb-2">Edge Label (button text shown to the user)</label>
+      <input
+        id="connect-node-label"
+        type="text"
+        placeholder="e.g. Yes, we've identified an industry focus"
+        class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+        onkeydown="if(event.key==='Enter') confirmAddConnectedNode()"
+      >
+      <div class="flex gap-3 justify-end pt-4 mt-2 border-t border-slate-200">
+        <button onclick="closeConnectNodeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-medium rounded transition-all">Cancel</button>
+        <button onclick="confirmAddConnectedNode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded transition-all">Create</button>
+      </div>
+    </div>
+  </div>
+
   <main class="flex-1 flex overflow-hidden">
     
     <section class="w-96 border-r border-slate-200 bg-white flex flex-col overflow-y-auto shadow-sm">
@@ -182,6 +204,7 @@
     let selectedItemId = null;
     let selectedItemType = null; // 'node' or 'edge'
     let isDirty = false;
+    let pendingConnectSrcId = null;
 
     function markDirty() {
       if (isDirty) return;
@@ -315,6 +338,50 @@
       document.getElementById('workflow-message').classList.add('hidden');
     }
 
+    // One-time cleanup pass applied only to the outgoing Deploy payload — never mutates
+    // graphData itself, so half-filled resolver rows stay visible in the live editor.
+    function sanitizeNodesForDeploy(nodes) {
+      const clean = JSON.parse(JSON.stringify(nodes));
+      Object.values(clean).forEach(node => {
+        if (node.type !== 'results' || !Array.isArray(node.resolvers)) return;
+        node.resolvers.forEach(r => {
+          const when = {};
+          Object.entries(r.when || {}).forEach(([key, values]) => {
+            if (/^__new/.test(key)) return;
+            if (!Array.isArray(values) || !values.length) return;
+            when[key] = values;
+          });
+          r.when = when;
+
+          if (!r.recommendation || !r.recommendation.trim()) delete r.recommendation;
+          if (!r.bodyText || !r.bodyText.trim()) delete r.bodyText;
+          if (!r.footer || !r.footer.trim()) delete r.footer;
+
+          r.resources = (r.resources || []).filter(res => {
+            if (!res.label || !res.label.trim()) return false;
+            if (res.type === 'pdf' && (!res.pages || !res.pages.trim())) return false;
+            if (res.type === 'link' && (!res.url || !res.url.trim())) return false;
+            return true;
+          }).map(res => {
+            const cleanRes = { type: res.type, label: res.label.trim() };
+            if (res.type === 'pdf') {
+              cleanRes.pages = res.pages.trim();
+              if (res.url && res.url.trim()) cleanRes.url = res.url.trim();
+            } else if (res.type === 'link') {
+              cleanRes.url = res.url.trim();
+            }
+            return cleanRes;
+          });
+          if (!r.resources.length) delete r.resources;
+
+          if (r.promptBlock && !(r.promptBlock.label || '').trim() && !(r.promptBlock.text || '').trim()) {
+            delete r.promptBlock;
+          }
+        });
+      });
+      return clean;
+    }
+
     async function saveGraphToAPI() {
       const description = document.getElementById('workflow-description').value.trim();
       const submitBtn = document.getElementById('workflow-submit');
@@ -331,7 +398,7 @@
         const response = await fetch('/api/graph', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ startNodeId: 'welcome', nodes: graphData.nodes, edges: graphData.edges }),
+          body: JSON.stringify({ startNodeId: 'welcome', nodes: sanitizeNodesForDeploy(graphData.nodes), edges: graphData.edges }),
         });
 
         if (response.ok) {
@@ -474,11 +541,14 @@
     }
 
     // Mutation Data Actions
+    function generateNodeId() {
+      let n = 1;
+      while (graphData.nodes[`node-${n}`]) n++;
+      return `node-${n}`;
+    }
+
     function createNewNode() {
-      const id = prompt("Provide alpha-numeric identifier for new target node:");
-      if(!id) return;
-      if(graphData.nodes[id]) return alert("An structural element with that key definition already stands.");
-      
+      const id = generateNodeId();
       graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
       markDirty();
       renderSidebarLists();
@@ -497,23 +567,95 @@
     }
 
     function addConnectedNode(srcId) {
-      const id = prompt("Provide alpha-numeric identifier for new target node:");
-      if(!id) return;
-      if(graphData.nodes[id]) return alert("A node with that ID already exists.");
+      pendingConnectSrcId = srcId;
+      document.getElementById('connect-node-label').value = '';
+      document.getElementById('connect-node-modal').classList.remove('hidden');
+      document.getElementById('connect-node-label').focus();
+    }
 
+    function closeConnectNodeModal() {
+      document.getElementById('connect-node-modal').classList.add('hidden');
+      pendingConnectSrcId = null;
+    }
+
+    function confirmAddConnectedNode() {
+      const srcId = pendingConnectSrcId;
+      if (!srcId) return;
+      const label = document.getElementById('connect-node-label').value.trim() || 'Continue';
+
+      const id = generateNodeId();
       graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
-      markDirty();
 
       let edgeId = `e_${srcId}_${id}`;
       let n = 1;
       while (graphData.edges[edgeId]) edgeId = `e_${srcId}_${id}_${n++}`;
-      graphData.edges[edgeId] = { id: edgeId, label: 'Continue', targetNodeId: id };
+      graphData.edges[edgeId] = { id: edgeId, label, targetNodeId: id };
       graphData.nodes[srcId].edgeIds = [...(graphData.nodes[srcId].edgeIds || []), edgeId];
+      markDirty();
 
+      closeConnectNodeModal();
       renderSidebarLists();
       renderMermaidDiagram();
       switchTab('nodes');
       openInspector('node', id);
+    }
+
+    function addResolver() {
+      const node = graphData.nodes[selectedItemId];
+      node.resolvers = node.resolvers || [];
+      node.resolvers.push({ when: {} });
+      markDirty();
+      openInspector('node', selectedItemId);
+    }
+
+    function removeResolver(ri) {
+      if (!confirm('Remove this resolver?')) return;
+      graphData.nodes[selectedItemId].resolvers.splice(ri, 1);
+      markDirty();
+      openInspector('node', selectedItemId);
+    }
+
+    function addWhenCondition(ri) {
+      const r = graphData.nodes[selectedItemId].resolvers[ri];
+      r.when = r.when || {};
+      let key = '__new';
+      let n = 1;
+      while (key in r.when) key = `__new_${n++}`;
+      r.when[key] = [];
+      markDirty();
+      openInspector('node', selectedItemId);
+    }
+
+    function removeWhenCondition(ri, key) {
+      delete graphData.nodes[selectedItemId].resolvers[ri].when[key];
+      markDirty();
+      openInspector('node', selectedItemId);
+    }
+
+    function addResource(ri) {
+      const r = graphData.nodes[selectedItemId].resolvers[ri];
+      r.resources = r.resources || [];
+      r.resources.push({ type: 'link', label: '', url: '' });
+      markDirty();
+      openInspector('node', selectedItemId);
+    }
+
+    function removeResource(ri, resi) {
+      const r = graphData.nodes[selectedItemId].resolvers[ri];
+      // The AI-prompt row (if present) is displayed first, ahead of r.resources — see
+      // the combinedResources list in resolverBox — so index 0 means "remove the prompt".
+      if (r.promptBlock) {
+        if (resi === 0) {
+          delete r.promptBlock;
+          markDirty();
+          openInspector('node', selectedItemId);
+          return;
+        }
+        resi -= 1;
+      }
+      r.resources.splice(resi, 1);
+      markDirty();
+      openInspector('node', selectedItemId);
     }
 
     function deleteComponent(type, id) {
@@ -556,6 +698,94 @@
       const chk = (id, checked, label) =>
         `<div class="flex items-center gap-2"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} class="w-4 h-4"><label for="${id}" class="text-xs font-bold text-slate-500 uppercase">${label}</label></div>`;
 
+      const resolverBox = (r, ri) => {
+        const whenRows = Object.entries(r.when || {}).map(([key, values]) => `
+          <div class="flex gap-2 items-center">
+            <input type="text" value="${/^__new/.test(key) ? '' : escapeAttr(key)}" placeholder="Answer key (e.g. challenge)" class="when-key flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">
+            <input type="text" value="${escapeAttr((values||[]).join(', '))}" placeholder="Accepted values (comma-separated)" class="when-values flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
+            <button onclick="removeWhenCondition(${ri}, '${key}')" class="text-slate-300 hover:text-rose-600 text-lg leading-none px-1">−</button>
+          </div>`).join('');
+
+        // An AI prompt is edited as just another resource row (per the admin's feedback
+        // that treating it as a separate section was an artificial distinction) — it's
+        // shown first if present. It's still saved as the distinct `promptBlock` field
+        // (not appended into `resources`), since that's what the runtime actually renders
+        // (ResultsNode.jsx gives it a fixed position + its own caution banner).
+        const combinedResources = [
+          ...(r.promptBlock ? [{ type: 'prompt', label: r.promptBlock.label || 'AI Prompt Template', text: r.promptBlock.text || '' }] : []),
+          ...(r.resources || []),
+        ];
+
+        const resourceRows = combinedResources.map((res, resi) => {
+          const type = res.type || 'link';
+          let extraFields = '';
+          if (type === 'pdf') {
+            extraFields = `
+              <div class="flex gap-2">
+                <input type="text" value="${escapeAttr(res.pages || '')}" placeholder="Pages (e.g. 57–58)" class="resource-pages w-24 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
+                <input type="text" value="${escapeAttr(res.url || '')}" placeholder="URL (optional)" class="resource-url flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">
+              </div>`;
+          } else if (type === 'link') {
+            extraFields = `<input type="text" value="${escapeAttr(res.url || '')}" placeholder="URL" class="resource-url w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">`;
+          } else if (type === 'prompt') {
+            extraFields = `<textarea rows="3" placeholder="Prompt text" class="resource-prompt-text w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">${escapeHtml(res.text || '')}</textarea>`;
+          }
+          return `
+            <div class="flex gap-2 items-start">
+              <select class="resource-type reopen-on-change w-28 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
+                ${['pdf','link','reference','prompt'].map(v => `<option value="${v}" ${type===v?'selected':''}>${v === 'prompt' ? 'AI Prompt' : v}</option>`).join('')}
+              </select>
+              <div class="flex-1 space-y-1">
+                <input type="text" value="${escapeAttr(res.label || '')}" placeholder="Label" class="resource-label w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
+                ${extraFields}
+              </div>
+              <button onclick="removeResource(${ri}, ${resi})" class="text-slate-300 hover:text-rose-600 text-lg leading-none px-1">−</button>
+            </div>`;
+        }).join('');
+
+        return `
+          <div class="resolver-item border border-slate-300 rounded-lg p-3 mb-3 space-y-2 bg-slate-50/50" data-ri="${ri}">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-500 uppercase">Resolver ${ri + 1}</span>
+              <button onclick="removeResolver(${ri})" class="text-xs text-rose-500 hover:text-rose-700 font-medium">Remove Resolver</button>
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase">When (match conditions)</label>
+              <div class="when-rows space-y-1">${whenRows}</div>
+              <button onclick="addWhenCondition(${ri})" class="text-xs text-blue-600 hover:text-blue-800 font-medium">+ Add Condition</button>
+              <p class="text-[11px] text-slate-400">Leave empty to always match (use as a fallback/default resolver).</p>
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase">Recommendation</label>
+              <input type="text" value="${escapeAttr(r.recommendation || '')}" placeholder="Red lead sentence" class="resolver-recommendation w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs">
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase">Body Text</label>
+              <textarea rows="3" placeholder="Additional body text" class="resolver-bodytext w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs">${escapeHtml(r.bodyText || '')}</textarea>
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase">Resources</label>
+              <div class="resource-rows space-y-1">${resourceRows}</div>
+              <button onclick="addResource(${ri})" class="text-xs text-blue-600 hover:text-blue-800 font-medium">+ Add Resource</button>
+            </div>
+
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase">Footer</label>
+              <input type="text" value="${escapeAttr(r.footer || '')}" placeholder="Small closing line" class="resolver-footer w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs">
+            </div>
+          </div>`;
+      };
+
+      const renderResolversEditor = (resolvers) => `
+        <div id="resolvers-editor">
+          ${(resolvers.map((r, ri) => resolverBox(r, ri)).join('')) || '<p class="text-xs text-slate-400 italic mb-2">No resolvers yet — add one below.</p>'}
+          <button onclick="addResolver()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded font-medium shadow-sm">+ Add Resolver</button>
+        </div>`;
+
       let html = '';
 
       if (type === 'node') {
@@ -591,10 +821,7 @@
           html += f('Video URL', inp('edit-node-videourl', node.videoUrl || '', 'font-mono'), true);
           html += f('Video Alt Text', inp('edit-node-videoalt', node.videoAlt || ''), true);
         } else if (t === 'results') {
-          html += f('Resolvers (JSON)',
-            `<textarea id="edit-node-resolvers" rows="8" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-mono text-xs">${escapeHtml(JSON.stringify(node.resolvers||[], null, 2))}</textarea>`,
-            true
-          );
+          html += f('Resolvers', renderResolversEditor(node.resolvers || []), true);
         }
 
         html += f('Edge IDs (comma-separated)', inp('edit-node-edges', (node.edgeIds||[]).join(', '), 'font-mono'), true);
@@ -619,12 +846,66 @@
 
       form.innerHTML = html;
 
-      // Auto-commit on every field change; type switch re-renders the form
+      // Auto-commit on every field change; type switch (or a resolver field that changes
+      // which other fields should be visible) re-renders the form
       form.querySelectorAll('input, select, textarea').forEach(field => {
         field.addEventListener('change', () => {
-          commitInspectorChanges(field.id === 'edit-node-type');
+          commitInspectorChanges(field.id === 'edit-node-type' || field.classList.contains('reopen-on-change'));
         });
       });
+    }
+
+    // Rebuilds one resolver object from its rendered DOM box. Faithfully mirrors
+    // whatever's currently on screen — including half-filled rows — so nothing typed
+    // is ever lost; incomplete entries are only stripped later, at Deploy time.
+    function buildResolverFromEl(el) {
+      const when = {};
+      let blankN = 0;
+      el.querySelectorAll('.when-rows > div').forEach(row => {
+        let key = row.querySelector('.when-key').value.trim();
+        if (!key) key = blankN++ === 0 ? '__new' : `__new_${blankN - 1}`;
+        const values = row.querySelector('.when-values').value.split(',').map(s => s.trim()).filter(Boolean);
+        when[key] = values;
+      });
+
+      const resolver = { when };
+
+      const recommendation = el.querySelector('.resolver-recommendation').value;
+      if (recommendation.trim()) resolver.recommendation = recommendation;
+
+      const bodyText = el.querySelector('.resolver-bodytext').value;
+      if (bodyText.trim()) resolver.bodyText = bodyText;
+
+      const footer = el.querySelector('.resolver-footer').value;
+      if (footer.trim()) resolver.footer = footer;
+
+      // The AI-prompt row is edited inline among the resources (see resolverBox), but
+      // still saved as the distinct `promptBlock` field the runtime expects — pull it
+      // back out here. If more than one prompt row exists (e.g. mid-edit), the last one
+      // wins, since only a single prompt block is ever rendered.
+      const rawRows = Array.from(el.querySelectorAll('.resource-rows > div')).map(row => {
+        const type = row.querySelector('.resource-type').value;
+        const label = row.querySelector('.resource-label').value;
+        if (type === 'pdf') {
+          return { type, label, pages: row.querySelector('.resource-pages').value, url: row.querySelector('.resource-url').value };
+        } else if (type === 'link') {
+          return { type, label, url: row.querySelector('.resource-url').value };
+        } else if (type === 'prompt') {
+          return { type, label, text: row.querySelector('.resource-prompt-text').value };
+        }
+        return { type, label };
+      });
+
+      const promptRows = rawRows.filter(row => row.type === 'prompt');
+      if (promptRows.length) {
+        const last = promptRows[promptRows.length - 1];
+        resolver.promptBlock = { label: last.label, text: last.text };
+      }
+
+      const resources = rawRows.filter(row => row.type !== 'prompt');
+      if (resources.length) resolver.resources = resources;
+
+      return resolver;
     }
 
     function commitInspectorChanges(reopenInspector = false) {
@@ -661,11 +942,9 @@
           node.videoUrl = document.getElementById('edit-node-videourl').value;
           node.videoAlt = document.getElementById('edit-node-videoalt').value || undefined;
         } else if (node.type === 'results') {
-          try {
-            node.resolvers = JSON.parse(document.getElementById('edit-node-resolvers').value);
-          } catch {
-            alert('Invalid JSON in Resolvers field — changes not saved.');
-            return;
+          const resolversRoot = document.getElementById('resolvers-editor');
+          if (resolversRoot) {
+            node.resolvers = Array.from(resolversRoot.querySelectorAll('.resolver-item')).map(buildResolverFromEl);
           }
         }
       } else {
