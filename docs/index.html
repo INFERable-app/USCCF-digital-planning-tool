@@ -22,6 +22,7 @@
     </div>
     
     <div class="flex items-center space-x-3 text-sm gap-2">
+      <span id="dirty-indicator" class="hidden text-amber-300 text-xs font-medium bg-amber-900/40 px-2.5 py-1 rounded-full border border-amber-700/50">● Unsaved changes</span>
       <button onclick="openWorkflowModal()" id="btn-trigger" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-1.5 rounded shadow transition-all">
         <span>🚀 Deploy</span>
       </button>
@@ -180,6 +181,18 @@
     let activeTab = 'nodes';
     let selectedItemId = null;
     let selectedItemType = null; // 'node' or 'edge'
+    let isDirty = false;
+
+    function markDirty() {
+      if (isDirty) return;
+      isDirty = true;
+      document.getElementById('dirty-indicator').classList.remove('hidden');
+    }
+
+    function markClean() {
+      isDirty = false;
+      document.getElementById('dirty-indicator').classList.add('hidden');
+    }
 
     // Zoom & Pan
     let zoomLevel = 1, panX = 0, panY = 0;
@@ -322,6 +335,7 @@
         });
 
         if (response.ok) {
+          markClean();
           showWorkflowMessage('Graph saved to database successfully.', 'success');
           setTimeout(() => closeWorkflowModal(), 1500);
         } else if (response.status === 403) {
@@ -466,6 +480,7 @@
       if(graphData.nodes[id]) return alert("An structural element with that key definition already stands.");
       
       graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
+      markDirty();
       renderSidebarLists();
       openInspector('node', id);
     }
@@ -476,6 +491,7 @@
       if(graphData.edges[id]) return alert("An assignment condition with that key definition already stands.");
       
       graphData.edges[id] = { id, label: "Action Interaction Label", targetNodeId: Object.keys(graphData.nodes)[0] || "" };
+      markDirty();
       renderSidebarLists();
       openInspector('edge', id);
     }
@@ -486,6 +502,7 @@
       if(graphData.nodes[id]) return alert("A node with that ID already exists.");
 
       graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
+      markDirty();
 
       let edgeId = `e_${srcId}_${id}`;
       let n = 1;
@@ -501,6 +518,7 @@
 
     function deleteComponent(type, id) {
       if(!confirm(`Are you certain you want to purge ${type} "${id}" structurally?`)) return;
+      markDirty();
       if(type === 'node') {
         delete graphData.nodes[id];
       } else {
@@ -593,15 +611,23 @@
         html += `<div class="md:col-span-2">${chk('edit-edge-disabled', !!edge.disabled, 'Disabled')}</div>`;
       }
 
-      html += `<div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end gap-2">
-        ${type === 'node' ? `<button onclick="addConnectedNode('${id}')" class="bg-slate-600 hover:bg-slate-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">+ Add Connected Node</button>` : ''}
-        <button onclick="commitInspectorChanges()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">Apply Changes</button>
-      </div>`;
+      if (type === 'node') {
+        html += `<div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end gap-2">
+          <button onclick="addConnectedNode('${id}')" class="bg-slate-600 hover:bg-slate-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">+ Add Connected Node</button>
+        </div>`;
+      }
 
       form.innerHTML = html;
+
+      // Auto-commit on every field change; type switch re-renders the form
+      form.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('change', () => {
+          commitInspectorChanges(field.id === 'edit-node-type');
+        });
+      });
     }
 
-    function commitInspectorChanges() {
+    function commitInspectorChanges(reopenInspector = false) {
       if (!selectedItemId) return;
 
       if (selectedItemType === 'node') {
@@ -662,9 +688,10 @@
         edge.disabled = document.getElementById('edit-edge-disabled').checked || undefined;
       }
 
+      markDirty();
       renderSidebarLists();
       renderMermaidDiagram();
-      alert("Changes applied locally. Click 'Deploy' to save to the database.");
+      if (reopenInspector) openInspector(selectedItemType, selectedItemId);
     }
 
     function screenToSvg(svgEl, clientX, clientY) {
@@ -888,6 +915,7 @@
                 const newTgtId = tgtEl?.dataset.nodeId || tgtEl?.dataset.portSource;
                 if (newTgtId && newTgtId !== srcId) {
                   graphData.edges[edgeId].targetNodeId = newTgtId;
+                  markDirty();
                   renderSidebarLists();
                   renderMermaidDiagram();
                 }
@@ -914,6 +942,7 @@
       while (graphData.edges[edgeId]) edgeId = `e_${srcId}_${tgtId}_${n++}`;
       graphData.edges[edgeId] = { id: edgeId, label: '', targetNodeId: tgtId };
       graphData.nodes[srcId].edgeIds = [...(graphData.nodes[srcId].edgeIds || []), edgeId];
+      markDirty();
       renderSidebarLists();
       renderMermaidDiagram().then(() => {
         switchTab('edges');
