@@ -338,6 +338,28 @@
       document.getElementById('workflow-message').classList.add('hidden');
     }
 
+    // Single source of truth for "is this resource resolvable," shared by the live
+    // in-editor warning (resolverBox) and the Deploy-time filter (sanitizeNodesForDeploy)
+    // so the two can never quietly disagree about what counts as complete.
+    function isCompleteResource(res) {
+      const type = res.type || 'link';
+      if (type === 'prompt') return !!(res.label || '').trim() || !!(res.text || '').trim();
+      if (!res.label || !res.label.trim()) return false;
+      if (type === 'pdf') return !!(res.pages || '').trim();
+      if (type === 'link') return !!(res.url || '').trim();
+      return true; // reference only ever needs a label, already checked above
+    }
+
+    // Names exactly what's missing so the warning in resolverBox is specific, not vague.
+    function missingResourceFieldLabel(res) {
+      const type = res.type || 'link';
+      if (type === 'prompt') return 'a label or prompt text';
+      if (!res.label || !res.label.trim()) return 'a label';
+      if (type === 'pdf') return 'page numbers';
+      if (type === 'link') return 'a URL';
+      return '';
+    }
+
     // One-time cleanup pass applied only to the outgoing Deploy payload — never mutates
     // graphData itself, so half-filled resolver rows stay visible in the live editor.
     function sanitizeNodesForDeploy(nodes) {
@@ -357,12 +379,7 @@
           if (!r.bodyText || !r.bodyText.trim()) delete r.bodyText;
           if (!r.footer || !r.footer.trim()) delete r.footer;
 
-          r.resources = (r.resources || []).filter(res => {
-            if (!res.label || !res.label.trim()) return false;
-            if (res.type === 'pdf' && (!res.pages || !res.pages.trim())) return false;
-            if (res.type === 'link' && (!res.url || !res.url.trim())) return false;
-            return true;
-          }).map(res => {
+          r.resources = (r.resources || []).filter(isCompleteResource).map(res => {
             const cleanRes = { type: res.type, label: res.label.trim() };
             if (res.type === 'pdf') {
               cleanRes.pages = res.pages.trim();
@@ -730,14 +747,16 @@
           } else if (type === 'prompt') {
             extraFields = `<textarea rows="3" placeholder="Prompt text" class="resource-prompt-text w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">${escapeHtml(res.text || '')}</textarea>`;
           }
+          const complete = isCompleteResource(res);
           return `
-            <div class="flex gap-2 items-start">
+            <div class="flex gap-2 items-start${complete ? '' : ' border-l-2 border-amber-400 pl-2 -ml-2'}">
               <select class="resource-type reopen-on-change w-28 bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
                 ${['pdf','link','reference','prompt'].map(v => `<option value="${v}" ${type===v?'selected':''}>${v === 'prompt' ? 'AI Prompt' : v}</option>`).join('')}
               </select>
               <div class="flex-1 space-y-1">
                 <input type="text" value="${escapeAttr(res.label || '')}" placeholder="Label" class="resource-label w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
                 ${extraFields}
+                ${complete ? '' : `<p class="text-[11px] text-amber-600">Missing ${missingResourceFieldLabel(res)} — this resource won't be saved until it's filled in.</p>`}
               </div>
               <button onclick="removeResource(${ri}, ${resi})" class="text-slate-300 hover:text-rose-600 text-lg leading-none px-1">−</button>
             </div>`;
