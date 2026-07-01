@@ -886,12 +886,17 @@
       const rawRows = Array.from(el.querySelectorAll('.resource-rows > div')).map(row => {
         const type = row.querySelector('.resource-type').value;
         const label = row.querySelector('.resource-label').value;
+        // The type select's own value updates immediately on change, but the rest of
+        // this row still shows the OLD type's fields until the reopen-triggered
+        // re-render happens — so the new type's fields may not exist in the DOM yet.
+        // Read defensively instead of assuming they're there (a null .value access
+        // would throw and silently abort the whole resolvers rebuild).
         if (type === 'pdf') {
-          return { type, label, pages: row.querySelector('.resource-pages').value, url: row.querySelector('.resource-url').value };
+          return { type, label, pages: row.querySelector('.resource-pages')?.value ?? '', url: row.querySelector('.resource-url')?.value ?? '' };
         } else if (type === 'link') {
-          return { type, label, url: row.querySelector('.resource-url').value };
+          return { type, label, url: row.querySelector('.resource-url')?.value ?? '' };
         } else if (type === 'prompt') {
-          return { type, label, text: row.querySelector('.resource-prompt-text').value };
+          return { type, label, text: row.querySelector('.resource-prompt-text')?.value ?? '' };
         }
         return { type, label };
       });
@@ -927,20 +932,23 @@
         node.challengeBar = document.getElementById('edit-node-challengebar').checked;
         node.edgeIds = document.getElementById('edit-node-edges').value.split(',').map(s => s.trim()).filter(Boolean);
 
+        // Switching Type reads the NEW type here but the DOM still shows the OLD
+        // type's fields until the reopen re-render below runs — read defensively so a
+        // missing element doesn't throw and silently abort this whole commit.
         if (node.type === 'welcome') {
-          node.heading = document.getElementById('edit-node-heading').value;
-          node.body = document.getElementById('edit-node-body').value;
+          node.heading = document.getElementById('edit-node-heading')?.value ?? '';
+          node.body = document.getElementById('edit-node-body')?.value ?? '';
         } else if (['multiChoice','radioSurvey','checkboxSurvey'].includes(node.type)) {
-          node.question = document.getElementById('edit-node-question').value;
+          node.question = document.getElementById('edit-node-question')?.value ?? '';
           if (node.type !== 'multiChoice') {
-            node.submitLabel = document.getElementById('edit-node-submitlabel').value || undefined;
+            node.submitLabel = document.getElementById('edit-node-submitlabel')?.value || undefined;
           }
           if (node.type === 'checkboxSurvey') {
-            node.submitEdgeId = document.getElementById('edit-node-submitedgeid').value || undefined;
+            node.submitEdgeId = document.getElementById('edit-node-submitedgeid')?.value || undefined;
           }
         } else if (node.type === 'videoInfo') {
-          node.videoUrl = document.getElementById('edit-node-videourl').value;
-          node.videoAlt = document.getElementById('edit-node-videoalt').value || undefined;
+          node.videoUrl = document.getElementById('edit-node-videourl')?.value ?? '';
+          node.videoAlt = document.getElementById('edit-node-videoalt')?.value || undefined;
         } else if (node.type === 'results') {
           const resolversRoot = document.getElementById('resolvers-editor');
           if (resolversRoot) {
