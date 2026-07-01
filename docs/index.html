@@ -283,7 +283,7 @@
         const data = await res.json();
         graphData = { nodes: data.nodes || {}, edges: data.edges || {} };
         renderSidebarLists();
-        renderMermaidDiagram();
+        renderMermaidDiagram(true);
       } catch (err) {
         alert("Failed to load graph data: " + err.message);
         console.error(err);
@@ -377,8 +377,8 @@
     }
 
     // Dynamic Diagram Generator
-    async function renderMermaidDiagram() {
-      resetZoom();
+    // fitView: true only on initial load, so edits don't clobber the user's pan/zoom
+    async function renderMermaidDiagram(fitView = false) {
       const container = document.getElementById('mermaid-container');
       container.innerHTML = '<div id="graph-div" class="opacity-0"></div>';
       
@@ -435,18 +435,24 @@
           addInteractiveOverlay(svgEl);
         }
 
-        // Auto-fit: scale so the diagram fills ~85% of the container
-        requestAnimationFrame(() => {
-          const containerEl = document.getElementById('mermaid-container');
-          const cw = containerEl.clientWidth;
-          const ch = containerEl.clientHeight;
-          const tw = target.scrollWidth;
-          const th = target.scrollHeight;
-          if (tw > 0 && th > 0) {
-            zoomLevel = Math.min((cw * 0.85) / tw, (ch * 0.85) / th);
+        if (fitView) {
+          // Auto-fit: scale so the diagram fills ~85% of the container (initial load only)
+          requestAnimationFrame(() => {
+            const containerEl = document.getElementById('mermaid-container');
+            const cw = containerEl.clientWidth;
+            const ch = containerEl.clientHeight;
+            const tw = target.scrollWidth;
+            const th = target.scrollHeight;
+            panX = 0; panY = 0;
+            if (tw > 0 && th > 0) {
+              zoomLevel = Math.min((cw * 0.85) / tw, (ch * 0.85) / th);
+            }
             applyTransform();
-          }
-        });
+          });
+        } else {
+          // Preserve the user's current pan/zoom across data edits
+          applyTransform();
+        }
       } catch (err) {
         document.getElementById('graph-div').innerHTML = `<div class="p-4 bg-rose-50 text-rose-800 rounded border border-rose-200 text-xs font-mono"><strong>Mermaid Render Sync Error:</strong><br/>${err.message}</div>`;
         document.getElementById('graph-div').classList.remove('opacity-0');
@@ -472,6 +478,25 @@
       graphData.edges[id] = { id, label: "Action Interaction Label", targetNodeId: Object.keys(graphData.nodes)[0] || "" };
       renderSidebarLists();
       openInspector('edge', id);
+    }
+
+    function addConnectedNode(srcId) {
+      const id = prompt("Provide alpha-numeric identifier for new target node:");
+      if(!id) return;
+      if(graphData.nodes[id]) return alert("A node with that ID already exists.");
+
+      graphData.nodes[id] = { id, type: 'multiChoice', layout: 'compact', challengeBar: true, edgeIds: [], question: "Placeholder question content text?" };
+
+      let edgeId = `e_${srcId}_${id}`;
+      let n = 1;
+      while (graphData.edges[edgeId]) edgeId = `e_${srcId}_${id}_${n++}`;
+      graphData.edges[edgeId] = { id: edgeId, label: 'Continue', targetNodeId: id };
+      graphData.nodes[srcId].edgeIds = [...(graphData.nodes[srcId].edgeIds || []), edgeId];
+
+      renderSidebarLists();
+      renderMermaidDiagram();
+      switchTab('nodes');
+      openInspector('node', id);
     }
 
     function deleteComponent(type, id) {
@@ -568,7 +593,8 @@
         html += `<div class="md:col-span-2">${chk('edit-edge-disabled', !!edge.disabled, 'Disabled')}</div>`;
       }
 
-      html += `<div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end">
+      html += `<div class="md:col-span-2 pt-2 border-t border-slate-100 flex justify-end gap-2">
+        ${type === 'node' ? `<button onclick="addConnectedNode('${id}')" class="bg-slate-600 hover:bg-slate-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">+ Add Connected Node</button>` : ''}
         <button onclick="commitInspectorChanges()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition-all">Apply Changes</button>
       </div>`;
 
