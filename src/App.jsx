@@ -54,13 +54,6 @@ function AppContent() {
 		setShowResume(false);
 	}
 
-	async function handleStartOver() {
-		await fetch('/api/progress', { method: 'DELETE', credentials: 'include' });
-		setSavedProgress(null);
-		setShowResume(false);
-		restart();
-	}
-
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
 	return (
@@ -81,9 +74,7 @@ function AppContent() {
 						) : showResume ? (
 							<ResumeScreen
 								user={user}
-								nodeLabel={nodes[savedProgress.currentNodeId]?.label ?? savedProgress.currentNodeId}
 								onResume={handleResume}
-								onStartOver={handleStartOver}
 							/>
 						) : (
 							<NodeRenderer
