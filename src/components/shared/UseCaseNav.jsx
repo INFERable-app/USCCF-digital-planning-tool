@@ -68,7 +68,7 @@ export default function UseCaseNav() {
 		<div className="usecase-nav-track">
 			<aside className="usecase-nav" aria-label="Use case navigation">
 				<div className="usecase-nav__heading-row">
-					<h2 className="usecase-nav__title">Use Cases</h2>
+					<h2 className="usecase-nav__title">Your Goals</h2>
 					<button className="sidebar-close-btn" onClick={toggle} aria-label="Close navigation panel">
 						<ChevronLeft size={20} />
 					</button>
