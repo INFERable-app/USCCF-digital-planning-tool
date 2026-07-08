@@ -1,0 +1,147 @@
+.usecase-nav {
+	display: none;
+	flex-direction: column;
+	background: white;
+	padding: 20px 16px;
+	overflow: hidden;
+}
+
+.usecase-nav__heading-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 14px;
+	flex-shrink: 0;
+}
+
+.usecase-nav__title {
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
+	font-weight: 700;
+	color: #8d2f38;
+	letter-spacing: 0.02em;
+}
+
+.usecase-nav__rail {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+/* Pinned footer, not part of the generated tree — stays put below the
+   scrollable tree so it's reachable no matter how long the tree grows. */
+.usecase-nav__library-link {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 12px;
+	margin-top: 14px;
+	border: 1.5px solid #8d2f38;
+	border-radius: 8px;
+	background: transparent;
+	color: #8d2f38;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.15s ease;
+	flex-shrink: 0;
+}
+
+.usecase-nav__library-link:hover {
+	background: #f5e8e9;
+}
+
+.usecase-nav__group {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+}
+
+.usecase-nav__group--root {
+	gap: 2px;
+}
+
+.usecase-nav__item {
+	position: relative;
+}
+
+/* Nested groups pick up the breadcrumb's dot-and-rail language: a thin
+   connecting line down the left edge ties each level to its parent, so the
+   tree reads as the same "path" idiom as the bottom-of-screen breadcrumb. */
+.usecase-nav__item .usecase-nav__group {
+	margin: 2px 0 4px 21px;
+	padding-left: 12px;
+	border-left: 1px solid #e3cdd0;
+	gap: 2px;
+}
+
+.usecase-nav__row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 7px 8px;
+	background: transparent;
+	border: none;
+	border-radius: 6px;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	color: #333;
+	text-align: left;
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.usecase-nav__row:hover:not(:disabled) {
+	background: #f5e8e9;
+}
+
+.usecase-nav__row:disabled {
+	color: #b8b8b8;
+	cursor: not-allowed;
+}
+
+.usecase-nav__row--branch {
+	font-weight: 600;
+	color: #222;
+}
+
+.usecase-nav__row--active {
+	color: #8d2f38;
+	font-weight: 700;
+	background: #f6e9ea;
+}
+
+.usecase-nav__caret,
+.usecase-nav__caret-spacer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 14px;
+	flex-shrink: 0;
+	color: #8d2f38;
+}
+
+.usecase-nav__caret svg {
+	transition: transform 0.15s ease;
+}
+
+.usecase-nav__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #c4a3a6;
+	flex-shrink: 0;
+	transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.usecase-nav__row--active .usecase-nav__dot {
+	background: #8d2f38;
+	transform: scale(1.3);
+}
+
+.usecase-nav__row:disabled .usecase-nav__dot {
+	background: #ddd;
+}

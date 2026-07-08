@@ -411,8 +411,8 @@ body {
 		grid-template-columns: 0% 100%;
 	}
 
-	.drawer-closed .top-hero .resource-sidebar,
-	.drawer-closed .compact-header .resource-sidebar {
+	.drawer-closed .top-hero .usecase-nav,
+	.drawer-closed .compact-header .usecase-nav {
 		transform: translateX(-100%);
 	}
 

@@ -53,6 +53,63 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
+	// Finds the shortest chain of edges from startNodeId to targetNodeId by
+	// BFS over live edges, skipping disabled ones (mirrors what a user could
+	// actually click). If the graph ever has more than one valid path to a
+	// node, this picks the shortest rather than a specific "correct" one.
+	function findPathFromStart(targetNodeId) {
+		if (targetNodeId === startNodeId) return [];
+		const cameFrom = new Map(); // nodeId -> { sourceNodeId, edge }
+		const queue = [startNodeId];
+		const visited = new Set([startNodeId]);
+		while (queue.length > 0) {
+			const sourceNodeId = queue.shift();
+			for (const edgeId of nodes[sourceNodeId]?.edgeIds ?? []) {
+				const edge = edges[edgeId];
+				if (!edge || edge.disabled || visited.has(edge.targetNodeId)) continue;
+				visited.add(edge.targetNodeId);
+				cameFrom.set(edge.targetNodeId, { sourceNodeId, edge });
+				if (edge.targetNodeId === targetNodeId) {
+					const path = [];
+					let nodeId = targetNodeId;
+					while (nodeId !== startNodeId) {
+						const step = cameFrom.get(nodeId);
+						path.unshift(step.edge);
+						nodeId = step.sourceNodeId;
+					}
+					return path;
+				}
+				queue.push(edge.targetNodeId);
+			}
+		}
+		return null;
+	}
+
+	// Walks the accumulated answers/history that would result from actually
+	// having taken this path, then jumps straight to targetNodeId — lets the
+	// use-case nav tree jump forward to nodes not yet in history.
+	function jumpToUnvisited(targetNodeId) {
+		const path = findPathFromStart(targetNodeId);
+		if (!path) return false;
+
+		setAnswers((prev) => {
+			const next = { ...prev };
+			for (const edge of path) {
+				if (!edge.storeKey) continue;
+				if (edge.value === undefined) continue; // no dynamicValue available on a jump
+				next[edge.storeKey] = edge.value;
+			}
+			return next;
+		});
+
+		const historyNodeIds = [startNodeId, ...path.slice(0, -1).map((e) => e.targetNodeId)];
+		setHistory(historyNodeIds);
+		setCurrentNodeId(targetNodeId);
+		window.history.pushState({}, '');
+		window.scrollTo(0, 0);
+		return true;
+	}
+
 	function restart() {
 		setCurrentNodeId(startNodeId);
 		setAnswers({});
@@ -74,5 +131,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, restart, restore };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpToUnvisited, restart, restore };
 }

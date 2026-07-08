@@ -3,14 +3,16 @@ import { useState, useEffect } from 'react';
 import { useGraphEngine } from './graph/useGraphEngine.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
 import Breadcrumb from './components/shared/Breadcrumb.jsx';
+import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
+import { WizardNavProvider } from './contexts/WizardNavContext.jsx';
 import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
 function AppContent() {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, restart, restore } = useGraphEngine();
+	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpToUnvisited, restart, restore } = useGraphEngine();
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
@@ -62,36 +64,46 @@ function AppContent() {
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
 	return (
-		<div className="app-shell">
-			<div className="phone-chrome">
-				<div className={`app-screen${!isOpen ? ' drawer-closed' : ''}`}>
-					<div className="dynamic-island" aria-hidden="true" />
-					{!user ? (
-						<SignInScreen />
-					) : showResume ? (
-						<ResumeScreen
-							user={user}
-							nodeLabel={nodes[savedProgress.currentNodeId]?.label ?? savedProgress.currentNodeId}
-							onResume={handleResume}
-							onStartOver={handleStartOver}
-						/>
-					) : (
-						<NodeRenderer
-							node={node}
-							edges={edges}
-							answers={answers}
-							advance={advance}
-							onBack={back}
-							onRestart={restart}
-						/>
-					)}
-					{user && !showResume && (
-						<Breadcrumb history={history} currentNodeId={currentNodeId} nodes={nodes} onJumpTo={jumpTo} />
-					)}
-					<div className="home-indicator" aria-hidden="true" />
+		<WizardNavProvider
+			nodes={nodes}
+			edges={edges}
+			answers={answers}
+			currentNodeId={currentNodeId}
+			startNodeId={startNodeId}
+			jumpToUnvisited={jumpToUnvisited}
+		>
+			<div className="app-shell">
+				<div className="phone-chrome">
+					<div className={`app-screen${!isOpen ? ' drawer-closed' : ''}`}>
+						<div className="dynamic-island" aria-hidden="true" />
+						{!user ? (
+							<SignInScreen />
+						) : showResume ? (
+							<ResumeScreen
+								user={user}
+								nodeLabel={nodes[savedProgress.currentNodeId]?.label ?? savedProgress.currentNodeId}
+								onResume={handleResume}
+								onStartOver={handleStartOver}
+							/>
+						) : (
+							<NodeRenderer
+								node={node}
+								edges={edges}
+								answers={answers}
+								advance={advance}
+								onBack={back}
+								onRestart={restart}
+							/>
+						)}
+						{user && !showResume && (
+							<Breadcrumb history={history} currentNodeId={currentNodeId} nodes={nodes} onJumpTo={jumpTo} />
+						)}
+						<div className="home-indicator" aria-hidden="true" />
+					</div>
 				</div>
+				{user && !showResume && <ResourceLibraryOverlay />}
 			</div>
-		</div>
+		</WizardNavProvider>
 	);
 }
 

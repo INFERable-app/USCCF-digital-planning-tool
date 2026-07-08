@@ -64,7 +64,7 @@
 	}
 
 	/* Track: occupies the grid column, clips the sliding sidebar */
-	.screen-compact .compact-header .resource-sidebar-track {
+	.screen-compact .compact-header .usecase-nav-track {
 		display: flex;
 		grid-column: 1;
 		grid-row: 2 / -1;
@@ -73,13 +73,14 @@
 		border-right: 1px solid #e8e8e8;
 	}
 
-	/* Sidebar: fixed width so content never reflows; slides via transform */
-	.screen-compact .compact-header .resource-sidebar {
+	/* Sidebar: fixed width so content never reflows; slides via transform.
+	   Height comes from flex-stretch against the track so the tree can
+	   scroll internally while the footer link stays pinned in view. */
+	.screen-compact .compact-header .usecase-nav {
 		display: flex;
 		width: 40vw;
 		box-sizing: border-box;
 		flex-shrink: 0;
-		overflow-y: auto;
 		transform: translateX(0);
 		transition: transform 0.35s ease;
 	}
