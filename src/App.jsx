@@ -92,7 +92,7 @@ function AppContent() {
 						<div className="home-indicator" aria-hidden="true" />
 					</div>
 				</div>
-				{user && !showResume && <ResourceLibraryOverlay />}
+				{user && <ResourceLibraryOverlay />}
 			</div>
 		</WizardNavProvider>
 	);
