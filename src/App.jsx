@@ -1,6 +1,7 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import { useGraphEngine } from './graph/useGraphEngine.js';
+import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
 import Breadcrumb from './components/shared/Breadcrumb.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
@@ -54,6 +55,8 @@ function AppContent() {
 		setShowResume(false);
 	}
 
+	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, history, currentNodeId);
+
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
 	return (
@@ -84,6 +87,7 @@ function AppContent() {
 								advance={advance}
 								onBack={back}
 								onRestart={restart}
+								previousAnswerLabel={previousAnswerLabel}
 							/>
 						)}
 						{user && !showResume && (

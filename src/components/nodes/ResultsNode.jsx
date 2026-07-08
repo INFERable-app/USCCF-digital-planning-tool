@@ -1,13 +1,14 @@
 import '../shared/survey.css';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
+import PreviousAnswerHeading from '../shared/PreviousAnswerHeading.jsx';
 import VideoCard from '../shared/VideoCard.jsx';
 import PromptBlock from '../shared/PromptBlock.jsx';
 import ResourceItem from '../shared/ResourceItem.jsx';
 import { challengeLabels } from '../../graph/wizardGraph.js';
 import { resolveResult } from '../../graph/resolveResult.js';
 
-export default function ResultsNode({ node, answers, onBack, onRestart }) {
+export default function ResultsNode({ node, answers, onBack, onRestart, previousAnswerLabel }) {
     const challengeLabel = challengeLabels[answers.challenge] ?? '';
     const result = resolveResult(node.resolvers, answers);
 
@@ -15,6 +16,7 @@ export default function ResultsNode({ node, answers, onBack, onRestart }) {
         <div className="screen screen-compact">
             <CompactHeader onBack={onBack} />
             <div className="survey-content">
+                <PreviousAnswerHeading label={previousAnswerLabel} />
                 {node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
                 {result.recommendation && (
                     <>

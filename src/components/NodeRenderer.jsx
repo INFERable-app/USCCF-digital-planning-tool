@@ -14,7 +14,7 @@ const NODE_COMPONENTS = {
 	results: ResultsNode,
 };
 
-export default function NodeRenderer({ node, edges, answers, advance, onBack, onRestart }) {
+export default function NodeRenderer({ node, edges, answers, advance, onBack, onRestart, previousAnswerLabel }) {
 	const NodeComponent = NODE_COMPONENTS[node.type];
 	const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
 
@@ -27,6 +27,7 @@ export default function NodeRenderer({ node, edges, answers, advance, onBack, on
 			advance={advance}
 			onBack={onBack}
 			onRestart={onRestart}
+			previousAnswerLabel={previousAnswerLabel}
 		/>
 	);
 }
