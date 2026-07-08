@@ -8,24 +8,31 @@ import './UseCaseNav.css';
 function TreeRow({ row, depth, onJump, isActive }) {
 	const [collapsed, setCollapsed] = useState(true);
 	const isBranch = Array.isArray(row.children);
-	const isLeaf = !isBranch && !!row.leafNodeId;
 	const active = isActive(row);
 
 	if (isBranch) {
 		return (
 			<li className="usecase-nav__item">
-				<button
-					type="button"
-					className={`usecase-nav__row usecase-nav__row--branch${active ? ' usecase-nav__row--active' : ''}`}
-					aria-expanded={!collapsed}
-					onClick={() => setCollapsed((c) => !c)}
-				>
-					<span className="usecase-nav__caret" aria-hidden="true">
+				<div className={`usecase-nav__row usecase-nav__row--branch${active ? ' usecase-nav__row--active' : ''}`}>
+					<button
+						type="button"
+						className="usecase-nav__caret-btn"
+						aria-expanded={!collapsed}
+						aria-label={collapsed ? 'Expand' : 'Collapse'}
+						onClick={() => setCollapsed((c) => !c)}
+					>
 						<ChevronRight size={14} style={{ transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)' }} />
-					</span>
-					<span className="usecase-nav__dot" aria-hidden="true" />
-					<span className="usecase-nav__label">{row.label}</span>
-				</button>
+					</button>
+					<button
+						type="button"
+						className="usecase-nav__label-btn"
+						disabled={row.disabled || !row.targetNodeId}
+						onClick={() => onJump(row.edgePath)}
+					>
+						<span className="usecase-nav__dot" aria-hidden="true" />
+						<span className="usecase-nav__label">{row.label}</span>
+					</button>
+				</div>
 				{!collapsed && row.children.length > 0 && (
 					<ul className="usecase-nav__group" role="group">
 						{row.children.map((child) => (
@@ -42,8 +49,8 @@ function TreeRow({ row, depth, onJump, isActive }) {
 			<button
 				type="button"
 				className={`usecase-nav__row usecase-nav__row--leaf${active ? ' usecase-nav__row--active' : ''}`}
-				disabled={row.disabled || !isLeaf}
-				onClick={() => isLeaf && onJump(row.leafNodeId)}
+				disabled={row.disabled || !row.targetNodeId}
+				onClick={() => onJump(row.edgePath)}
 			>
 				<span className="usecase-nav__caret-spacer" aria-hidden="true" />
 				<span className="usecase-nav__dot" aria-hidden="true" />
@@ -55,7 +62,7 @@ function TreeRow({ row, depth, onJump, isActive }) {
 
 export default function UseCaseNav() {
 	const { toggle } = useDrawer();
-	const { nodes, edges, answers, startNodeId, jumpToUnvisited, openResourceLibrary } = useWizardNav();
+	const { nodes, edges, answers, startNodeId, jumpAlongPath, openResourceLibrary } = useWizardNav();
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
 
@@ -77,7 +84,7 @@ export default function UseCaseNav() {
 				<nav className="usecase-nav__rail">
 					<ul className="usecase-nav__group usecase-nav__group--root" role="tree">
 						{tree.map((row) => (
-							<TreeRow key={row.id} row={row} depth={0} onJump={jumpToUnvisited} isActive={isActive} />
+							<TreeRow key={row.id} row={row} depth={0} onJump={jumpAlongPath} isActive={isActive} />
 						))}
 					</ul>
 				</nav>
