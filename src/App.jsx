@@ -13,7 +13,7 @@ import ResumeScreen from './components/auth/ResumeScreen.jsx';
 function AppContent() {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restart, restore } = useGraphEngine();
+	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restore } = useGraphEngine();
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
@@ -86,7 +86,6 @@ function AppContent() {
 								answers={answers}
 								advance={advance}
 								onBack={back}
-								onRestart={restart}
 								previousAnswerLabel={previousAnswerLabel}
 							/>
 						)}

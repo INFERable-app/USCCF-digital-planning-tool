@@ -6,7 +6,7 @@ import PromptBlock from '../shared/PromptBlock.jsx';
 import ResourceItem from '../shared/ResourceItem.jsx';
 import { resolveResult } from '../../graph/resolveResult.js';
 
-export default function ResultsNode({ node, answers, onBack, onRestart, previousAnswerLabel }) {
+export default function ResultsNode({ node, answers, onBack, previousAnswerLabel }) {
     const result = resolveResult(node.resolvers, answers);
 
     return (
@@ -40,9 +40,13 @@ export default function ResultsNode({ node, answers, onBack, onRestart, previous
                     </a>
                 )}
                 {result.footer && <p className="results-footer">{result.footer}</p>}
-                <button className="btn-secondary" onClick={onRestart}>
-                    Start Over
-                </button>
+            </div>
+            <div className="bottom-cta">
+                {onBack && (
+                    <button className="btn-secondary cta-back" onClick={onBack}>
+                        ‹ Back
+                    </button>
+                )}
             </div>
         </div>
     );

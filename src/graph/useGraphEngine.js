@@ -83,13 +83,6 @@ export function useGraphEngine() {
 		return true;
 	}
 
-	function restart() {
-		setCurrentNodeId(startNodeId);
-		setAnswers({});
-		setHistory([]);
-		window.scrollTo(0, 0);
-	}
-
 	function restore(progress) {
 		setCurrentNodeId(progress.currentNodeId);
 		setAnswers(progress.answers);
@@ -104,5 +97,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restart, restore };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restore };
 }
