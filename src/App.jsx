@@ -5,6 +5,8 @@ import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
 import Breadcrumb from './components/shared/Breadcrumb.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
+import FaqOverlay from './components/shared/FaqOverlay.jsx';
+import GlossaryOverlay from './components/shared/GlossaryOverlay.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
 import { WizardNavProvider } from './contexts/WizardNavContext.jsx';
@@ -96,6 +98,8 @@ function AppContent() {
 					</div>
 				</div>
 				{user && <ResourceLibraryOverlay />}
+				{user && <FaqOverlay />}
+				{user && <GlossaryOverlay />}
 			</div>
 		</WizardNavProvider>
 	);

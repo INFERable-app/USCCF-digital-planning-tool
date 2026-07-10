@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
-import { ChevronLeft, ChevronRight, Library } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Library, HelpCircle, BookOpen } from 'lucide-react';
 import './UseCaseNav.css';
 
 function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
@@ -62,7 +62,7 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 
 export default function UseCaseNav() {
 	const { toggle, close } = useDrawer();
-	const { nodes, edges, answers, startNodeId, jumpAlongPath, openResourceLibrary } = useWizardNav();
+	const { nodes, edges, answers, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
 
@@ -89,10 +89,20 @@ export default function UseCaseNav() {
 					</ul>
 				</nav>
 
-				<button type="button" className="usecase-nav__library-link" onClick={openResourceLibrary}>
-					<Library size={16} aria-hidden="true" />
-					<span>Resource Library</span>
-				</button>
+				<div className="usecase-nav__footer">
+					<button type="button" className="usecase-nav__library-link" onClick={openResourceLibrary}>
+						<Library size={16} aria-hidden="true" />
+						<span>Resource Library</span>
+					</button>
+					<button type="button" className="usecase-nav__library-link" onClick={openFaq}>
+						<HelpCircle size={16} aria-hidden="true" />
+						<span>FAQ</span>
+					</button>
+					<button type="button" className="usecase-nav__library-link" onClick={openGlossary}>
+						<BookOpen size={16} aria-hidden="true" />
+						<span>Glossary</span>
+					</button>
+				</div>
 			</aside>
 		</div>
 	);

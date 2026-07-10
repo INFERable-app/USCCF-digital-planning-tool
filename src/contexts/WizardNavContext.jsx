@@ -7,6 +7,14 @@ export function WizardNavProvider({ nodes, edges, answers, currentNodeId, startN
 	const openResourceLibrary = () => setResourceLibraryOpen(true);
 	const closeResourceLibrary = () => setResourceLibraryOpen(false);
 
+	const [isFaqOpen, setFaqOpen] = useState(false);
+	const openFaq = () => setFaqOpen(true);
+	const closeFaq = () => setFaqOpen(false);
+
+	const [isGlossaryOpen, setGlossaryOpen] = useState(false);
+	const openGlossary = () => setGlossaryOpen(true);
+	const closeGlossary = () => setGlossaryOpen(false);
+
 	return (
 		<WizardNavContext.Provider
 			value={{
@@ -19,6 +27,12 @@ export function WizardNavProvider({ nodes, edges, answers, currentNodeId, startN
 				isResourceLibraryOpen,
 				openResourceLibrary,
 				closeResourceLibrary,
+				isFaqOpen,
+				openFaq,
+				closeFaq,
+				isGlossaryOpen,
+				openGlossary,
+				closeGlossary,
 			}}
 		>
 			{children}

@@ -1,0 +1,143 @@
+.glossary-overlay-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(20, 12, 13, 0.45);
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	z-index: 100;
+	animation: glossary-overlay-fade-in 0.18s ease;
+}
+
+@keyframes glossary-overlay-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.glossary-overlay-panel {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-height: 92vh;
+	background: white;
+	border-radius: 20px 20px 0 0;
+	padding: 20px 20px 24px;
+	overflow: hidden;
+	animation: glossary-overlay-rise-in 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes glossary-overlay-rise-in {
+	from {
+		transform: translateY(24px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.glossary-overlay__heading-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+	flex-shrink: 0;
+}
+
+.glossary-overlay__title {
+	font-family: 'Roboto', sans-serif;
+	font-size: 20px;
+	font-weight: 700;
+	color: #8d2f38;
+	letter-spacing: 0.02em;
+}
+
+.glossary-overlay__close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	border-radius: 50%;
+	padding: 6px;
+	color: #8d2f38;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.glossary-overlay__close:hover {
+	background: #f5e8e9;
+}
+
+.glossary-overlay__list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	overflow-y: auto;
+	flex: 1;
+	margin: 0;
+}
+
+.glossary-overlay__entry {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.glossary-overlay__entry:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.glossary-overlay__term {
+	font-family: 'Roboto', sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	color: #222;
+}
+
+.glossary-overlay__definition {
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	color: #444;
+	line-height: 1.45;
+	margin: 0;
+}
+
+/* Mobile: full-screen takeover rather than a bottom sheet */
+@media (max-width: 767px) {
+	.glossary-overlay-backdrop {
+		align-items: stretch;
+	}
+	.glossary-overlay-panel {
+		max-height: 100dvh;
+		height: 100dvh;
+		border-radius: 0;
+		padding: 24px 18px calc(24px + env(safe-area-inset-bottom));
+	}
+}
+
+/* Desktop: centered card, decoupled from the sliding sidebar idiom */
+@media (min-width: 768px) {
+	.glossary-overlay-backdrop {
+		align-items: center;
+	}
+	.glossary-overlay-panel {
+		width: 100%;
+		max-width: 640px;
+		max-height: 80vh;
+		border-radius: 16px;
+		padding: 28px 32px 32px;
+		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+	}
+	.glossary-overlay__title {
+		font-size: 22px;
+	}
+}

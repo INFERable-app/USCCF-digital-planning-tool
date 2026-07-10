@@ -30,13 +30,20 @@
 
 /* Pinned footer, not part of the generated tree — stays put below the
    scrollable tree so it's reachable no matter how long the tree grows. */
+.usecase-nav__footer {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 14px;
+	flex-shrink: 0;
+}
+
 .usecase-nav__library-link {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	width: 100%;
 	padding: 10px 12px;
-	margin-top: 14px;
 	border: 1.5px solid #8d2f38;
 	border-radius: 8px;
 	background: transparent;
