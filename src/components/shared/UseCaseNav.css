@@ -30,13 +30,20 @@
 
 /* Pinned footer, not part of the generated tree — stays put below the
    scrollable tree so it's reachable no matter how long the tree grows. */
+.usecase-nav__footer {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 14px;
+	flex-shrink: 0;
+}
+
 .usecase-nav__library-link {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	width: 100%;
 	padding: 10px 12px;
-	margin-top: 14px;
 	border: 1.5px solid #8d2f38;
 	border-radius: 8px;
 	background: transparent;
@@ -106,6 +113,8 @@
 .usecase-nav__row--branch {
 	font-weight: 600;
 	color: #222;
+	padding: 0;
+	cursor: default;
 }
 
 .usecase-nav__row--active {
@@ -114,7 +123,54 @@
 	background: #f6e9ea;
 }
 
-.usecase-nav__caret,
+.usecase-nav__caret-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	flex-shrink: 0;
+	background: transparent;
+	border: none;
+	border-radius: 6px;
+	color: #8d2f38;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.usecase-nav__caret-btn:hover {
+	background: #f5e8e9;
+}
+
+.usecase-nav__caret-btn svg {
+	transition: transform 0.15s ease;
+}
+
+.usecase-nav__label-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	min-width: 0;
+	padding: 7px 8px 7px 0;
+	background: transparent;
+	border: none;
+	font: inherit;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.usecase-nav__label-btn:hover:not(:disabled) {
+	background: #f5e8e9;
+}
+
+.usecase-nav__label-btn:disabled {
+	color: #b8b8b8;
+	cursor: not-allowed;
+}
+
 .usecase-nav__caret-spacer {
 	display: flex;
 	align-items: center;
@@ -122,10 +178,6 @@
 	width: 14px;
 	flex-shrink: 0;
 	color: #8d2f38;
-}
-
-.usecase-nav__caret svg {
-	transition: transform 0.15s ease;
 }
 
 .usecase-nav__dot {

@@ -1,19 +1,17 @@
 import '../shared/survey.css';
 import { useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
-import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
+import PreviousAnswerHeading from '../shared/PreviousAnswerHeading.jsx';
 import RadioEdge from '../edges/RadioEdge.jsx';
-import { challengeLabels } from '../../graph/wizardGraph.js';
 
-export default function RadioSurveyNode({ node, nodeEdges, answers, advance, onBack }) {
+export default function RadioSurveyNode({ node, nodeEdges, advance, onBack, previousAnswerLabel }) {
 	const [selectedEdgeId, setSelectedEdgeId] = useState(null);
-	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 
 	return (
 		<div className="screen screen-compact">
 			<CompactHeader onBack={onBack} />
 			<div className="survey-content">
-				{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
+				<PreviousAnswerHeading label={previousAnswerLabel} />
 				{node.intro && <p className="body-text">{node.intro}</p>}
 				<p className="survey-question">{node.question}</p>
 				<div className="radio-list">

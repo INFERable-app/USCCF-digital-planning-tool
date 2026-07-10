@@ -5,15 +5,21 @@
 // multiChoice node becomes a row — disabled edges render but don't recurse
 // or resolve to a jump target, matching how disabled choices already render
 // elsewhere in the wizard. An edge targeting another multiChoice node nests
-// further; anything else is a leaf pointing at the node to jump to.
+// further as long as maxDepth allows; once maxDepth is reached the row is
+// terminal (navigable, no further children) regardless of its target's type.
+// Every row carries its own edgePath — the ordered edge ids from the start
+// node down to that row — so a jump can replay the exact chain the user
+// clicked instead of guessing a path by target node id alone.
 //
 // No node IDs are hardcoded, so the tree automatically reflects whatever the
 // live graph contains (new roles/challenges appear with no code change).
-export function buildUseCaseTree(nodes, edges, startNodeId) {
-	if (!startNodeId || !nodes[startNodeId]) return [];
-	return walk(startNodeId, new Set([startNodeId]));
+const MAX_TREE_DEPTH = 2;
 
-	function walk(nodeId, visited) {
+export function buildUseCaseTree(nodes, edges, startNodeId, maxDepth = MAX_TREE_DEPTH) {
+	if (!startNodeId || !nodes[startNodeId]) return [];
+	return walk(startNodeId, new Set([startNodeId]), 0, []);
+
+	function walk(nodeId, visited, depth, edgePath) {
 		const node = nodes[nodeId];
 		if (!node) return [];
 
@@ -21,19 +27,19 @@ export function buildUseCaseTree(nodes, edges, startNodeId) {
 			const [firstEdgeId] = node.edgeIds ?? [];
 			const edge = firstEdgeId ? edges[firstEdgeId] : null;
 			if (!edge || visited.has(edge.targetNodeId)) return [];
-			return walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId));
+			return walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId), depth, [...edgePath, edge.id]);
 		}
 
 		return (node.edgeIds ?? [])
 			.map((edgeId) => edges[edgeId])
 			.filter(Boolean)
-			.map((edge) => buildRow(edge, visited));
+			.map((edge) => buildRow(edge, visited, depth, edgePath));
 	}
 
-	function buildRow(edge, visited) {
+	function buildRow(edge, visited, depth, edgePath) {
 		const disabled = !!edge.disabled;
 		const targetNode = nodes[edge.targetNodeId];
-		const isBranch = targetNode?.type === 'multiChoice';
+		const path = [...edgePath, edge.id];
 		const row = {
 			id: edge.id,
 			label: edge.label,
@@ -41,15 +47,17 @@ export function buildUseCaseTree(nodes, edges, startNodeId) {
 			storeKey: edge.storeKey,
 			value: edge.value,
 			children: null,
-			leafNodeId: null,
+			targetNodeId: null,
+			edgePath: path,
 		};
 
 		if (disabled || !targetNode || visited.has(edge.targetNodeId)) return row;
 
+		row.targetNodeId = edge.targetNodeId;
+
+		const isBranch = targetNode.type === 'multiChoice' && depth + 1 < maxDepth;
 		if (isBranch) {
-			row.children = walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId));
-		} else {
-			row.leafNodeId = edge.targetNodeId;
+			row.children = walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId), depth + 1, path);
 		}
 		return row;
 	}

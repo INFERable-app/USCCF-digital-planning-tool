@@ -1,13 +1,10 @@
 import '../shared/survey.css';
 import { useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
-import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
 import CheckboxEdge from '../edges/CheckboxEdge.jsx';
-import { challengeLabels } from '../../graph/wizardGraph.js';
 
-export default function CheckboxSurveyNode({ node, edges, nodeEdges, answers, advance, onBack }) {
+export default function CheckboxSurveyNode({ node, edges, nodeEdges, advance, onBack }) {
 	const [selected, setSelected] = useState(new Set());
-	const challengeLabel = challengeLabels[answers.challenge] ?? '';
 	const submitEdge = edges[node.submitEdgeId];
 
 	function handleToggle(edgeId) {
@@ -22,7 +19,6 @@ export default function CheckboxSurveyNode({ node, edges, nodeEdges, answers, ad
 	return (
 		<div className="screen screen-compact">
 			<CompactHeader onBack={onBack} />
-			{node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
 			<div className="survey-content">
 				<p className="survey-question">{node.question}</p>
 				<div className="checkbox-list">

@@ -43,6 +43,11 @@ export default function SignInScreen() {
 				<div className="signin-body">
 					<h1 className="signin-title">Digital Transformation Planning Tool</h1>
 
+					<div className="signin-intro">
+						<p>Welcome to the Digital Transformation Planning Tool. Whether you're defining priority skills, building talent pipelines, or strengthening collaboration across employers and training providers, this tool provides tailored recommendations based on your goals.</p>
+						<p>Start by selecting the goal that best matches what you're trying to accomplish, and follow recommended next steps to help move your workforce initiative forward.</p>
+					</div>
+
 					<div className="signin-providers">
 						<button
 							className="signin-provider-btn"

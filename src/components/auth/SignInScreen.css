@@ -43,6 +43,16 @@
 	line-height: 1.2;
 }
 
+.signin-intro {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	font-size: 14px;
+	line-height: 1.45;
+	color: #444;
+	text-align: center;
+}
+
 .signin-providers {
 	display: flex;
 	flex-direction: column;

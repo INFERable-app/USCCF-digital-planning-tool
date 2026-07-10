@@ -1,21 +1,19 @@
 import '../shared/survey.css';
 import CompactHeader from '../shared/CompactHeader.jsx';
-import ChallengeTitleBar from '../shared/ChallengeTitleBar.jsx';
+import PreviousAnswerHeading from '../shared/PreviousAnswerHeading.jsx';
 import VideoCard from '../shared/VideoCard.jsx';
 import PromptBlock from '../shared/PromptBlock.jsx';
 import ResourceItem from '../shared/ResourceItem.jsx';
-import { challengeLabels } from '../../graph/wizardGraph.js';
 import { resolveResult } from '../../graph/resolveResult.js';
 
-export default function ResultsNode({ node, answers, onBack, onRestart }) {
-    const challengeLabel = challengeLabels[answers.challenge] ?? '';
+export default function ResultsNode({ node, answers, onBack, previousAnswerLabel }) {
     const result = resolveResult(node.resolvers, answers);
 
     return (
         <div className="screen screen-compact">
             <CompactHeader onBack={onBack} />
             <div className="survey-content">
-                {node.challengeBar && <ChallengeTitleBar challengeLabel={challengeLabel} />}
+                <PreviousAnswerHeading label={previousAnswerLabel} />
                 {result.recommendation && (
                     <>
                         <p className="results-label">Recommended next step:</p>
@@ -42,9 +40,13 @@ export default function ResultsNode({ node, answers, onBack, onRestart }) {
                     </a>
                 )}
                 {result.footer && <p className="results-footer">{result.footer}</p>}
-                <button className="btn-secondary" onClick={onRestart}>
-                    Start Over
-                </button>
+            </div>
+            <div className="bottom-cta">
+                {onBack && (
+                    <button className="btn-secondary cta-back" onClick={onBack}>
+                        ‹ Back
+                    </button>
+                )}
             </div>
         </div>
     );

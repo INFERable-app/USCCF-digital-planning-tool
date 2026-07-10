@@ -1,9 +1,12 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import { useGraphEngine } from './graph/useGraphEngine.js';
+import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
 import Breadcrumb from './components/shared/Breadcrumb.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
+import FaqOverlay from './components/shared/FaqOverlay.jsx';
+import GlossaryOverlay from './components/shared/GlossaryOverlay.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
 import { WizardNavProvider } from './contexts/WizardNavContext.jsx';
@@ -12,7 +15,7 @@ import ResumeScreen from './components/auth/ResumeScreen.jsx';
 function AppContent() {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpToUnvisited, restart, restore } = useGraphEngine();
+	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restore } = useGraphEngine();
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
@@ -54,12 +57,7 @@ function AppContent() {
 		setShowResume(false);
 	}
 
-	async function handleStartOver() {
-		await fetch('/api/progress', { method: 'DELETE', credentials: 'include' });
-		setSavedProgress(null);
-		setShowResume(false);
-		restart();
-	}
+	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, history, currentNodeId);
 
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
@@ -70,7 +68,7 @@ function AppContent() {
 			answers={answers}
 			currentNodeId={currentNodeId}
 			startNodeId={startNodeId}
-			jumpToUnvisited={jumpToUnvisited}
+			jumpAlongPath={jumpAlongPath}
 		>
 			<div className="app-shell">
 				<div className="phone-chrome">
@@ -81,9 +79,7 @@ function AppContent() {
 						) : showResume ? (
 							<ResumeScreen
 								user={user}
-								nodeLabel={nodes[savedProgress.currentNodeId]?.label ?? savedProgress.currentNodeId}
 								onResume={handleResume}
-								onStartOver={handleStartOver}
 							/>
 						) : (
 							<NodeRenderer
@@ -92,7 +88,7 @@ function AppContent() {
 								answers={answers}
 								advance={advance}
 								onBack={back}
-								onRestart={restart}
+								previousAnswerLabel={previousAnswerLabel}
 							/>
 						)}
 						{user && !showResume && (
@@ -101,7 +97,9 @@ function AppContent() {
 						<div className="home-indicator" aria-hidden="true" />
 					</div>
 				</div>
-				{user && !showResume && <ResourceLibraryOverlay />}
+				{user && <ResourceLibraryOverlay />}
+				{user && <FaqOverlay />}
+				{user && <GlossaryOverlay />}
 			</div>
 		</WizardNavProvider>
 	);
