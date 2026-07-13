@@ -13,6 +13,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
+// Behind Apache/nginx in production — needed so req.secure reflects X-Forwarded-Proto,
+// otherwise express-session silently drops secure cookies.
+app.set('trust proxy', 1);
+
 app.use(cors({ origin: config.WEB_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(
