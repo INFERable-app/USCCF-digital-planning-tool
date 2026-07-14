@@ -45,20 +45,13 @@ export function useGraphEngine() {
 		window.scrollTo(0, 0);
 	}
 
-	function jumpTo(nodeId) {
-		const idx = history.indexOf(nodeId);
-		if (idx === -1) return;
-		setHistory(history.slice(0, idx));
-		setCurrentNodeId(nodeId);
-		window.scrollTo(0, 0);
-	}
-
-	// Walks the accumulated answers/history that would result from actually
-	// having taken this exact chain of edges, then jumps to the last edge's
-	// target — lets the use-case nav tree jump forward to nodes not yet in
-	// history. Takes an explicit ordered edge id path (rather than searching
-	// for one by target node id) so it replays the specific branch the user
-	// clicked, not just any path that happens to reach the same node.
+	// Records the answers for every edge on the clicked path, then jumps
+	// straight to the last edge's target, pushing only the real current node
+	// onto history (same as advance) so Back returns to where the user
+	// actually was, not to an intermediate node they never visited. Takes an
+	// explicit ordered edge id path (rather than searching for one by target
+	// node id) so it replays the specific branch the user clicked, not just
+	// any path that happens to reach the same node.
 	function jumpAlongPath(edgePath) {
 		if (!edgePath || edgePath.length === 0) return false;
 		const path = edgePath.map((edgeId) => edges[edgeId]);
@@ -74,10 +67,8 @@ export function useGraphEngine() {
 			return next;
 		});
 
-		const historyNodeIds = [startNodeId, ...path.slice(0, -1).map((e) => e.targetNodeId)];
-		const targetNodeId = path[path.length - 1].targetNodeId;
-		setHistory(historyNodeIds);
-		setCurrentNodeId(targetNodeId);
+		setHistory((prev) => [...prev, currentNodeId]);
+		setCurrentNodeId(path[path.length - 1].targetNodeId);
 		window.history.pushState({}, '');
 		window.scrollTo(0, 0);
 		return true;
@@ -97,5 +88,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restore };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, restore };
 }

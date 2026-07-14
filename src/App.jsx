@@ -2,6 +2,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import { useGraphEngine } from './graph/useGraphEngine.js';
 import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
+import { getNodePath } from './graph/getNodePath.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
 import Breadcrumb from './components/shared/Breadcrumb.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
@@ -15,7 +16,7 @@ import ResumeScreen from './components/auth/ResumeScreen.jsx';
 function AppContent() {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpTo, jumpAlongPath, restore } = useGraphEngine();
+	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, restore } = useGraphEngine();
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
@@ -58,6 +59,7 @@ function AppContent() {
 	}
 
 	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, history, currentNodeId);
+	const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
 
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
@@ -92,7 +94,7 @@ function AppContent() {
 							/>
 						)}
 						{user && !showResume && (
-							<Breadcrumb history={history} currentNodeId={currentNodeId} nodes={nodes} onJumpTo={jumpTo} />
+							<Breadcrumb path={path} nodes={nodes} onJumpTo={jumpAlongPath} />
 						)}
 						<div className="home-indicator" aria-hidden="true" />
 					</div>

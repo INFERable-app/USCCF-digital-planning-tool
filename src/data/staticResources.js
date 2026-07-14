@@ -13,7 +13,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'LER Ecosystem Map',
 		description: 'Stakeholder pages with roles, value propositions, and action areas for developing and adopting Learning and Employment Records.',
-		url: '#',
+		url: 'https://lermap.t3networkhub.org/#map-start',
 		categories: ['foundational'],
 	},
 	{
@@ -21,7 +21,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'Generative AI Adoption Tracker',
 		description: 'Tracks adoption of generative AI tools across the education and workforce ecosystem.',
-		url: '#',
+		url: 'https://www.genaiadoptiontracker.com/',
 		categories: ['foundational'],
 	},
 	{
@@ -29,7 +29,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'Center for Skills (CFS) — Trusted Skills Infrastructure',
 		description: "C-BEN's framework for building trusted, stackable skills credentials across education and workforce.",
-		url: '#',
+		url: 'https://centerforskills.org/#building-blocks',
 		categories: ['foundational'],
 	},
 	{
@@ -37,7 +37,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'Lightcast Skills Taxonomy',
 		description: 'Comprehensive taxonomy of skills used across labor market data and workforce planning.',
-		url: '#',
+		url: 'https://lightcast.io/open-skills',
 		categories: ['foundational'],
 	},
 	// ── Training Alignment ─────────────────────────────────────────────────────
@@ -46,7 +46,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'The Speed of Skill Change',
 		description: 'Lightcast Future Ready report examining how quickly in-demand skills are evolving across industries.',
-		url: '#',
+		url: 'https://lightcast.io/resources/research/speed-of-skill-change',
 		categories: ['training-alignment'],
 	},
 	{
@@ -54,7 +54,7 @@ export const staticResources = [
 		type: 'pdf',
 		label: 'Skills Validation Guidebook — Education Design Lab',
 		description: '10-step guide for designing high-quality skill validators. October 2024.',
-		url: '#',
+		url: 'https://eddesignlab.org/wp-content/uploads/2024/10/A-Skills-Validation-Guidebook-10-Steps-to-Design-a-High-Quality-Skill-Validator-October-2024.pdf',
 		pages: '10 steps',
 		categories: ['training-alignment'],
 	},
@@ -64,7 +64,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'TPM Academy Curriculum',
 		description: 'Covers employer collaboration and coordinating skills requirements (Strategies 1–3) and alignment with training providers (Strategies 4–5).',
-		url: '#',
+		url: 'https://www.tpmacademy.org/the-curriculum/',
 		categories: ['employer-demand', 'training-alignment'],
 	},
 	{
@@ -72,7 +72,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'Skills-First Workforce Initiative',
 		description: 'Employer-led model for defining shared hiring needs and aligning training programs with industry requirements.',
-		url: '#',
+		url: 'https://www.skills-first.org/',
 		categories: ['employer-demand'],
 	},
 	{
@@ -80,7 +80,7 @@ export const staticResources = [
 		type: 'link',
 		label: 'SHRM Foundation — Skilled Credentials Action Planner',
 		description: 'Self-paced tool with guided learning to assess organizational readiness and create a custom workplan for skills-first hiring strategies.',
-		url: '#',
+		url: 'https://www.shrm.org/foundation/skills-first/action-planner',
 		categories: ['employer-demand'],
 	},
 ];

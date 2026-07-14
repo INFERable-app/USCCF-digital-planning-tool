@@ -62,13 +62,13 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 
 export default function UseCaseNav() {
 	const { toggle, close } = useDrawer();
-	const { nodes, edges, answers, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
+	const { nodes, edges, currentNodeId, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
 
 	function isActive(row) {
-		if (!row.storeKey) return false;
-		return answers?.[row.storeKey] === row.value;
+		if (row.targetNodeId === currentNodeId) return true;
+		return row.children?.some(isActive) ?? false;
 	}
 
 	return (
