@@ -90,7 +90,7 @@
 	.screen-compact .survey-content {
 		grid-column: 2;
 		grid-row: 2;
-		padding: 0 max(64px, calc((100% - 772px) / 2));
+		padding: 64px max(64px, calc((100% - 772px) / 2));
 		align-self: center;
 		max-height: 100%;
 	}
