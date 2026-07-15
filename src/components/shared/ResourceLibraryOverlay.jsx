@@ -21,7 +21,7 @@ const SECTION_LABELS = {
 function ResourceEntry({ item }) {
 	return (
 		<div className="resource-overlay__entry">
-			<ResourceItem item={item} />
+			<ResourceItem item={item} showDescription={false} />
 			{item.description && <p className="resource-overlay__description">{item.description}</p>}
 		</div>
 	);

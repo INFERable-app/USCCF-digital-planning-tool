@@ -387,6 +387,7 @@
             } else if (res.type === 'link') {
               cleanRes.url = res.url.trim();
             }
+            if (res.description && res.description.trim()) cleanRes.description = res.description.trim();
             return cleanRes;
           });
           if (!r.resources.length) delete r.resources;
@@ -652,7 +653,7 @@
     function addResource(ri) {
       const r = graphData.nodes[selectedItemId].resolvers[ri];
       r.resources = r.resources || [];
-      r.resources.push({ type: 'link', label: '', url: '' });
+      r.resources.push({ type: 'link', label: '', url: '', description: '' });
       markDirty();
       openInspector('node', selectedItemId);
     }
@@ -747,6 +748,9 @@
           } else if (type === 'prompt') {
             extraFields = `<textarea rows="3" placeholder="Prompt text" class="resource-prompt-text w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs font-mono">${escapeHtml(res.text || '')}</textarea>`;
           }
+          const descriptionField = type !== 'prompt'
+            ? `<textarea rows="2" placeholder="Description (optional) — shown inside the card" class="resource-description w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">${escapeHtml(res.description || '')}</textarea>`
+            : '';
           const complete = isCompleteResource(res);
           return `
             <div class="flex gap-2 items-start${complete ? '' : ' border-l-2 border-amber-400 pl-2 -ml-2'}">
@@ -756,6 +760,7 @@
               <div class="flex-1 space-y-1">
                 <input type="text" value="${escapeAttr(res.label || '')}" placeholder="Label" class="resource-label w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-xs">
                 ${extraFields}
+                ${descriptionField}
                 ${complete ? '' : `<p class="text-[11px] text-amber-600">Missing ${missingResourceFieldLabel(res)} — this resource won't be saved until it's filled in.</p>`}
               </div>
               <button onclick="removeResource(${ri}, ${resi})" class="text-slate-300 hover:text-rose-600 text-lg leading-none px-1">−</button>
@@ -911,13 +916,13 @@
         // Read defensively instead of assuming they're there (a null .value access
         // would throw and silently abort the whole resolvers rebuild).
         if (type === 'pdf') {
-          return { type, label, pages: row.querySelector('.resource-pages')?.value ?? '', url: row.querySelector('.resource-url')?.value ?? '' };
+          return { type, label, pages: row.querySelector('.resource-pages')?.value ?? '', url: row.querySelector('.resource-url')?.value ?? '', description: row.querySelector('.resource-description')?.value ?? '' };
         } else if (type === 'link') {
-          return { type, label, url: row.querySelector('.resource-url')?.value ?? '' };
+          return { type, label, url: row.querySelector('.resource-url')?.value ?? '', description: row.querySelector('.resource-description')?.value ?? '' };
         } else if (type === 'prompt') {
           return { type, label, text: row.querySelector('.resource-prompt-text')?.value ?? '' };
         }
-        return { type, label };
+        return { type, label, description: row.querySelector('.resource-description')?.value ?? '' };
       });
 
       const promptRows = rawRows.filter(row => row.type === 'prompt');

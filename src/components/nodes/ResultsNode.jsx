@@ -20,6 +20,7 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
                         <p className="results-recommendation">{result.recommendation}</p>
                     </>
                 )}
+                {result.bodyText && <p className="body-text">{result.bodyText}</p>}
                 {result.promptBlock && (
                     <>
                         <PromptBlock label={result.promptBlock.label} text={result.promptBlock.text} />
@@ -30,7 +31,6 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
                     </>
                 )}
                 {result.videoUrl && <VideoCard url={result.videoUrl} alt={result.videoAlt} />}
-                {result.bodyText && <p className="body-text">{result.bodyText}</p>}
                 {result.resources && result.resources.map((item, i) => (
                     <ResourceItem key={i} item={item} />
                 ))}

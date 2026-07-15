@@ -237,11 +237,12 @@ Resources appear as cards inside a resolver. Three types:
 }
 ```
 
-| Field   | Required | Notes                                                                             |
-| ------- | -------- | --------------------------------------------------------------------------------- |
-| `label` | ✓        | Name of the document.                                                             |
-| `pages` | ✓        | Page range shown as a badge (e.g. `"57–58"`).                                     |
-| `url`   |          | PDF URL with `#page=N` to open at a specific page. Omit to render without a link. |
+| Field         | Required | Notes                                                                             |
+| ------------- | -------- | --------------------------------------------------------------------------------- |
+| `label`       | ✓        | Name of the document.                                                             |
+| `pages`       | ✓        | Page range shown as a badge (e.g. `"57–58"`).                                     |
+| `url`         |          | PDF URL with `#page=N` to open at a specific page. Omit to render without a link. |
+| `description` |          | Optional free text shown inside the card, below the label/badge.                  |
 
 ### `link`
 
@@ -249,10 +250,11 @@ Resources appear as cards inside a resolver. Three types:
 { "type": "link", "label": "BLS Occupational Outlook Handbook", "url": "https://www.bls.gov/ooh/" }
 ```
 
-| Field   | Required | Notes                             |
-| ------- | -------- | --------------------------------- |
-| `label` | ✓        | Link text.                        |
-| `url`   | ✓        | External URL. Opens in a new tab. |
+| Field         | Required | Notes                                                            |
+| ------------- | -------- | ---------------------------------------------------------------- |
+| `label`       | ✓        | Link text.                                                       |
+| `url`         | ✓        | External URL. Opens in a new tab.                                |
+| `description` |          | Optional free text shown inside the card, below the label/arrow. |
 
 ### `reference`
 
@@ -260,9 +262,10 @@ Resources appear as cards inside a resolver. Three types:
 { "type": "reference", "label": "Consult Internal Library" }
 ```
 
-| Field   | Required | Notes                                                |
-| ------- | -------- | ---------------------------------------------------- |
-| `label` | ✓        | Text displayed for the internal/unlinkable resource. |
+| Field         | Required | Notes                                                                                                            |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `label`       | ✓        | Text displayed for the internal/unlinkable resource.                                                             |
+| `description` |          | Optional free text. When present, renders as a bordered card with the label as its header instead of plain text. |
 
 ## Example implementation of Coordinating Employer Demand use case
 

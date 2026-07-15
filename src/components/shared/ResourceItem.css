@@ -1,21 +1,52 @@
 /* ── Resource items ───────────────────────────────────────────────────────── */
 .resource-card {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
+	flex-direction: column;
+	gap: 10px;
 	padding: 12px 14px;
 	border: 1px solid #d0d0d0;
+	border-left: 3px solid #8d2f38;
 	border-radius: 4px;
 	background: #fafafa;
 	text-decoration: none;
 	color: #000;
-	transition: background 0.15s ease;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease;
+}
+
+.resource-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
 }
 
 .resource-card--link:hover,
 .resource-card--pdf[href]:hover {
 	background: #f0f0f0;
+}
+
+.resource-card--expanded {
+	padding: 14px 14px 14px 12px;
+	background: #fff;
+}
+
+.resource-card--expanded .resource-label {
+	font-weight: 700;
+}
+
+.resource-card--expanded.resource-card--link:hover,
+.resource-card--expanded.resource-card--pdf[href]:hover {
+	background: #f5e8e9;
+}
+
+.resource-description {
+	font-size: 14px;
+	font-weight: 400;
+	color: #555;
+	line-height: 1.5;
+	letter-spacing: 0.01em;
 }
 
 .resource-label {
