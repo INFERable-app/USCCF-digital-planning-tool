@@ -1,0 +1,32 @@
+html,
+body,
+#admin-root {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	font-family: 'Inter', system-ui, sans-serif;
+}
+
+.admin-shell {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
+
+.admin-shell__main {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+}
+
+.admin-forbidden {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	gap: 0.5rem;
+	color: #475569;
+}

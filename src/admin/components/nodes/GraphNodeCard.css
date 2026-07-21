@@ -1,0 +1,115 @@
+.graph-node-card {
+	position: relative;
+	width: 220px;
+}
+
+.graph-node-card__face {
+	display: flex;
+	align-items: stretch;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+	overflow: hidden;
+	transition:
+		box-shadow 0.15s,
+		border-color 0.15s;
+}
+
+.graph-node-card:hover .graph-node-card__face {
+	box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+	border-color: #cbd5e1;
+}
+
+.graph-node-card--selected .graph-node-card__face {
+	border-color: var(--node-accent);
+	box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-accent) 35%, transparent);
+}
+
+.graph-node-card__accent {
+	width: 4px;
+	flex-shrink: 0;
+	background: var(--node-accent);
+}
+
+.graph-node-card__body {
+	flex: 1;
+	min-width: 0;
+	padding: 8px 10px;
+}
+
+.graph-node-card__type {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--node-accent);
+	margin-bottom: 3px;
+}
+
+.graph-node-card__label {
+	font-size: 13px;
+	font-weight: 600;
+	color: #1e293b;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.graph-node-card__id {
+	font-family: ui-monospace, 'SF Mono', monospace;
+	font-size: 10px;
+	color: #94a3b8;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.graph-node-handle {
+	width: 16px;
+	height: 16px;
+	border: none;
+	background: transparent;
+}
+
+.graph-node-handle::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	border: 2px solid #ffffff;
+	background: #94a3b8;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	transition:
+		opacity 0.15s,
+		transform 0.15s;
+}
+
+/* Target handle: present but unobtrusive — dropping anywhere on a node's body
+   already works, so this doesn't need to compete visually with the source dot. */
+.graph-node-handle--target::after {
+	opacity: 0;
+}
+
+.graph-node-card:hover .graph-node-handle--target::after {
+	opacity: 1;
+}
+
+/* Source handle: the one you actually drag from, so it stays gently visible at
+   rest and calls more attention to itself on hover. */
+.graph-node-handle--source::after {
+	background: var(--node-accent);
+	opacity: 0.55;
+}
+
+.graph-node-card:hover .graph-node-handle--source::after {
+	opacity: 1;
+	transform: translate(-50%, -50%) scale(1.2);
+}

@@ -1,0 +1,54 @@
+.confirm-popover-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 60;
+}
+
+.confirm-popover {
+	position: fixed;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+	padding: 0.75rem;
+	width: 15rem;
+}
+
+.confirm-popover p {
+	margin: 0 0 0.6rem;
+	font-size: 0.8rem;
+	color: #334155;
+}
+
+.confirm-popover__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.4rem;
+}
+
+.confirm-popover__actions button {
+	padding: 0.3rem 0.65rem;
+	border-radius: 5px;
+	font-size: 0.75rem;
+	font-weight: 500;
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+
+.confirm-popover__cancel {
+	background: #f1f5f9;
+	color: #0f172a;
+}
+
+.confirm-popover__cancel:hover {
+	background: #e2e8f0;
+}
+
+.confirm-popover__confirm {
+	background: #dc2626;
+	color: #fff;
+}
+
+.confirm-popover__confirm:hover {
+	background: #ef4444;
+}

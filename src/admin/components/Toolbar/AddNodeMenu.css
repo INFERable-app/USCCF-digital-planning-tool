@@ -1,0 +1,38 @@
+.add-node-menu {
+	position: relative;
+}
+
+.add-node-menu__dropdown {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+	padding: 0.4rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	z-index: 40;
+	min-width: 11rem;
+}
+
+.add-node-menu__item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.6rem;
+	border-radius: 6px;
+	border: none;
+	background: none;
+	color: var(--type-color);
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-align: left;
+	cursor: pointer;
+}
+
+.add-node-menu__item:hover {
+	background: color-mix(in srgb, var(--type-color) 10%, white);
+}
