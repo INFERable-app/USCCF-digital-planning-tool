@@ -1,15 +1,11 @@
 import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { config } from './config.js';
 import healthRouter from './routes/health.js';
 import oidcRouter from './connectors/oidc/routes.js';
 import graphRouter from './connectors/graph/routes.js';
 import progressRouter from './connectors/progress/routes.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -50,10 +46,6 @@ app.get('/admin', (req, res) => {
 		.filter(Boolean);
 	if (!admins.includes(req.session.user.email)) {
 		res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
-		return;
-	}
-	if (config.NODE_ENV === 'production') {
-		res.sendFile(resolve(__dirname, '../../dist/admin.html'));
 		return;
 	}
 	res.redirect('/admin.html');
