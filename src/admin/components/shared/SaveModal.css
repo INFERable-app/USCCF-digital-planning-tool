@@ -1,0 +1,150 @@
+.save-modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 50;
+	padding: 1rem;
+}
+
+.save-modal {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+	max-width: 30rem;
+	width: 100%;
+	padding: 1.5rem;
+}
+
+.save-modal__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.save-modal__header h2 {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #0f172a;
+	margin: 0;
+}
+
+.save-modal__close {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	line-height: 1;
+	color: #94a3b8;
+	cursor: pointer;
+}
+
+.save-modal__close:hover {
+	color: #475569;
+}
+
+.save-modal__warning {
+	background: #eff6ff;
+	border: 1px solid #bfdbfe;
+	border-radius: 6px;
+	padding: 0.85rem 1rem;
+	font-size: 0.85rem;
+	margin-bottom: 1rem;
+}
+
+.save-modal__warning strong {
+	color: #1e3a8a;
+}
+
+.save-modal__warning p {
+	margin: 0.25rem 0 0;
+	color: #1e40af;
+}
+
+.save-modal label {
+	display: block;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #334155;
+	margin-bottom: 0.5rem;
+}
+
+.save-modal textarea {
+	width: 100%;
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	padding: 0.5rem 0.65rem;
+	font-size: 0.85rem;
+	font-family: inherit;
+	resize: none;
+	box-sizing: border-box;
+}
+
+.save-modal textarea:focus {
+	outline: none;
+	border-color: #6366f1;
+	box-shadow: 0 0 0 1px #6366f1;
+}
+
+.save-modal__message {
+	margin-top: 0.75rem;
+	padding: 0.6rem 0.75rem;
+	border-radius: 6px;
+	font-size: 0.8rem;
+}
+
+.save-modal__message--success {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.save-modal__message--error {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+.save-modal__footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.6rem;
+	padding-top: 1rem;
+	margin-top: 1rem;
+	border-top: 1px solid #e2e8f0;
+}
+
+.save-modal__footer button {
+	padding: 0.5rem 1rem;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	cursor: pointer;
+	border: 1px solid transparent;
+}
+
+.save-modal__cancel {
+	background: #f1f5f9;
+	color: #0f172a;
+}
+
+.save-modal__cancel:hover {
+	background: #e2e8f0;
+}
+
+.save-modal__submit {
+	background: #059669;
+	color: #fff;
+}
+
+.save-modal__submit:hover {
+	background: #10b981;
+}
+
+.save-modal__submit:disabled {
+	background: #94a3b8;
+	cursor: not-allowed;
+}

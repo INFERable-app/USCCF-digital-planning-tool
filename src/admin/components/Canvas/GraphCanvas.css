@@ -1,0 +1,38 @@
+.graph-canvas {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+}
+
+.graph-canvas .react-flow {
+	background: #fafafa;
+}
+
+.graph-canvas .react-flow__edge:hover .react-flow__edge-path,
+.graph-canvas .react-flow__edge.selected .react-flow__edge-path {
+	stroke: #6366f1 !important;
+	stroke-width: 3 !important;
+}
+
+.graph-canvas .react-flow__controls {
+	background: #1e293b;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+}
+
+.graph-canvas .react-flow__controls-button {
+	background: #1e293b;
+	border-bottom: 1px solid #334155;
+	fill: #e2e8f0;
+}
+
+.graph-canvas .react-flow__controls-button:hover {
+	background: #334155;
+}
+
+.graph-canvas .react-flow__minimap {
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+}

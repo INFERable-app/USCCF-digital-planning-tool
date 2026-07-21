@@ -140,7 +140,9 @@
       "edgeIds": [
         "cta-start"
       ],
-      "label": "Welcome"
+      "label": "Welcome",
+      "positionX": 0,
+      "positionY": 180
     },
     "category": {
       "id": "category",
@@ -155,7 +157,9 @@
         "pick-board",
         "pick-state"
       ],
-      "label": "Organization Category"
+      "label": "Organization Category",
+      "positionX": 0,
+      "positionY": 60
     },
     "role": {
       "id": "role",
@@ -166,7 +170,9 @@
       "edgeIds": [
         "pick-role-coord"
       ],
-      "label": "Primary Role"
+      "label": "Primary Role",
+      "positionX": 340,
+      "positionY": 120
     },
     "challenge": {
       "id": "challenge",
@@ -179,7 +185,9 @@
         "pick-ced-02",
         "pick-ced-03"
       ],
-      "label": "Challenge to Address"
+      "label": "Challenge to Address",
+      "positionX": 680,
+      "positionY": 120
     },
     "context-ced-01": {
       "id": "context-ced-01",
@@ -194,7 +202,9 @@
         "ced01-need-employers",
         "ced01-want-expand"
       ],
-      "label": "Establish Collaborative Network"
+      "label": "Establish Collaborative Network",
+      "positionX": 1020,
+      "positionY": 420
     },
     "context-ced-02": {
       "id": "context-ced-02",
@@ -206,7 +216,9 @@
       "edgeIds": [
         "ced02-same-industry"
       ],
-      "label": "Convene Employers"
+      "label": "Convene Employers",
+      "positionX": 1020,
+      "positionY": 120
     },
     "context-ced-03": {
       "id": "context-ced-03",
@@ -218,7 +230,9 @@
       "edgeIds": [
         "ced03-need-framework"
       ],
-      "label": "Build Consensus"
+      "label": "Build Consensus",
+      "positionX": 1020,
+      "positionY": 0
     },
     "resource-ai-identify-partners": {
       "id": "resource-ai-identify-partners",
@@ -236,7 +250,9 @@
           },
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 600
     },
     "resource-want-expand": {
       "id": "resource-want-expand",
@@ -255,7 +271,9 @@
           "bodyText": "Consider creating an outreach/recruiting toolkit.",
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 240
     },
     "resource-tpm-57-58": {
       "id": "resource-tpm-57-58",
@@ -277,7 +295,9 @@
           ],
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 480
     },
     "resource-tpm-59-64": {
       "id": "resource-tpm-59-64",
@@ -299,7 +319,9 @@
           ],
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 360
     },
     "resource-ced02": {
       "id": "resource-ced02",
@@ -333,7 +355,9 @@
           ],
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 120
     },
     "resource-ced03": {
       "id": "resource-ced03",
@@ -363,7 +387,9 @@
           ],
           "footer": "Return to this tool when you are ready to explore the next step."
         }
-      ]
+      ],
+      "positionX": 1360,
+      "positionY": 0
     }
   }
 }

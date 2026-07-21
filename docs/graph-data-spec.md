@@ -20,6 +20,8 @@ All nodes share these fields:
 | `layout`       | ✓        | string   | `"hero"` (large header + photo) or `"compact"` (small header)                            |
 | `challengeBar` | ✓        | boolean  | Show the blue challenge title bar.                                                       |
 | `edgeIds`      | ✓        | string[] | Ordered list of edge IDs. Controls what options/buttons appear and in what order.        |
+| `positionX`    |          | number   | Canvas X position in the graph editor. Omit to have the editor auto-place the node.      |
+| `positionY`    |          | number   | Canvas Y position in the graph editor. Omit to have the editor auto-place the node.      |
 
 ---
 

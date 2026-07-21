@@ -20,18 +20,18 @@ app.set('trust proxy', 1);
 app.use(cors({ origin: config.WEB_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(
-  session({
-    secret: config.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    // In-memory store — not suitable for production. Replace with Redis before deploying.
-    cookie: {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: config.NODE_ENV === 'production',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    },
-  })
+	session({
+		secret: config.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		// In-memory store — not suitable for production. Replace with Redis before deploying.
+		cookie: {
+			httpOnly: true,
+			sameSite: 'lax',
+			secure: config.NODE_ENV === 'production',
+			maxAge: 7 * 24 * 60 * 60 * 1000
+		}
+	})
 );
 
 app.use('/healthz', healthRouter);
@@ -40,17 +40,23 @@ app.use('/api', graphRouter);
 app.use('/api', progressRouter);
 
 app.get('/admin', (req, res) => {
-  if (!req.session.user) {
-    req.session.returnTo = '/admin';
-    res.redirect('/auth/login');
-    return;
-  }
-  const admins = config.ADMIN_EMAILS.split(',').map((s) => s.trim()).filter(Boolean);
-  if (!admins.includes(req.session.user.email)) {
-    res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
-    return;
-  }
-  res.sendFile(resolve(__dirname, '../../docs/index.html'));
+	if (!req.session.user) {
+		req.session.returnTo = '/admin';
+		res.redirect('/auth/login');
+		return;
+	}
+	const admins = config.ADMIN_EMAILS.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	if (!admins.includes(req.session.user.email)) {
+		res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
+		return;
+	}
+	if (config.NODE_ENV === 'production') {
+		res.sendFile(resolve(__dirname, '../../dist/admin.html'));
+		return;
+	}
+	res.redirect('/admin.html');
 });
 
 export default app;
