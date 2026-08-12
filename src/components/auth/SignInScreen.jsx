@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './SignInScreen.css';
 
 const IMG_LOGO = '/images/uscoc-logo.png';
@@ -32,7 +33,48 @@ function AppleIcon() {
 	);
 }
 
+function LockIcon() {
+	return (
+		<svg className="signin-privacy-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+			<rect x="4.5" y="10.5" width="15" height="9.5" rx="1.5" />
+			<path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5" />
+		</svg>
+	);
+}
+
+function ActivityIcon() {
+	return (
+		<svg className="signin-privacy-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+			<path d="M3 12h4l2.5-7 5 14L17 12h4" />
+		</svg>
+	);
+}
+
+function SlidersIcon() {
+	return (
+		<svg className="signin-privacy-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+			<line x1="5" y1="5" x2="5" y2="19" />
+			<circle cx="5" cy="9" r="2.3" />
+			<line x1="12" y1="5" x2="12" y2="19" />
+			<circle cx="12" cy="15" r="2.3" />
+			<line x1="19" y1="5" x2="19" y2="19" />
+			<circle cx="19" cy="7.5" r="2.3" />
+		</svg>
+	);
+}
+
+function GearIcon() {
+	return (
+		<svg className="signin-privacy-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+			<circle cx="12" cy="12" r="3.2" />
+			<path d="M12 3.5v2.4M12 18.1v2.4M20.5 12h-2.4M5.9 12H3.5M17.8 6.2l-1.7 1.7M7.9 16.1l-1.7 1.7M17.8 17.8l-1.7-1.7M7.9 7.9 6.2 6.2" />
+		</svg>
+	);
+}
+
 export default function SignInScreen() {
+	const [agreed, setAgreed] = useState(false);
+
 	return (
 		<div className="signin-screen">
 			<div className="signin-card">
@@ -48,9 +90,55 @@ export default function SignInScreen() {
 						<p>Start by selecting the goal that best matches what you're trying to accomplish, and follow recommended next steps to help move your workforce initiative forward.</p>
 					</div>
 
+					<div className="signin-privacy">
+						<span className="signin-privacy-eyebrow">Before you continue</span>
+						<h2 className="signin-privacy-title">Data Privacy Notice</h2>
+
+						<div className="signin-privacy-scroll">
+							<h3>What Information We Collect</h3>
+							<div className="signin-privacy-row">
+								<LockIcon />
+								<p><strong>Account Verification:</strong> When you log in via OpenID Single Sign-On (SSO), we immediately convert your email address into a secure cryptographic hash. We do not store your actual email address, name, or direct personally identifiable information (PII).</p>
+							</div>
+							<div className="signin-privacy-row">
+								<ActivityIcon />
+								<p><strong>Usage &amp; Choice Logging:</strong> We record actions you take, preferences you select, and usage activity within the tool.</p>
+							</div>
+
+							<h3>How We Use Your Information</h3>
+							<div className="signin-privacy-row">
+								<SlidersIcon />
+								<p><strong>To Personalize Your Experience:</strong> We use your choices and activity logs to deliver custom features, save your settings, and tailor the app to your needs.</p>
+							</div>
+							<div className="signin-privacy-row">
+								<GearIcon />
+								<p><strong>To Ensure App Functionality:</strong> Logging this activity is essential to the core operation of the web tool; without it, the app cannot maintain your preferences or function correctly.</p>
+							</div>
+
+							<h3>Data Storage &amp; Security</h3>
+							<p>Because your email is hashed, your activity logs cannot be directly traced back to your real-world identity from the logged data.</p>
+							<p>We implement strict security measures to protect log data and maintain the integrity of our systems.</p>
+
+							<p className="signin-privacy-beta">Note: This is a beta test version of the software and is not yet hosted by USCCF.</p>
+
+							<h3>Acknowledgement</h3>
+							<p>By clicking "I Agree", you acknowledge that you understand how this tool processes your hashed login credentials and essential activity logs to deliver a personalized experience.</p>
+						</div>
+
+						<label className="signin-stay">
+							<input
+								type="checkbox"
+								checked={agreed}
+								onChange={(e) => setAgreed(e.target.checked)}
+							/>
+							<span>I Agree</span>
+						</label>
+					</div>
+
 					<div className="signin-providers">
 						<button
 							className="signin-provider-btn"
+							disabled={!agreed}
 							onClick={() => { window.location.href = '/auth/login'; }}
 						>
 							<GoogleIcon />
@@ -64,16 +152,10 @@ export default function SignInScreen() {
 							<AppleIcon />
 							<span>Continue with Apple</span>
 						</button>
+						{!agreed && (
+							<p className="signin-privacy-hint">Accept the notice above to continue.</p>
+						)}
 					</div>
-
-					<hr className="signin-divider" />
-
-					<p className="signin-disclaimer">
-						Log in using one of the providers above to access the tool. We store your authenticated email address to allow you to return to the tool in the future and pick up where you left off.
-					</p>
-					<p className="signin-disclaimer">
-						(If using Apple's "Hide My Email" feature, the tool only stores a unique hidden forwarding email created by apple rather than your primary email.)
-					</p>
 				</div>
 			</div>
 		</div>

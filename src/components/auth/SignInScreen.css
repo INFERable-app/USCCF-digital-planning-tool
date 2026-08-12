@@ -108,16 +108,82 @@
 	flex-shrink: 0;
 }
 
-.signin-divider {
-	border: none;
-	border-top: 1px solid #e0e0e0;
+.signin-privacy {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.signin-privacy-eyebrow {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #8d2f38;
+}
+
+.signin-privacy-title {
+	font-size: 15px;
+	font-weight: 700;
+	color: #222;
+	margin: -4px 0 2px;
+}
+
+.signin-privacy-scroll {
+	max-height: 170px;
+	overflow-y: auto;
+	background: #faf8f6;
+	border: 1px solid #e6e0dc;
+	border-radius: 10px;
+	padding: 12px 14px;
+}
+
+.signin-privacy-scroll h3 {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: #8d2f38;
+	margin: 12px 0 6px;
+}
+
+.signin-privacy-scroll h3:first-child {
+	margin-top: 0;
+}
+
+.signin-privacy-scroll p {
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: #444;
+	margin: 0 0 6px;
+}
+
+.signin-privacy-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.signin-privacy-row p {
 	margin: 0;
 }
 
-.signin-disclaimer {
-	font-size: 14px;
-	color: #b23c38;
-	line-height: 1.45;
+.signin-privacy-icon {
+	flex-shrink: 0;
+	color: #8d2f38;
+	margin-top: 2px;
+}
+
+.signin-privacy-beta {
+	font-style: italic;
+}
+
+.signin-privacy-hint {
+	font-size: 12.5px;
+	color: #8d2f38;
+	text-align: center;
+	margin: 2px 0 0;
 }
 
 .signin-error {
