@@ -17,6 +17,7 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 	const combinedResources = hasPrompt
 		? [
 				{
+					_key: '__prompt',
 					type: 'prompt',
 					label: resolver.promptBlock.label || 'AI Prompt Template',
 					text: resolver.promptBlock.text || ''
@@ -72,13 +73,19 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 				onChange({
 					...rest,
 					resources: [
-						{ type: newType, label: resolver.promptBlock.label || '', description: '' },
+						{
+							_key: crypto.randomUUID(),
+							type: newType,
+							label: resolver.promptBlock.label || '',
+							description: ''
+						},
 						...resources
 					]
 				});
 			} else {
 				const nextResources = [...resources];
 				nextResources[resourceIndex] = {
+					_key: resources[resourceIndex]._key,
 					type: newType,
 					label: resources[resourceIndex].label || '',
 					description: resources[resourceIndex].description || ''
@@ -111,7 +118,10 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 	function addResource() {
 		onChange({
 			...resolver,
-			resources: [...resources, { type: 'link', label: '', url: '', description: '' }]
+			resources: [
+				...resources,
+				{ _key: crypto.randomUUID(), type: 'link', label: '', url: '', description: '' }
+			]
 		});
 	}
 
@@ -159,7 +169,7 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 				<label>Resources</label>
 				{combinedResources.map((res, i) => (
 					<ResourceRow
-						key={i}
+						key={res._key ?? i}
 						resource={res}
 						onChange={(patch) => updateResourceAt(i, patch)}
 						onRemove={() => removeResourceAt(i)}

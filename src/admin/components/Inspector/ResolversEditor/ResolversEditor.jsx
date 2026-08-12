@@ -15,7 +15,7 @@ export default function ResolversEditor({ resolvers, onChange }) {
 	}
 
 	function add() {
-		onChange([...list, { when: {} }]);
+		onChange([...list, { _key: crypto.randomUUID(), when: {} }]);
 	}
 
 	return (
@@ -25,7 +25,7 @@ export default function ResolversEditor({ resolvers, onChange }) {
 			)}
 			{list.map((resolver, i) => (
 				<ResolverBox
-					key={i}
+					key={resolver._key ?? i}
 					resolver={resolver}
 					index={i}
 					onChange={(updated) => updateAt(i, updated)}

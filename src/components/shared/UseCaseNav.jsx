@@ -62,12 +62,18 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 
 export default function UseCaseNav() {
 	const { toggle, close } = useDrawer();
-	const { nodes, edges, currentNodeId, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
+	const { nodes, edges, currentEdgeIds, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
 
+	// A row is active if its own edge path (start -> that row) is an exact
+	// prefix of the actual structural path to currentNodeId, so it stays
+	// highlighted no matter how many further screens the user has since
+	// navigated through. Derived fresh from currentNodeId every render (see
+	// getNodePath), not accumulated session state, so a previously-visited
+	// then-abandoned branch never lights up alongside the real current one.
 	function isActive(row) {
-		if (row.targetNodeId === currentNodeId) return true;
+		if (row.edgePath.every((id, i) => currentEdgeIds[i] === id)) return true;
 		return row.children?.some(isActive) ?? false;
 	}
 

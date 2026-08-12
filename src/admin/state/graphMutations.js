@@ -120,6 +120,17 @@ export function retargetEdge(nodes, edges, edgeId, newTargetId) {
 	return { nodes, edges: renamedEdges };
 }
 
+export function reconnectEdgeTarget(nodes, edges, edgeId, newTargetId) {
+	return {
+		nodes,
+		edges: edges.map((e) =>
+			e.id === edgeId
+				? { ...e, target: newTargetId, data: { ...e.data, targetNodeId: newTargetId } }
+				: e
+		)
+	};
+}
+
 // Reorders a node's outgoing edges (drag-reorder in the inspector) by rewriting
 // the `order` field on each of that node's edges to match `orderedEdgeIds`.
 export function reorderNodeEdges(nodes, edges, sourceId, orderedEdgeIds) {

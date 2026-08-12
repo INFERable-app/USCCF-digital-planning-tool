@@ -6,6 +6,7 @@ import healthRouter from './routes/health.js';
 import oidcRouter from './connectors/oidc/routes.js';
 import graphRouter from './connectors/graph/routes.js';
 import progressRouter from './connectors/progress/routes.js';
+import resourcesRouter from './connectors/resources/routes.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/healthz', healthRouter);
 app.use('/auth', oidcRouter);
 app.use('/api', graphRouter);
 app.use('/api', progressRouter);
+app.use('/api', resourcesRouter);
 
 app.get('/admin', (req, res) => {
 	if (!req.session.user) {

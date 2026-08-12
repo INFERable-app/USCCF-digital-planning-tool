@@ -26,8 +26,11 @@ services:
       WEB_ORIGIN: ${WEB_ORIGIN}
       NODE_ENV: production
       ADMIN_EMAILS: ${ADMIN_EMAILS}
+      UPLOADS_DIR: ./uploads
     ports:
       - "127.0.0.1:3001:3001"
+    volumes:
+      - uploads_data:/app/server/uploads
     depends_on:
       - neo4j
 
@@ -47,3 +50,4 @@ services:
 
 volumes:
   neo4j_data:
+  uploads_data:

@@ -17,6 +17,9 @@ export default function GraphCanvas({
 	onConnect,
 	onConnectStart,
 	onConnectEnd,
+	onReconnect,
+	onReconnectStart,
+	onReconnectEnd,
 	onPaneClick,
 	nodesDraggable = true
 }) {
@@ -59,6 +62,10 @@ export default function GraphCanvas({
 				onConnect={onConnect}
 				onConnectStart={onConnectStart}
 				onConnectEnd={onConnectEnd}
+				onReconnect={onReconnect}
+				onReconnectStart={onReconnectStart}
+				onReconnectEnd={onReconnectEnd}
+				edgesReconnectable
 				onPaneClick={onPaneClick}
 				nodesDraggable={nodesDraggable}
 				deleteKeyCode={null}

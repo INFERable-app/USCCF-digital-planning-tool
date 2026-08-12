@@ -14,6 +14,7 @@ const envSchema = z.object({
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
   NODE_ENV: z.string().default('development'),
   ADMIN_EMAILS: z.string().default(''),
+  UPLOADS_DIR: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);

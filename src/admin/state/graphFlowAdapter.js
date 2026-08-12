@@ -8,6 +8,20 @@
 // toWizardGraph() sorts by when reconstructing edgeIds — reordering (drag-reorder
 // in the inspector) updates this field rather than relying on array/render order.
 
+// Backfills a stable, client-only `_key` on each resolver/resource so the admin
+// editor can key React lists by identity instead of array index — otherwise an
+// operation that shifts array position (e.g. converting a resource to a prompt
+// block, which always displays first) makes React reuse an uncontrolled input's
+// DOM node for a different resource and show stale text. Never sent back to the
+// server — sanitizeResolvers() only copies known fields into the save payload.
+function withStableKeys(resolvers) {
+	return (resolvers || []).map((r) => ({
+		...r,
+		_key: r._key || crypto.randomUUID(),
+		resources: (r.resources || []).map((res) => ({ ...res, _key: res._key || crypto.randomUUID() }))
+	}));
+}
+
 export function toFlowNodes(wizardGraph) {
 	return Object.values(wizardGraph.nodes).map((node) => ({
 		id: node.id,
@@ -18,6 +32,7 @@ export function toFlowNodes(wizardGraph) {
 		},
 		data: {
 			...node,
+			...(node.resolvers ? { resolvers: withStableKeys(node.resolvers) } : {}),
 			hasPosition: node.positionX !== undefined && node.positionY !== undefined
 		}
 	}));

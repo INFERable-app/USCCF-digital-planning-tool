@@ -1,5 +1,5 @@
 import './Toolbar.css';
-import { LayoutGrid, Maximize2, Save } from 'lucide-react';
+import { LayoutGrid, Maximize2, Redo2, Save, Undo2 } from 'lucide-react';
 import AddNodeMenu from './AddNodeMenu.jsx';
 
 export default function Toolbar({
@@ -8,7 +8,11 @@ export default function Toolbar({
 	onAddNode,
 	onAutoArrange,
 	onFitView,
-	onSaveClick
+	onSaveClick,
+	onUndo,
+	onRedo,
+	canUndo,
+	canRedo
 }) {
 	return (
 		<header className="admin-toolbar">
@@ -19,6 +23,26 @@ export default function Toolbar({
 			<div className="admin-toolbar__actions">
 				{dirty && <span className="admin-toolbar__dirty">● Unsaved changes</span>}
 				<AddNodeMenu onAdd={onAddNode} />
+				<button
+					type="button"
+					className="admin-toolbar__btn"
+					onClick={onUndo}
+					disabled={!canUndo}
+					title="Undo"
+				>
+					<Undo2 size={14} />
+					Undo
+				</button>
+				<button
+					type="button"
+					className="admin-toolbar__btn"
+					onClick={onRedo}
+					disabled={!canRedo}
+					title="Redo"
+				>
+					<Redo2 size={14} />
+					Redo
+				</button>
 				<button type="button" className="admin-toolbar__btn" onClick={onAutoArrange}>
 					<LayoutGrid size={14} />
 					Auto-arrange

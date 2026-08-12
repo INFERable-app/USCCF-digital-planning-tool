@@ -14,9 +14,9 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
             <CompactHeader onBack={onBack} />
             <div className="survey-content">
                 <PreviousAnswerHeading label={previousAnswerLabel} />
+                <p className="results-label">Recommended next step:</p>
                 {result.recommendation && (
                     <>
-                        <p className="results-label">Recommended next step:</p>
                         <p className="results-recommendation">{result.recommendation}</p>
                     </>
                 )}
@@ -40,6 +40,7 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
                     </a>
                 )}
                 {result.footer && <p className="results-footer">{result.footer}</p>}
+                <p className="recommendation-next-text">After you perform the recommended step, return to the tool when you need more guidance.</p>
             </div>
             <div className="bottom-cta">
                 {onBack && (

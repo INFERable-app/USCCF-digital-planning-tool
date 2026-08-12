@@ -8,7 +8,7 @@ export default function ResourceItem({ item, showDescription = true }) {
 			<>
 				<div className="resource-card-header">
 					<span className="resource-label">{item.label}</span>
-					<span className="resource-pdf-badge">p. {item.pages}</span>
+					{item.pages && <span className="resource-pdf-badge">p. {item.pages}</span>}
 				</div>
 				{hasDescription && <p className="resource-description">{item.description}</p>}
 			</>

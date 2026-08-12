@@ -1,5 +1,5 @@
 import './AdminApp.css';
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { ReactFlowProvider, useNodesState, useEdgesState, useReactFlow } from '@xyflow/react';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useAdminGraph } from './state/useAdminGraph.js';
@@ -33,7 +33,35 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	const [pendingDelete, setPendingDelete] = useState(null);
 	const [connectDraft, setConnectDraft] = useState(null);
 	const [isConnecting, setIsConnecting] = useState(false);
+	const [past, setPast] = useState([]);
+	const [future, setFuture] = useState([]);
+	const dragSnapshotRef = useRef(null);
 	const { fitView, screenToFlowPosition } = useReactFlow();
+
+	function pushHistory(snapshot) {
+		setPast((p) => [...p.slice(-99), snapshot]);
+		setFuture([]);
+	}
+
+	function undo() {
+		if (past.length === 0) return;
+		const previous = past[past.length - 1];
+		setPast((p) => p.slice(0, -1));
+		setFuture((f) => [{ nodes, edges }, ...f]);
+		setNodes(previous.nodes);
+		setEdges(previous.edges);
+		setDirty(true);
+	}
+
+	function redo() {
+		if (future.length === 0) return;
+		const next = future[0];
+		setFuture((f) => f.slice(1));
+		setPast((p) => [...p, { nodes, edges }]);
+		setNodes(next.nodes);
+		setEdges(next.edges);
+		setDirty(true);
+	}
 
 	const selection = useMemo(() => {
 		const selectedNode = nodes.find((n) => n.selected);
@@ -55,13 +83,24 @@ function GraphEditorInner({ graph, userLabel, save }) {
 
 	const handleNodesChange = useCallback(
 		(changes) => {
+			const positionChange = changes.find((change) => change.type === 'position');
+			if (positionChange?.dragging && !dragSnapshotRef.current) {
+				dragSnapshotRef.current = { nodes, edges };
+			}
 			onNodesChange(changes);
-			if (changes.some((change) => change.type === 'position')) setDirty(true);
+			if (positionChange) {
+				setDirty(true);
+				if (positionChange.dragging === false && dragSnapshotRef.current) {
+					pushHistory(dragSnapshotRef.current);
+					dragSnapshotRef.current = null;
+				}
+			}
 		},
-		[onNodesChange]
+		[onNodesChange, nodes, edges]
 	);
 
 	function handleAutoArrange() {
+		pushHistory({ nodes, edges });
 		setNodes((current) => layoutAll(current, edges));
 		setDirty(true);
 	}
@@ -73,6 +112,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 
 	function handleAddNode(type) {
 		const position = screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+		pushHistory({ nodes, edges });
 		const { nodes: nextNodes, newNodeId } = mutations.addNode(nodes, edges, { type, position });
 		setNodes(nextNodes);
 		setDirty(true);
@@ -80,6 +120,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	}
 
 	function handleConnect(connection) {
+		pushHistory({ nodes, edges });
 		const { edges: nextEdges, newEdgeId } = mutations.addEdge(nodes, edges, {
 			sourceId: connection.source,
 			targetId: connection.target,
@@ -120,7 +161,40 @@ function GraphEditorInner({ graph, userLabel, save }) {
 		});
 	}
 
+	function handleReconnectStart() {
+		setIsConnecting(true);
+	}
+
+	function handleReconnect(oldEdge, newConnection) {
+		pushHistory({ nodes, edges });
+		const { edges: nextEdges } = mutations.reconnectEdgeTarget(
+			nodes,
+			edges,
+			oldEdge.id,
+			newConnection.target
+		);
+		setEdges(nextEdges);
+		setDirty(true);
+	}
+
+	function handleReconnectEnd(event, oldEdge, handleType, connectionState) {
+		setIsConnecting(false);
+		if (connectionState.isValid || handleType !== 'target') return;
+		const point = 'changedTouches' in event ? event.changedTouches[0] : event;
+
+		// Same forgiving-drop-target behavior as handleConnectEnd: a drop anywhere
+		// on another node's card reconnects the edge to that node.
+		const droppedNodeEl = document
+			.elementFromPoint(point.clientX, point.clientY)
+			?.closest('.react-flow__node');
+		const droppedNodeId = droppedNodeEl?.getAttribute('data-id');
+		if (droppedNodeId && droppedNodeId !== oldEdge.target) {
+			handleReconnect(oldEdge, { source: oldEdge.source, target: droppedNodeId });
+		}
+	}
+
 	function handleConfirmConnectedNode({ type, label }) {
+		pushHistory({ nodes, edges });
 		const {
 			nodes: nextNodes,
 			edges: nextEdges,
@@ -143,6 +217,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	}
 
 	function handleConfirmDelete() {
+		pushHistory({ nodes, edges });
 		const { type, id } = pendingDelete;
 		if (type === 'node') {
 			const { nodes: nextNodes, edges: nextEdges } = mutations.deleteNode(nodes, edges, id);
@@ -158,9 +233,15 @@ function GraphEditorInner({ graph, userLabel, save }) {
 
 	useEffect(() => {
 		function handleKeyDown(e) {
-			if (!selection) return;
 			const tag = document.activeElement?.tagName;
 			if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
+				e.preventDefault();
+				if (e.shiftKey) redo();
+				else undo();
+				return;
+			}
+			if (!selection) return;
 			if (e.key === 'Delete' || e.key === 'Backspace') {
 				setPendingDelete({
 					type: selection.type,
@@ -172,9 +253,10 @@ function GraphEditorInner({ graph, userLabel, save }) {
 		}
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
-	}, [selection]);
+	}, [selection, nodes, edges, past, future]);
 
 	function updateNodeData(nodeId, patch) {
+		pushHistory({ nodes, edges });
 		setNodes((current) =>
 			current.map((n) => (n.id === nodeId ? { ...n, data: { ...n.data, ...patch } } : n))
 		);
@@ -189,6 +271,8 @@ function GraphEditorInner({ graph, userLabel, save }) {
 				oldId,
 				newId
 			);
+			if (nextNodes === nodes) return;
+			pushHistory({ nodes, edges });
 			setNodes(nextNodes);
 			setEdges(nextEdges);
 			setDirty(true);
@@ -199,12 +283,14 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	}
 
 	function reorderNodeEdges(nodeId, orderedIds) {
+		pushHistory({ nodes, edges });
 		const { edges: nextEdges } = mutations.reorderNodeEdges(nodes, edges, nodeId, orderedIds);
 		setEdges(nextEdges);
 		setDirty(true);
 	}
 
 	function updateEdgeData(edgeId, patch) {
+		pushHistory({ nodes, edges });
 		setEdges((current) =>
 			current.map((e) => {
 				if (e.id !== edgeId) return e;
@@ -225,6 +311,8 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	function renameEdgeId(oldId, newId) {
 		try {
 			const { edges: nextEdges } = mutations.renameEdgeId(nodes, edges, oldId, newId);
+			if (nextEdges === edges) return;
+			pushHistory({ nodes, edges });
 			setEdges(nextEdges);
 			setDirty(true);
 			selectOnly('edge', newId);
@@ -252,6 +340,10 @@ function GraphEditorInner({ graph, userLabel, save }) {
 				onAutoArrange={handleAutoArrange}
 				onFitView={() => fitView({ duration: 300 })}
 				onSaveClick={() => setShowSaveModal(true)}
+				onUndo={undo}
+				onRedo={redo}
+				canUndo={past.length > 0}
+				canRedo={future.length > 0}
 			/>
 			<div className="admin-shell__main">
 				<GraphCanvas
@@ -262,6 +354,9 @@ function GraphEditorInner({ graph, userLabel, save }) {
 					onConnect={handleConnect}
 					onConnectStart={handleConnectStart}
 					onConnectEnd={handleConnectEnd}
+					onReconnect={handleReconnect}
+					onReconnectStart={handleReconnectStart}
+					onReconnectEnd={handleReconnectEnd}
 					onPaneClick={clearSelection}
 					nodesDraggable={!isConnecting}
 				/>

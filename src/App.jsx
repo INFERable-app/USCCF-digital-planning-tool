@@ -58,8 +58,8 @@ function AppContent() {
 		setShowResume(false);
 	}
 
-	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, history, currentNodeId);
 	const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
+	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
 
 	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
@@ -69,6 +69,7 @@ function AppContent() {
 			edges={edges}
 			answers={answers}
 			currentNodeId={currentNodeId}
+			currentEdgeIds={path.map((p) => p.edgeId).filter(Boolean)}
 			startNodeId={startNodeId}
 			jumpAlongPath={jumpAlongPath}
 		>

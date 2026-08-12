@@ -155,7 +155,35 @@
 
 .resource-row__inline {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 0.35rem;
+	align-items: center;
+}
+
+.resource-row__checkbox {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	flex: 1 1 100%;
+	font-size: 0.72rem;
+	font-weight: 500;
+	color: #475569;
+	cursor: pointer;
+}
+
+.resource-row__checkbox input {
+	margin: 0;
+}
+
+.resource-row__inline input[type='file'] {
+	flex: 1 1 auto;
+	min-width: 8rem;
+	font-size: 0.68rem;
+}
+
+.resource-row__uploading {
+	font-size: 0.68rem;
+	color: #64748b;
 }
 
 .resource-row__warning {

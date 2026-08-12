@@ -1,3 +1,5 @@
+import { flushSync } from 'react-dom';
+
 export default function WhenConditionRow({
 	conditionKey,
 	values,
@@ -13,13 +15,13 @@ export default function WhenConditionRow({
 				type="text"
 				defaultValue={displayKey}
 				placeholder="Answer key (e.g. challenge)"
-				onBlur={(e) => onChangeKey(e.target.value)}
+				onBlur={(e) => flushSync(() => onChangeKey(e.target.value))}
 			/>
 			<input
 				type="text"
 				defaultValue={(values || []).join(', ')}
 				placeholder="Accepted values (comma-separated)"
-				onBlur={(e) => onChangeValues(e.target.value)}
+				onBlur={(e) => flushSync(() => onChangeValues(e.target.value))}
 			/>
 			<button type="button" onClick={onRemove} aria-label="Remove condition">
 				&minus;
