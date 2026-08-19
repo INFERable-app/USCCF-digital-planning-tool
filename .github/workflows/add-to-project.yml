@@ -1,0 +1,28 @@
+name: Global Project Board Sync
+
+# ---------------------------------------------------------------------------
+# This file is copied as-is into every repo -- nothing below needs editing.
+# It always points at the one universal org project board. The Repository
+# field on the board is a built-in system field that GitHub populates
+# automatically for every linked issue, so no extra step is needed to tag
+# items with their source repo -- just make it visible on whichever project
+# views you want it in.
+#
+# Per-repo requirement: the repo secret PROJECT_TOKEN must exist (classic
+# PAT with the `project` scope). The default GITHUB_TOKEN can't write to
+# org-level projects.
+# ---------------------------------------------------------------------------
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sync-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto Add to Project
+        uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/orgs/INFERable-app/projects/18
+          github-token: ${{ secrets.PROJECT_TOKEN }}
