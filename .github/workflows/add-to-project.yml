@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto Add to Project
-        uses: actions/add-to-project@v1
+        uses: actions/add-to-project@v2
         with:
           project-url: https://github.com/orgs/INFERable-app/projects/18
           github-token: ${{ secrets.PROJECT_TOKEN }}
