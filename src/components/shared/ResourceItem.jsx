@@ -1,7 +1,12 @@
 import './ResourceItem.css';
+import PromptBlock from './PromptBlock.jsx';
 export default function ResourceItem({ item, showDescription = true }) {
 	const hasDescription = showDescription && !!(item.description && item.description.trim());
 	const cardClass = (base) => (hasDescription ? `${base} resource-card--expanded` : base);
+
+	if (item.type === 'prompt') {
+		return <PromptBlock label={item.label} text={item.text} />;
+	}
 
 	if (item.type === 'pdf') {
 		const content = (

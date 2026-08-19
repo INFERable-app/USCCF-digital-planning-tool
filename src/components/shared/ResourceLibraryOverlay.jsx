@@ -10,12 +10,14 @@ const TABS = [
 	{ id: 'foundational', label: 'Foundational' },
 	{ id: 'employer-demand', label: 'Employer Demand' },
 	{ id: 'training-alignment', label: 'Training Alignment' },
+	{ id: 'templates', label: 'Templates' },
 ];
 
 const SECTION_LABELS = {
 	foundational: 'Foundational',
 	'employer-demand': 'Employer Demand',
 	'training-alignment': 'Training Alignment',
+	templates: 'Templates',
 };
 
 function ResourceEntry({ item }) {
