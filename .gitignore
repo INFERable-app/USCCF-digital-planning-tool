@@ -28,3 +28,6 @@ test-results
 
 # Other files
 *.pdf
+
+# Local-only ops scripts
+/scripts/sync-dev-to-staging.sh
