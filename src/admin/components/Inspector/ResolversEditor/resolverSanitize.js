@@ -3,34 +3,28 @@
 // "is this resource resolvable," shared by the live in-editor warning and the
 // Save-time filter, so the two never quietly disagree about what counts as complete.
 
-function firstPageNumber(pagesStr) {
-	const match = (pagesStr || '').trim().match(/\d+/);
-	return match ? match[0] : null;
-}
-
 function anchorPageFromUrl(url) {
 	if (!url) return null;
 	const hash = url.split('#')[1];
 	const match = hash && hash.match(/^page=(\d+)$/);
-	return match ? match[1] : null;
+	return match ? Number(match[1]) : null;
 }
 
-// Strips any anchor already on the URL and re-derives it from `pages` (source of truth
-// going forward), or backfills `pages` from an existing anchor if `pages` is empty.
+// Strips any anchor already on the URL and re-derives it from `pageStart` (source of truth
+// going forward), or backfills `pageStart` from an existing anchor if it's empty.
 function reconcilePdfPageAnchor(res) {
 	if (res.wholeDocument) return res;
-	let pages = (res.pages || '').trim();
+	let pageStart = res.pageStart;
 	const url = (res.url || '').trim();
-	if (!pages && url) {
+	if (!pageStart && url) {
 		const anchorPage = anchorPageFromUrl(url);
-		if (anchorPage) pages = anchorPage;
+		if (anchorPage) pageStart = anchorPage;
 	}
 	let nextUrl = url;
-	if (pages && url) {
-		const pageNum = firstPageNumber(pages);
-		if (pageNum) nextUrl = `${url.split('#')[0]}#page=${pageNum}`;
+	if (pageStart && url) {
+		nextUrl = `${url.split('#')[0]}#page=${pageStart}`;
 	}
-	return { ...res, pages, url: nextUrl };
+	return { ...res, pageStart, url: nextUrl };
 }
 
 export function isCompleteResource(res) {
@@ -39,7 +33,7 @@ export function isCompleteResource(res) {
 	if (!res.label || !res.label.trim()) return false;
 	if (type === 'pdf') {
 		if (res.wholeDocument) return true;
-		return !!(res.pages || '').trim() || !!anchorPageFromUrl(res.url);
+		return !!res.pageStart || !!anchorPageFromUrl(res.url);
 	}
 	if (type === 'link') return !!(res.url || '').trim();
 	return true; // reference only ever needs a label, already checked above
@@ -74,29 +68,25 @@ export function sanitizeResolvers(resolvers) {
 			.map((res) => (res.type === 'pdf' ? reconcilePdfPageAnchor(res) : res))
 			.filter(isCompleteResource)
 			.map((res) => {
-				const cleanRes = { type: res.type, label: res.label.trim() };
+				const cleanRes = { type: res.type, label: (res.label || '').trim() };
 				if (res.type === 'pdf') {
 					if (res.wholeDocument) {
 						cleanRes.wholeDocument = true;
 					} else {
-						cleanRes.pages = (res.pages || '').trim();
+						cleanRes.pageStart = res.pageStart;
+						if (res.pageEnd) cleanRes.pageEnd = res.pageEnd;
 					}
 					if (res.url && res.url.trim()) cleanRes.url = res.url.trim();
 				} else if (res.type === 'link') {
 					cleanRes.url = res.url.trim();
+				} else if (res.type === 'prompt') {
+					cleanRes.text = (res.text || '').trim();
 				}
 				if (res.description && res.description.trim())
 					cleanRes.description = res.description.trim();
 				return cleanRes;
 			});
 		if (resources.length) clean.resources = resources;
-
-		if (
-			r.promptBlock &&
-			((r.promptBlock.label || '').trim() || (r.promptBlock.text || '').trim())
-		) {
-			clean.promptBlock = r.promptBlock;
-		}
 
 		return clean;
 	});

@@ -7,7 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "seed:graph": "tsx src/seed/graphSeed.ts"
+    "seed:graph": "tsx src/seed/graphSeed.ts",
+    "migrate:pdf-page-ranges": "tsx src/scripts/migratePdfPageRanges.ts",
+    "migrate:prompt-block-to-resources": "tsx src/scripts/migratePromptBlockToResources.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

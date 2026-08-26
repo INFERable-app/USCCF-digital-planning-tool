@@ -9,18 +9,29 @@ export default function ResourceItem({ item, showDescription = true }) {
 	}
 
 	if (item.type === 'pdf') {
+		const badge = item.wholeDocument
+			? 'Whole document'
+			: item.pageStart
+				? item.pageEnd && item.pageEnd !== item.pageStart
+					? `p. ${item.pageStart}–${item.pageEnd}`
+					: `p. ${item.pageStart}`
+				: null;
+		const href =
+			item.url && item.pageStart && !item.wholeDocument
+				? `${item.url.split('#')[0]}#page=${item.pageStart}`
+				: item.url;
 		const content = (
 			<>
 				<div className="resource-card-header">
 					<span className="resource-label">{item.label}</span>
-					{item.pages && <span className="resource-pdf-badge">p. {item.pages}</span>}
+					{badge && <span className="resource-pdf-badge">{badge}</span>}
 				</div>
 				{hasDescription && <p className="resource-description">{item.description}</p>}
 			</>
 		);
-		return item.url ? (
+		return href ? (
 			<a
-				href={item.url}
+				href={href}
 				className={cardClass('resource-card resource-card--pdf')}
 				target="_blank"
 				rel="noopener noreferrer"

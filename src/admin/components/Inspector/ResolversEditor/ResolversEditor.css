@@ -110,11 +110,31 @@
 	color: #dc2626;
 }
 
+.resolver-box__resource {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.3rem;
+	margin-bottom: 0.5rem;
+}
+
+.resolver-box__resource-handle {
+	flex-shrink: 0;
+	display: flex;
+	color: #cbd5e1;
+	cursor: grab;
+	padding-top: 0.35rem;
+}
+
+.resolver-box__resource-handle:hover {
+	color: #6366f1;
+}
+
 .resource-row {
 	display: flex;
 	gap: 0.4rem;
 	align-items: flex-start;
-	margin-bottom: 0.5rem;
+	flex: 1;
+	min-width: 0;
 }
 
 .resource-row--incomplete {
@@ -179,6 +199,15 @@
 	flex: 1 1 auto;
 	min-width: 8rem;
 	font-size: 0.68rem;
+}
+
+.resource-row__page-range {
+	display: flex;
+	gap: 0.35rem;
+}
+
+.resource-row__page-range input {
+	width: 5.5rem;
 }
 
 .resource-row__uploading {

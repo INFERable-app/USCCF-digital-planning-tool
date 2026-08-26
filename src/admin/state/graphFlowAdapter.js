@@ -1,3 +1,5 @@
+import { sanitizeResolvers } from '../components/Inspector/ResolversEditor/resolverSanitize.js';
+
 // Converts between the server's WizardGraph shape ({ startNodeId, nodes, edges })
 // and React Flow's { nodes, edges } shape.
 //
@@ -71,6 +73,7 @@ export function toWizardGraph(flowNodes, flowEdges, startNodeId, orphanEdges = {
 		void hasPosition;
 		nodes[flowNode.id] = {
 			...node,
+			...(node.resolvers ? { resolvers: sanitizeResolvers(node.resolvers) } : {}),
 			id: flowNode.id,
 			positionX: flowNode.position.x,
 			positionY: flowNode.position.y,

@@ -206,7 +206,6 @@ A `results` node contains a `resolvers` array. The first resolver whose `when` c
   "recommendation": "Red-highlighted lead sentence.",
   "bodyText": "Additional plain text. Use \\n for line breaks.",
   "resources": [...],
-  "promptBlock": { "label": "AI Prompt Template", "text": "Prompt text here..." },
   "footer": "Return to this tool when you are ready to explore the next step."
 }
 ```
@@ -216,8 +215,7 @@ A `results` node contains a `resolvers` array. The first resolver whose `when` c
 | `when`           | object     | Keys are answer keys (e.g. `"challenge"`), values are arrays of accepted answer values. AND across keys, OR within each array. `{}` always matches. |
 | `recommendation` | string     | Rendered in red as the lead recommendation sentence.                                                                                                |
 | `bodyText`       | string     | Plain body text. Supports `\n` for line breaks.                                                                                                     |
-| `resources`      | Resource[] | List of typed resource items (PDF, link, or reference). See below.                                                                                  |
-| `promptBlock`    | object     | Editable AI prompt textarea with copy button: `{ "label": string, "text": string }`                                                                 |
+| `resources`      | Resource[] | List of typed resource items (PDF, link, reference, or prompt). See below. Order in the array is the order they render on the page.                |
 | `footer`         | string     | Small gray closing line.                                                                                                                            |
 
 All fields except `when` are optional — include only what the screen needs.
@@ -226,7 +224,7 @@ All fields except `when` are optional — include only what the screen needs.
 
 ## Resource items
 
-Resources appear as cards inside a resolver. Three types:
+Resources appear as cards inside a resolver, in array order. Four types:
 
 ### `pdf`
 
@@ -234,17 +232,22 @@ Resources appear as cards inside a resolver. Three types:
 {
  "type": "pdf",
  "label": "TPM Academy Curriculum",
- "pages": "57–58",
- "url": "https://example.com/doc.pdf#page=57"
+ "pageStart": 57,
+ "pageEnd": 58,
+ "url": "https://example.com/doc.pdf"
 }
 ```
 
-| Field         | Required | Notes                                                                             |
-| ------------- | -------- | --------------------------------------------------------------------------------- |
-| `label`       | ✓        | Name of the document.                                                             |
-| `pages`       | ✓        | Page range shown as a badge (e.g. `"57–58"`).                                     |
-| `url`         |          | PDF URL with `#page=N` to open at a specific page. Omit to render without a link. |
-| `description` |          | Optional free text shown inside the card, below the label/badge.                  |
+| Field           | Required | Notes                                                                                                                          |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `label`         | ✓        | Name of the document.                                                                                                          |
+| `pageStart`     | ✓\*      | First page of the range, shown as a badge (e.g. `"p. 57–58"`) and used to build the `#page=N` link anchor.                     |
+| `pageEnd`       |          | Last page of the range. Omit (or set equal to `pageStart`) for a single page.                                                  |
+| `wholeDocument` |          | Set `true` instead of `pageStart`/`pageEnd` when the resource isn't about one specific page.                                   |
+| `url`           |          | PDF URL, without a `#page=` fragment — the app appends `#page=<pageStart>` at render/save time. Omit to render without a link. |
+| `description`   |          | Optional free text shown inside the card, below the label/badge.                                                               |
+
+\* Required unless `wholeDocument` is `true`.
 
 ### `link`
 
@@ -268,6 +271,19 @@ Resources appear as cards inside a resolver. Three types:
 | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `label`       | ✓        | Text displayed for the internal/unlinkable resource.                                                             |
 | `description` |          | Optional free text. When present, renders as a bordered card with the label as its header instead of plain text. |
+
+### `prompt`
+
+```json
+{ "type": "prompt", "label": "AI Prompt Template", "text": "Prompt text here..." }
+```
+
+| Field   | Required | Notes                                                                                     |
+| ------- | -------- | ------------------------------------------------------------------------------------------ |
+| `label` | ✓\*      | Shown in the prompt block's title bar.                                                     |
+| `text`  | ✓\*      | Editable textarea content, with a copy button. Always rendered with a caution notice about sensitive/PII data. |
+
+\* At least one of `label` or `text` is required.
 
 ## Example implementation of Coordinating Employer Demand use case
 
@@ -529,7 +545,7 @@ export const nodes = {
     when: {},
     recommendation:
      'Identify local industry associations and organizations that align with your industry focus.',
-    promptBlock: { label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY },
+    resources: [{ type: 'prompt', label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY }],
     footer: FOOTER
    }
   ]
@@ -545,7 +561,7 @@ export const nodes = {
    {
     when: {},
     recommendation: 'Apply strategies to find employer points of contact for target industry.',
-    promptBlock: { label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY },
+    resources: [{ type: 'prompt', label: 'AI Prompt Template', text: AI_PROMPT_IDENTIFY }],
     bodyText: 'Consider creating an outreach/recruiting toolkit.',
     footer: FOOTER
    }

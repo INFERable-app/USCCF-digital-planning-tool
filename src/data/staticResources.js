@@ -61,7 +61,6 @@ export const staticResources = [
 		label: 'Skills Validation Guidebook — Education Design Lab',
 		description: '10-step guide for designing high-quality skill validators. October 2024.',
 		url: 'https://eddesignlab.org/wp-content/uploads/2024/10/A-Skills-Validation-Guidebook-10-Steps-to-Design-a-High-Quality-Skill-Validator-October-2024.pdf',
-		pages: '10 steps',
 		categories: ['training-alignment']
 	},
 	// ── Employer Demand ────────────────────────────────────────────────────────

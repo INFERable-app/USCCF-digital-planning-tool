@@ -244,10 +244,13 @@
         {
           "when": {},
           "recommendation": "Identify local industry associations and organizations that align with your industry focus.",
-          "promptBlock": {
-            "label": "AI Prompt Template",
-            "text": "I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].\n\nHelp me identify:\n• Major employers in this industry in the region\n• Small and mid-sized employers that may be important partners\n• Local industry associations and trade organizations\n• Chambers of commerce and economic development organizations connected to this industry\n• Employer groups already collaborating on workforce or skills initiatives"
-          },
+          "resources": [
+            {
+              "type": "prompt",
+              "label": "AI Prompt Template",
+              "text": "I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].\n\nHelp me identify:\n• Major employers in this industry in the region\n• Small and mid-sized employers that may be important partners\n• Local industry associations and trade organizations\n• Chambers of commerce and economic development organizations connected to this industry\n• Employer groups already collaborating on workforce or skills initiatives"
+            }
+          ],
           "footer": "Return to this tool when you are ready to explore the next step."
         }
       ],
@@ -264,10 +267,13 @@
         {
           "when": {},
           "recommendation": "Apply strategies to find employer points of contact for target industry.",
-          "promptBlock": {
-            "label": "AI Prompt Template",
-            "text": "I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].\n\nHelp me identify:\n• Major employers in this industry in the region\n• Small and mid-sized employers that may be important partners\n• Local industry associations and trade organizations\n• Chambers of commerce and economic development organizations connected to this industry\n• Employer groups already collaborating on workforce or skills initiatives"
-          },
+          "resources": [
+            {
+              "type": "prompt",
+              "label": "AI Prompt Template",
+              "text": "I am organizing a regional employer collaborative focused on [INDUSTRY OR OCCUPATIONAL AREA] in [CITY/REGION/STATE].\n\nHelp me identify:\n• Major employers in this industry in the region\n• Small and mid-sized employers that may be important partners\n• Local industry associations and trade organizations\n• Chambers of commerce and economic development organizations connected to this industry\n• Employer groups already collaborating on workforce or skills initiatives"
+            }
+          ],
           "bodyText": "Consider creating an outreach/recruiting toolkit.",
           "footer": "Return to this tool when you are ready to explore the next step."
         }

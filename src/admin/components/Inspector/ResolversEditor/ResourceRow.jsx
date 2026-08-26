@@ -71,12 +71,30 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
 							Whole document (no specific page)
 						</label>
 						{!resource.wholeDocument && (
-							<input
-								type="text"
-								defaultValue={resource.pages || ''}
-								placeholder="Pages (e.g. 57–58)"
-								onBlur={(e) => flushSync(() => onChange({ pages: e.target.value }))}
-							/>
+							<div className="resource-row__page-range">
+								<input
+									type="number"
+									min="1"
+									defaultValue={resource.pageStart ?? ''}
+									placeholder="Start page"
+									onBlur={(e) =>
+										flushSync(() =>
+											onChange({ pageStart: e.target.value ? Number(e.target.value) : undefined })
+										)
+									}
+								/>
+								<input
+									type="number"
+									min="1"
+									defaultValue={resource.pageEnd ?? ''}
+									placeholder="End page"
+									onBlur={(e) =>
+										flushSync(() =>
+											onChange({ pageEnd: e.target.value ? Number(e.target.value) : undefined })
+										)
+									}
+								/>
+							</div>
 						)}
 						<input
 							key={resource.url || 'empty'}

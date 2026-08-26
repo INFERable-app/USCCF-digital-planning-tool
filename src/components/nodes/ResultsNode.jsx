@@ -2,7 +2,6 @@ import '../shared/survey.css';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import PreviousAnswerHeading from '../shared/PreviousAnswerHeading.jsx';
 import VideoCard from '../shared/VideoCard.jsx';
-import PromptBlock from '../shared/PromptBlock.jsx';
 import ResourceItem from '../shared/ResourceItem.jsx';
 import { resolveResult } from '../../graph/resolveResult.js';
 
@@ -21,15 +20,6 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
                     </>
                 )}
                 {result.bodyText && <p className="body-text">{result.bodyText}</p>}
-                {result.promptBlock && (
-                    <>
-                        <PromptBlock label={result.promptBlock.label} text={result.promptBlock.text} />
-                        <div className="prompt-warning">
-                            <span className="prompt-warning-title">⚠ Caution</span>
-                            Do not include personally identifiable information, confidential employer information, proprietary data, or other sensitive information. Review and verify AI-generated results before outreach or decision-making.
-                        </div>
-                    </>
-                )}
                 {result.videoUrl && <VideoCard url={result.videoUrl} alt={result.videoAlt} />}
                 {result.resources && result.resources.map((item, i) => (
                     <ResourceItem key={i} item={item} />
