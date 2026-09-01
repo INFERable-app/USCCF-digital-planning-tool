@@ -11,22 +11,33 @@ const NODE_COMPONENTS = {
 	radioSurvey: RadioSurveyNode,
 	checkboxSurvey: CheckboxSurveyNode,
 	videoInfo: VideoInfoNode,
-	results: ResultsNode,
+	results: ResultsNode
 };
 
-export default function NodeRenderer({ node, edges, answers, advance, onBack, previousAnswerLabel }) {
+export default function NodeRenderer({
+	node,
+	nodes,
+	edges,
+	answers,
+	advance,
+	onBack,
+	previousAnswerLabel,
+	isStartNode
+}) {
 	const NodeComponent = NODE_COMPONENTS[node.type];
 	const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
 
 	return (
 		<NodeComponent
 			node={node}
+			nodes={nodes}
 			edges={edges}
 			nodeEdges={nodeEdges}
 			answers={answers}
 			advance={advance}
 			onBack={onBack}
 			previousAnswerLabel={previousAnswerLabel}
+			isStartNode={isStartNode}
 		/>
 	);
 }

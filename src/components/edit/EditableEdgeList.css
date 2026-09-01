@@ -1,0 +1,35 @@
+.edge-list--editing {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.edge-list__row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.edge-list__add {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	/* Aligns with the option column, clearing the grip and the two chips. */
+	margin: 6px 76px 0 28px;
+	padding: 14px 24px;
+	background: white;
+	border: 1px dashed #94a3b8;
+	border-radius: 6px;
+	color: #475569;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	letter-spacing: 0.02em;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.edge-list__add:hover {
+	background: #f8fafc;
+	border-color: #64748b;
+}

@@ -2,10 +2,13 @@ import './UserMenu.css';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
+import { useEditMode } from '../../contexts/EditModeContext.jsx';
+import { Pencil } from 'lucide-react';
 
 export default function UserMenu() {
 	const { user, signOut } = useAuth();
 	const { openResourceLibrary } = useWizardNav();
+	const { canEdit, editMode, enter } = useEditMode();
 	const [open, setOpen] = useState(false);
 	const ref = useRef(null);
 
@@ -55,6 +58,19 @@ export default function UserMenu() {
 					>
 						Resource Library
 					</button>
+					{canEdit && !editMode && (
+						<button
+							className="user-dropdown-item user-dropdown-item--edit"
+							onClick={() => {
+								enter();
+								setOpen(false);
+							}}
+							role="menuitem"
+						>
+							<Pencil size={15} />
+							Edit Mode
+						</button>
+					)}
 					<button className="user-dropdown-signout" onClick={signOut} role="menuitem">
 						Sign out
 					</button>

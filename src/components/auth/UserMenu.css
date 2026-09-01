@@ -106,3 +106,13 @@
 .user-dropdown-signout:hover {
 	background: #faf0f0;
 }
+
+.user-dropdown-item--edit {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+}
+
+.user-dropdown-item--edit svg {
+	color: #475569;
+}

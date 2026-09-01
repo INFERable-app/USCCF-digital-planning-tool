@@ -2,9 +2,22 @@ import '../shared/survey.css';
 import { useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import CheckboxEdge from '../edges/CheckboxEdge.jsx';
+import EditableText from '../edit/EditableText.jsx';
+import EditableEdgeList from '../edit/EditableEdgeList.jsx';
+import ScreenActions from '../edit/ScreenActions.jsx';
+import { useEditMode } from '../../contexts/EditModeContext.jsx';
 
-export default function CheckboxSurveyNode({ node, edges, nodeEdges, advance, onBack }) {
+export default function CheckboxSurveyNode({
+	node,
+	nodes,
+	edges,
+	nodeEdges,
+	advance,
+	onBack,
+	isStartNode
+}) {
 	const [selected, setSelected] = useState(new Set());
+	const { editMode, setNodeField, setEdgeField } = useEditMode();
 	const submitEdge = edges[node.submitEdgeId];
 
 	function handleToggle(edgeId) {
@@ -20,8 +33,19 @@ export default function CheckboxSurveyNode({ node, edges, nodeEdges, advance, on
 		<div className="screen screen-compact">
 			<CompactHeader onBack={onBack} />
 			<div className="survey-content">
-				<p className="survey-question">{node.question}</p>
-				<div className="checkbox-list">
+				<ScreenActions node={node} isStartNode={isStartNode} />
+				<EditableText
+					className="survey-question"
+					value={node.question}
+					placeholder="Question"
+					onCommit={(v) => setNodeField(node.id, 'question', v)}
+				/>
+				<EditableEdgeList
+					className="checkbox-list"
+					nodeId={node.id}
+					nodeEdges={nodeEdges}
+					nodes={nodes}
+				>
 					{nodeEdges.map((edge) => (
 						<CheckboxEdge
 							key={edge.id}
@@ -30,7 +54,7 @@ export default function CheckboxSurveyNode({ node, edges, nodeEdges, advance, on
 							onToggle={handleToggle}
 						/>
 					))}
-				</div>
+				</EditableEdgeList>
 			</div>
 			<div className="bottom-cta">
 				{onBack && (
@@ -40,9 +64,15 @@ export default function CheckboxSurveyNode({ node, edges, nodeEdges, advance, on
 				)}
 				<button
 					className="btn-primary"
-					onClick={() => advance(node.submitEdgeId, [...selected])}
+					onClick={() => !editMode && advance(node.submitEdgeId, [...selected])}
 				>
-					{submitEdge?.label ?? 'Submit'}
+					<EditableText
+						as="span"
+						value={submitEdge?.label ?? 'Submit'}
+						multiline={false}
+						placeholder="Submit"
+						onCommit={(v) => submitEdge && setEdgeField(submitEdge.id, 'label', v)}
+					/>
 				</button>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import { TextField } from '../Field.jsx';
+import { TextField } from '../../../../components/editor/Field.jsx';
 
 export default function MultiChoiceForm({ node, onChange }) {
 	return (

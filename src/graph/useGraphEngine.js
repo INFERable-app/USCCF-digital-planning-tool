@@ -74,6 +74,17 @@ export function useGraphEngine() {
 		return true;
 	}
 
+	// Edit mode navigates straight to a screen (e.g. into a newly created one)
+	// rather than along an edge, so it records history the way advance() does
+	// without touching answers.
+	function goToNode(nodeId) {
+		if (!nodeId || nodeId === currentNodeId) return;
+		setHistory((prev) => [...prev, currentNodeId]);
+		setCurrentNodeId(nodeId);
+		window.history.pushState({}, '');
+		window.scrollTo(0, 0);
+	}
+
 	function restore(progress) {
 		setCurrentNodeId(progress.currentNodeId);
 		setAnswers(progress.answers);
@@ -88,5 +99,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, restore };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, goToNode, restore, graph, setGraph };
 }

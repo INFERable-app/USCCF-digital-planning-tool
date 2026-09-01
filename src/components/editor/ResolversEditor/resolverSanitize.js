@@ -64,6 +64,14 @@ export function sanitizeResolvers(resolvers) {
 		if (r.bodyText && r.bodyText.trim()) clean.bodyText = r.bodyText;
 		if (r.footer && r.footer.trim()) clean.footer = r.footer;
 
+		// ResultsNode renders these three, so they must survive a save even
+		// though no editor form exposes them yet.
+		if (r.videoUrl && r.videoUrl.trim()) clean.videoUrl = r.videoUrl;
+		if (r.videoAlt && r.videoAlt.trim()) clean.videoAlt = r.videoAlt;
+		if (r.cta && r.cta.label && r.cta.url) {
+			clean.cta = { label: r.cta.label, url: r.cta.url };
+		}
+
 		const resources = (r.resources || [])
 			.map((res) => (res.type === 'pdf' ? reconcilePdfPageAnchor(res) : res))
 			.filter(isCompleteResource)

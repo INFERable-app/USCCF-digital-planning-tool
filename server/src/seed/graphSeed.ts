@@ -21,6 +21,10 @@ async function seed() {
       'CREATE CONSTRAINT IF NOT EXISTS FOR (n:WizardNode) REQUIRE n.id IS UNIQUE'
     );
 
+    await session.run(
+      'CREATE CONSTRAINT IF NOT EXISTS FOR (a:Admin) REQUIRE a.email IS UNIQUE'
+    );
+
     for (const node of Object.values(graphData.nodes)) {
       await session.run('MERGE (n:WizardNode {id: $id}) SET n = $props', {
         id: node.id,

@@ -1,4 +1,4 @@
-import ResolversEditor from '../ResolversEditor/ResolversEditor.jsx';
+import ResolversEditor from '../../../../components/editor/ResolversEditor/ResolversEditor.jsx';
 
 export default function ResultsForm({ node, onChange }) {
 	return (

@@ -1,4 +1,4 @@
-import { TextField } from '../Field.jsx';
+import { TextField } from '../../../../components/editor/Field.jsx';
 
 // Restores editors for intro/linkLabel/linkDisplay — VideoInfoNode.jsx (the live
 // wizard component) already reads these, but the legacy admin inspector never

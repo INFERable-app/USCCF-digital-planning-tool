@@ -1,3 +1,4 @@
+import './Field.css';
 export function TextField({ label, value, onChange, placeholder, mono }) {
 	return (
 		<div className={`inspector-field${mono ? ' inspector-field--mono' : ''}`}>

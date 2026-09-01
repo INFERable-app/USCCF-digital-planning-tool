@@ -1,0 +1,178 @@
+.edit-bar {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	min-height: 52px;
+	padding: 8px 24px;
+	background: #0f172a;
+	font-family: 'Roboto', sans-serif;
+	letter-spacing: 0.02em;
+	z-index: 60;
+}
+
+.edit-bar__status {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.edit-bar__label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 700;
+	color: #f8fafc;
+}
+
+.edit-bar__label svg {
+	color: #a5b4fc;
+}
+
+.edit-bar__dirty {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: #f59e0b;
+}
+
+.edit-bar__dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #f59e0b;
+}
+
+.edit-bar__actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.edit-bar__divider {
+	width: 1px;
+	height: 24px;
+	background: #334155;
+}
+
+.edit-bar__btn {
+	padding: 7px 16px;
+	border-radius: 6px;
+	font-family: inherit;
+	letter-spacing: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	background: transparent;
+	color: #cbd5e1;
+	border: 1px solid #334155;
+	transition: background 0.15s ease;
+}
+
+.edit-bar__btn:hover:not(:disabled) {
+	background: #1e293b;
+}
+
+.edit-bar__btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.edit-bar__btn--save {
+	font-weight: 700;
+	background: #059669;
+	color: white;
+	border-color: #059669;
+}
+
+.edit-bar__btn--save:hover:not(:disabled) {
+	background: #10b981;
+	border-color: #10b981;
+}
+
+.edit-bar__btn--exit {
+	color: #f8fafc;
+	border-color: #475569;
+}
+
+.edit-bar__error {
+	flex-basis: 100%;
+	background: #7f1d1d;
+	border: 1px solid #b91c1c;
+	border-radius: 6px;
+	padding: 8px 12px;
+	font-size: 13px;
+	color: #fee2e2;
+	line-height: 1.45;
+}
+
+.edit-bar__confirm-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.55);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 200;
+	padding: 16px;
+}
+
+.edit-bar__confirm {
+	background: white;
+	border-radius: 10px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+	padding: 20px;
+	max-width: 26rem;
+	width: 100%;
+}
+
+.edit-bar__confirm p {
+	font-size: 15px;
+	color: #0f172a;
+	line-height: 1.5;
+	margin-bottom: 16px;
+}
+
+.edit-bar__confirm-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.edit-bar__confirm-actions button {
+	padding: 8px 14px;
+	border-radius: 6px;
+	font-family: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	background: #f1f5f9;
+	color: #0f172a;
+}
+
+.edit-bar__confirm-actions button:hover:not(:disabled) {
+	background: #e2e8f0;
+}
+
+.edit-bar__confirm-discard {
+	color: #dc2626 !important;
+}
+
+.edit-bar__confirm-save {
+	font-weight: 700;
+	background: #059669 !important;
+	color: white !important;
+}
+
+.edit-bar__confirm-save:hover:not(:disabled) {
+	background: #10b981 !important;
+}
+
+.edit-bar__confirm-save:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}

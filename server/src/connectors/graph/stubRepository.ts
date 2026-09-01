@@ -28,4 +28,37 @@ export const stubRepository: GraphRepository = {
     graph.edges = newGraph.edges;
     graph.startNodeId = newGraph.startNodeId;
   },
+  async createNode(node: GraphNode) {
+    graph.nodes[node.id] = node;
+  },
+  async updateNode(id: string, fields: Partial<GraphNode>) {
+    const node = graph.nodes[id];
+    if (!node) return;
+    graph.nodes[id] = { ...node, ...fields };
+  },
+  async deleteNode(id: string) {
+    delete graph.nodes[id];
+    for (const node of Object.values(graph.nodes)) {
+      node.edgeIds = node.edgeIds.filter((edgeId) => graph.edges[edgeId]?.targetNodeId !== id);
+    }
+    for (const [edgeId, edge] of Object.entries(graph.edges)) {
+      if (edge.targetNodeId === id) delete graph.edges[edgeId];
+    }
+  },
+  async createEdge(sourceId: string, edge: GraphEdge) {
+    graph.edges[edge.id] = edge;
+    const source = graph.nodes[sourceId];
+    if (source && !source.edgeIds.includes(edge.id)) source.edgeIds.push(edge.id);
+  },
+  async updateEdge(id: string, fields: Partial<GraphEdge>) {
+    const edge = graph.edges[id];
+    if (!edge) return;
+    graph.edges[id] = { ...edge, ...fields };
+  },
+  async deleteEdge(id: string) {
+    delete graph.edges[id];
+    for (const node of Object.values(graph.nodes)) {
+      node.edgeIds = node.edgeIds.filter((edgeId) => edgeId !== id);
+    }
+  },
 };
