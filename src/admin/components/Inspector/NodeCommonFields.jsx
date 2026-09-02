@@ -1,4 +1,4 @@
-import { TextField, SelectField, CheckboxField } from './Field.jsx';
+import { TextField, SelectField, CheckboxField } from '../../../components/editor/Field.jsx';
 import { NODE_TYPES, nodeTypeMeta } from '../nodes/nodeTypeMeta.js';
 
 export default function NodeCommonFields({ node, onChange, onRenameId }) {

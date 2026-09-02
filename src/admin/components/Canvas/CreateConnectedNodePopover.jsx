@@ -1,7 +1,7 @@
 import './CreateConnectedNodePopover.css';
 import { useState } from 'react';
 import { NODE_TYPES, nodeTypeMeta } from '../nodes/nodeTypeMeta.js';
-import { useClampedPopoverPosition } from '../shared/useClampedPopoverPosition.js';
+import { useClampedPopoverPosition } from '../../../components/shared/useClampedPopoverPosition.js';
 
 export default function CreateConnectedNodePopover({ x, y, onConfirm, onCancel }) {
 	const [label, setLabel] = useState('');

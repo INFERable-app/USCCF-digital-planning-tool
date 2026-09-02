@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { GripVertical } from 'lucide-react';
 import WhenConditionRow from './WhenConditionRow.jsx';
-import ResourceRow from './ResourceRow.jsx';
+import ResourceListEditor from '../../edit/ResourceListEditor.jsx';
 import { TextField, TextAreaField } from '../Field.jsx';
 
 function nextPlaceholderKey(when) {
@@ -14,7 +12,6 @@ function nextPlaceholderKey(when) {
 export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 	const when = resolver.when || {};
 	const resources = resolver.resources || [];
-	const [dragIndex, setDragIndex] = useState(null);
 
 	function updateWhenKey(oldKey, rawNewKey) {
 		const newKey = rawNewKey.trim();
@@ -39,49 +36,6 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 		const { [key]: _removed, ...rest } = when;
 		void _removed;
 		onChange({ ...resolver, when: rest });
-	}
-
-	function updateResourceAt(index, patch) {
-		const nextResources = [...resources];
-		if ('type' in patch) {
-			const current = resources[index];
-			const base = { _key: current._key, type: patch.type, label: current.label || '' };
-			nextResources[index] =
-				patch.type === 'prompt'
-					? { ...base, text: current.text || '' }
-					: { ...base, description: current.description || '' };
-		} else {
-			nextResources[index] = { ...nextResources[index], ...patch };
-		}
-		onChange({ ...resolver, resources: nextResources });
-	}
-
-	function removeResourceAt(index) {
-		onChange({ ...resolver, resources: resources.filter((_, i) => i !== index) });
-	}
-
-	function addResource() {
-		onChange({
-			...resolver,
-			resources: [
-				...resources,
-				{ _key: crypto.randomUUID(), type: 'link', label: '', url: '', description: '' }
-			]
-		});
-	}
-
-	function moveResource(fromIndex, toIndex) {
-		if (fromIndex === toIndex) return;
-		const nextResources = [...resources];
-		const [moved] = nextResources.splice(fromIndex, 1);
-		nextResources.splice(toIndex, 0, moved);
-		onChange({ ...resolver, resources: nextResources });
-	}
-
-	function handleResourceDrop(overIndex) {
-		if (dragIndex === null || dragIndex === overIndex) return;
-		moveResource(dragIndex, overIndex);
-		setDragIndex(null);
 	}
 
 	return (
@@ -124,34 +78,10 @@ export default function ResolverBox({ resolver, index, onChange, onRemove }) {
 				onChange={(v) => onChange({ ...resolver, bodyText: v })}
 			/>
 
-			<div className="resolver-box__resources">
-				<label>Resources</label>
-				{resources.map((res, i) => (
-					<div
-						key={res._key ?? i}
-						className="resolver-box__resource"
-						onDragOver={(e) => e.preventDefault()}
-						onDrop={() => handleResourceDrop(i)}
-					>
-						<span
-							className="resolver-box__resource-handle"
-							draggable
-							onDragStart={() => setDragIndex(i)}
-							aria-label="Reorder resource"
-						>
-							<GripVertical size={13} />
-						</span>
-						<ResourceRow
-							resource={res}
-							onChange={(patch) => updateResourceAt(i, patch)}
-							onRemove={() => removeResourceAt(i)}
-						/>
-					</div>
-				))}
-				<button type="button" className="resolver-box__add-link" onClick={addResource}>
-					+ Add Resource
-				</button>
-			</div>
+			<ResourceListEditor
+				resources={resources}
+				onChange={(next) => onChange({ ...resolver, resources: next })}
+			/>
 
 			<TextField
 				label="Footer"

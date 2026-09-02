@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { generators } from 'openid-client';
 import { getOidcClient } from './client.js';
 import { config } from '../../config.js';
+import { isAdminEmail } from '../admins/isAdminEmail.js';
 
 const router = Router();
 
@@ -74,13 +75,18 @@ router.post('/logout', (req, res) => {
   });
 });
 
-router.get('/me', (req, res) => {
+router.get('/me', async (req, res) => {
   if (!req.session.user) {
     res.status(401).json({ error: 'Not authenticated' });
     return;
   }
-  const admins = config.ADMIN_EMAILS.split(',').map((s) => s.trim()).filter(Boolean);
-  res.json({ ...req.session.user, isAdmin: admins.includes(req.session.user.email) });
+  try {
+    const isAdmin = await isAdminEmail(req.session.user.email);
+    res.json({ ...req.session.user, isAdmin });
+  } catch (err) {
+    console.error('/auth/me error:', err);
+    res.status(500).json({ error: 'Failed to resolve account' });
+  }
 });
 
 export default router;

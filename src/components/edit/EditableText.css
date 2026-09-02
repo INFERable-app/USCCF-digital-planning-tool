@@ -1,0 +1,59 @@
+/* Inherits every type property from the class it is given so a field looks
+   identical whether it is being edited or not. */
+.editable-text {
+	display: block;
+	width: 100%;
+	font: inherit;
+	color: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	text-align: inherit;
+	background: transparent;
+	border: 1px dashed #cbd5e1;
+	border-radius: 4px;
+	padding: 6px 10px;
+	margin: -6px -10px;
+	resize: none;
+	overflow: hidden;
+	cursor: text;
+}
+
+.editable-text::placeholder {
+	color: #94a3b8;
+	font-style: italic;
+}
+
+.editable-text:hover {
+	border-color: #94a3b8;
+	background: #f8fafc;
+}
+
+.editable-text:focus {
+	outline: none;
+	border-style: solid;
+	border-color: #6366f1;
+	box-shadow: 0 0 0 1px #6366f1;
+	background: white;
+}
+
+/* Inside a maroon choice button the dashed hairline needs to read on a dark
+   fill rather than a white one. */
+.btn-choice .editable-text,
+.btn-primary .editable-text {
+	border-color: rgba(255, 255, 255, 0.45);
+	margin: 0;
+	padding: 0;
+}
+
+.btn-choice .editable-text:hover,
+.btn-primary .editable-text:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-choice .editable-text:focus,
+.btn-primary .editable-text:focus {
+	background: rgba(255, 255, 255, 0.14);
+	border-color: #c7d2fe;
+	box-shadow: 0 0 0 2px #a5b4fc;
+}

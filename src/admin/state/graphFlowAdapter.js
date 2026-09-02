@@ -1,4 +1,4 @@
-import { sanitizeResolvers } from '../components/Inspector/ResolversEditor/resolverSanitize.js';
+import { sanitizeResolvers } from '../../components/editor/ResolversEditor/resolverSanitize.js';
 
 // Converts between the server's WizardGraph shape ({ startNodeId, nodes, edges })
 // and React Flow's { nodes, edges } shape.

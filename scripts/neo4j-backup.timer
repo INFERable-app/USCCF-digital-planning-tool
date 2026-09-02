@@ -1,0 +1,11 @@
+# Install on the host with: copy (or symlink) to /etc/systemd/system/,
+# then `systemctl daemon-reload && systemctl enable --now neo4j-backup.timer`.
+[Unit]
+Description=Run Neo4j database backup daily
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

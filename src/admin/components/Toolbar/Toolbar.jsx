@@ -1,5 +1,5 @@
 import './Toolbar.css';
-import { LayoutGrid, Maximize2, Redo2, Save, Undo2 } from 'lucide-react';
+import { LayoutGrid, Maximize2, Redo2, Save, Undo2, Users } from 'lucide-react';
 import AddNodeMenu from './AddNodeMenu.jsx';
 
 export default function Toolbar({
@@ -9,6 +9,7 @@ export default function Toolbar({
 	onAutoArrange,
 	onFitView,
 	onSaveClick,
+	onAdminsClick,
 	onUndo,
 	onRedo,
 	canUndo,
@@ -50,6 +51,10 @@ export default function Toolbar({
 				<button type="button" className="admin-toolbar__btn" onClick={onFitView}>
 					<Maximize2 size={14} />
 					Fit View
+				</button>
+				<button type="button" className="admin-toolbar__btn" onClick={onAdminsClick}>
+					<Users size={14} />
+					Admins
 				</button>
 				<button
 					type="button"

@@ -11,22 +11,41 @@ import GlossaryOverlay from './components/shared/GlossaryOverlay.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
 import { WizardNavProvider } from './contexts/WizardNavContext.jsx';
+import { EditModeProvider, useEditMode } from './contexts/EditModeContext.jsx';
+import EditModeBar from './components/edit/EditModeBar.jsx';
 import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
-function AppContent() {
+
+function AppContent({ engine }) {
 	const { user, loading } = useAuth();
 	const { isOpen } = useDrawer();
-	const { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, restore } = useGraphEngine();
+	const { editMode } = useEditMode();
+	const {
+		node,
+		nodes,
+		edges,
+		startNodeId,
+		currentNodeId,
+		answers,
+		history,
+		advance,
+		back,
+		jumpAlongPath,
+		restore
+	} = engine;
 
 	// undefined = not yet fetched, null = no saved progress, object = has progress
 	const [savedProgress, setSavedProgress] = useState(undefined);
 	const [showResume, setShowResume] = useState(false);
 
 	useEffect(() => {
-		if (!user) { setSavedProgress(undefined); return; }
+		if (!user) {
+			setSavedProgress(undefined);
+			return;
+		}
 		fetch('/api/progress', { credentials: 'include' })
-			.then(r => r.ok ? r.json() : null)
-			.then(data => {
+			.then((r) => (r.ok ? r.json() : null))
+			.then((data) => {
 				setSavedProgress(data);
 				if (data) {
 					const isRefresh = sessionStorage.getItem('session-user') === user.sub;
@@ -41,17 +60,18 @@ function AppContent() {
 			.catch(() => setSavedProgress(null));
 	}, [user]);
 
-	// Auto-save on each wizard step
+	// Auto-save on each wizard step. Suppressed in edit mode — an admin walking
+	// the tree to edit it would otherwise overwrite their own saved place.
 	useEffect(() => {
-		if (!user || savedProgress === undefined || showResume) return;
+		if (!user || savedProgress === undefined || showResume || editMode) return;
 		if (currentNodeId === startNodeId && Object.keys(answers).length === 0) return;
 		fetch('/api/progress', {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'include',
-			body: JSON.stringify({ currentNodeId, answers, history }),
+			body: JSON.stringify({ currentNodeId, answers, history })
 		});
-	}, [currentNodeId, answers, history]);
+	}, [currentNodeId, answers, history, editMode]);
 
 	function handleResume() {
 		restore(savedProgress);
@@ -74,24 +94,26 @@ function AppContent() {
 			jumpAlongPath={jumpAlongPath}
 		>
 			<div className="app-shell">
+				<EditModeBar />
 				<div className="phone-chrome">
-					<div className={`app-screen${!isOpen ? ' drawer-closed' : ''}`}>
+					<div
+						className={`app-screen${!isOpen ? ' drawer-closed' : ''}${editMode ? ' edit-mode' : ''}`}
+					>
 						<div className="dynamic-island" aria-hidden="true" />
 						{!user ? (
 							<SignInScreen />
 						) : showResume ? (
-							<ResumeScreen
-								user={user}
-								onResume={handleResume}
-							/>
+							<ResumeScreen user={user} onResume={handleResume} />
 						) : (
 							<NodeRenderer
 								node={node}
+								nodes={nodes}
 								edges={edges}
 								answers={answers}
 								advance={advance}
 								onBack={back}
 								previousAnswerLabel={previousAnswerLabel}
+								isStartNode={currentNodeId === startNodeId}
 							/>
 						)}
 						{user && !showResume && (
@@ -108,10 +130,27 @@ function AppContent() {
 	);
 }
 
+// The engine is created here so EditModeProvider can drive the same graph state
+// the wizard renders from — edit mode edits the live draft rather than a copy.
+function AppWithEngine() {
+	const engine = useGraphEngine();
+
+	return (
+		<EditModeProvider
+			graph={engine.graph}
+			setGraph={engine.setGraph}
+			currentNodeId={engine.currentNodeId}
+			goToNode={engine.goToNode}
+		>
+			<AppContent engine={engine} />
+		</EditModeProvider>
+	);
+}
+
 export default function App() {
 	return (
 		<DrawerProvider>
-			<AppContent />
+			<AppWithEngine />
 		</DrawerProvider>
 	);
 }

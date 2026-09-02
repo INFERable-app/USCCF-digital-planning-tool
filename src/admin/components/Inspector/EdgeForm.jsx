@@ -1,4 +1,4 @@
-import { TextField, SelectField, CheckboxField } from './Field.jsx';
+import { TextField, SelectField, CheckboxField } from '../../../components/editor/Field.jsx';
 
 export default function EdgeForm({ edge, nodeOptions, onChange, onRenameId }) {
 	return (

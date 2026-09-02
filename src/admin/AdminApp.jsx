@@ -15,7 +15,8 @@ import GraphCanvas from './components/Canvas/GraphCanvas.jsx';
 import CreateConnectedNodePopover from './components/Canvas/CreateConnectedNodePopover.jsx';
 import Toolbar from './components/Toolbar/Toolbar.jsx';
 import SaveModal from './components/shared/SaveModal.jsx';
-import ConfirmPopover from './components/shared/ConfirmPopover.jsx';
+import AdminsModal from './components/Toolbar/AdminsModal.jsx';
+import ConfirmPopover from '../components/shared/ConfirmPopover.jsx';
 import InspectorPanel from './components/Inspector/InspectorPanel.jsx';
 
 function GraphEditorInner({ graph, userLabel, save }) {
@@ -30,6 +31,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 	const [dirty, setDirty] = useState(false);
 	const [showSaveModal, setShowSaveModal] = useState(false);
+	const [showAdminsModal, setShowAdminsModal] = useState(false);
 	const [pendingDelete, setPendingDelete] = useState(null);
 	const [connectDraft, setConnectDraft] = useState(null);
 	const [isConnecting, setIsConnecting] = useState(false);
@@ -340,6 +342,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 				onAutoArrange={handleAutoArrange}
 				onFitView={() => fitView({ duration: 300 })}
 				onSaveClick={() => setShowSaveModal(true)}
+				onAdminsClick={() => setShowAdminsModal(true)}
 				onUndo={undo}
 				onRedo={redo}
 				canUndo={past.length > 0}
@@ -378,6 +381,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
 					/>
 				)}
 			</div>
+			{showAdminsModal && <AdminsModal onClose={() => setShowAdminsModal(false)} />}
 			{showSaveModal && (
 				<SaveModal onClose={() => setShowSaveModal(false)} onConfirm={handleConfirmSave} />
 			)}

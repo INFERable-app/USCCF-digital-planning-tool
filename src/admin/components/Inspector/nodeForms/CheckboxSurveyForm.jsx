@@ -1,4 +1,4 @@
-import { TextField, SelectField } from '../Field.jsx';
+import { TextField, SelectField } from '../../../../components/editor/Field.jsx';
 
 export default function CheckboxSurveyForm({ node, onChange, outgoingEdges }) {
 	const edgeOptions = [

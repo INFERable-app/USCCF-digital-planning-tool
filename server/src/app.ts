@@ -7,6 +7,8 @@ import oidcRouter from './connectors/oidc/routes.js';
 import graphRouter from './connectors/graph/routes.js';
 import progressRouter from './connectors/progress/routes.js';
 import resourcesRouter from './connectors/resources/routes.js';
+import adminsRouter from './connectors/admins/routes.js';
+import { isAdminEmail } from './connectors/admins/isAdminEmail.js';
 
 const app = express();
 
@@ -36,18 +38,22 @@ app.use('/auth', oidcRouter);
 app.use('/api', graphRouter);
 app.use('/api', progressRouter);
 app.use('/api', resourcesRouter);
+app.use('/api', adminsRouter);
 
-app.get('/admin', (req, res) => {
+app.get('/admin', async (req, res) => {
 	if (!req.session.user) {
 		req.session.returnTo = '/admin';
 		res.redirect('/auth/login');
 		return;
 	}
-	const admins = config.ADMIN_EMAILS.split(',')
-		.map((s) => s.trim())
-		.filter(Boolean);
-	if (!admins.includes(req.session.user.email)) {
-		res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
+	try {
+		if (!(await isAdminEmail(req.session.user.email))) {
+			res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
+			return;
+		}
+	} catch (err) {
+		console.error('GET /admin error:', err);
+		res.status(500).send('<h1>500</h1><p>Could not verify admin access.</p>');
 		return;
 	}
 	res.redirect('/admin.html');

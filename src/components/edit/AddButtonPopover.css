@@ -1,0 +1,108 @@
+.add-button-popover-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 200;
+	padding: 16px;
+}
+
+.add-button-popover {
+	background: white;
+	border: 1px solid #cbd5e1;
+	border-radius: 10px;
+	box-shadow: 0 12px 32px rgba(15, 23, 42, 0.24);
+	padding: 18px;
+	width: 100%;
+	max-width: 24rem;
+	font-family: 'Roboto', sans-serif;
+}
+
+.add-button-popover__header {
+	font-size: 15px;
+	font-weight: 700;
+	color: #0f172a;
+	margin-bottom: 14px;
+}
+
+.add-button-popover label {
+	display: block;
+	font-size: 12px;
+	font-weight: 700;
+	color: #334155;
+	margin-bottom: 6px;
+}
+
+.add-button-popover input,
+.add-button-popover select {
+	display: block;
+	width: 100%;
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	padding: 9px 11px;
+	font-family: inherit;
+	font-size: 14px;
+	color: #0f172a;
+	margin-bottom: 14px;
+	box-sizing: border-box;
+}
+
+.add-button-popover input:focus,
+.add-button-popover select:focus {
+	outline: none;
+	border-color: #6366f1;
+	box-shadow: 0 0 0 1px #6366f1;
+	background: white;
+}
+
+.add-button-popover__hint {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	padding: 10px 12px;
+	font-size: 12px;
+	color: #475569;
+	line-height: 1.5;
+	margin-bottom: 14px;
+}
+
+.add-button-popover__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding-top: 12px;
+	border-top: 1px solid #e2e8f0;
+}
+
+.add-button-popover__actions button {
+	padding: 7px 14px;
+	border-radius: 6px;
+	font-family: inherit;
+	font-size: 13px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	background: #f1f5f9;
+	color: #0f172a;
+}
+
+.add-button-popover__actions button:hover:not(:disabled) {
+	background: #e2e8f0;
+}
+
+.add-button-popover__submit {
+	font-weight: 700;
+	background: #4f46e5 !important;
+	color: white !important;
+}
+
+.add-button-popover__submit:hover:not(:disabled) {
+	background: #4338ca !important;
+}
+
+.add-button-popover__submit:disabled {
+	background: #94a3b8 !important;
+	cursor: not-allowed;
+}

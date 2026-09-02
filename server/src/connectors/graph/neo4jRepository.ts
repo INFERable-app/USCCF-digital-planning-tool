@@ -127,5 +127,121 @@ export function createNeo4jRepository(): GraphRepository {
         await session.close();
       }
     },
+
+    async createNode(node: GraphNode): Promise<void> {
+      const session = getDriver().session();
+      try {
+        await session.run('CREATE (n:WizardNode) SET n = $props', {
+          props: nodeToProps(node as unknown as Record<string, unknown>),
+        });
+      } finally {
+        await session.close();
+      }
+    },
+
+    // `edgeIds` is not a stored property — the wizard derives it from the
+    // `order` prop on outgoing OPTION relationships, so a reorder is written by
+    // rewriting those orders. Setting a property to null in Cypher removes it,
+    // so a null field in the patch clears that field.
+    async updateNode(id: string, fields: Partial<GraphNode>): Promise<void> {
+      const session = getDriver().session();
+      try {
+        const { edgeIds, ...rest } = fields as Record<string, unknown>;
+        const props = nodeToProps({ ...rest, id });
+        await session.run('MATCH (n:WizardNode {id: $id}) SET n += $props', { id, props });
+
+        if (Array.isArray(edgeIds)) {
+          for (let i = 0; i < edgeIds.length; i++) {
+            await session.run(
+              'MATCH (:WizardNode {id: $id})-[r:OPTION {id: $edgeId}]->() SET r.order = $order',
+              { id, edgeId: edgeIds[i], order: i }
+            );
+          }
+        }
+      } finally {
+        await session.close();
+      }
+    },
+
+    async deleteNode(id: string): Promise<void> {
+      const session = getDriver().session();
+      try {
+        await session.run('MATCH (n:WizardNode {id: $id}) DETACH DELETE n', { id });
+      } finally {
+        await session.close();
+      }
+    },
+
+    // New edges land at the end of the source node's existing order.
+    async createEdge(sourceId: string, edge: GraphEdge): Promise<void> {
+      const session = getDriver().session();
+      try {
+        const countResult = await session.run(
+          'MATCH (:WizardNode {id: $sourceId})-[r:OPTION]->() RETURN count(r) AS n',
+          { sourceId }
+        );
+        const order = countResult.records[0].get('n').toNumber();
+        await session.run(
+          `MATCH (src:WizardNode {id: $sourceId}), (tgt:WizardNode {id: $targetNodeId})
+           CREATE (src)-[r:OPTION]->(tgt)
+           SET r = $props`,
+          {
+            sourceId,
+            targetNodeId: edge.targetNodeId,
+            props: edgeToRelProps(edge as unknown as Record<string, unknown>, order),
+          }
+        );
+      } finally {
+        await session.close();
+      }
+    },
+
+    // Neo4j cannot re-point a relationship in place, so a changed target is
+    // written by recreating the relationship with its existing props and order.
+    async updateEdge(id: string, fields: Partial<GraphEdge>): Promise<void> {
+      const session = getDriver().session();
+      try {
+        const { targetNodeId, ...rest } = fields as Record<string, unknown>;
+
+        const existing = await session.run(
+          `MATCH (src:WizardNode)-[r:OPTION {id: $id}]->(tgt:WizardNode)
+           RETURN r AS rel, src.id AS sourceId, tgt.id AS currentTarget`,
+          { id }
+        );
+        if (existing.records.length === 0) throw new Error(`Unknown edge "${id}"`);
+        const record = existing.records[0];
+
+        if (typeof targetNodeId === 'string' && record.get('currentTarget') !== targetNodeId) {
+          const relProps = record.get('rel').properties as Record<string, unknown>;
+          const sourceId = record.get('sourceId') as string;
+          await session.run('MATCH ()-[r:OPTION {id: $id}]->() DELETE r', { id });
+          await session.run(
+            `MATCH (src:WizardNode {id: $sourceId}), (tgt:WizardNode {id: $targetNodeId})
+             CREATE (src)-[r:OPTION]->(tgt)
+             SET r = $props`,
+            { sourceId, targetNodeId, props: { ...relProps, ...rest } }
+          );
+          return;
+        }
+
+        if (Object.keys(rest).length > 0) {
+          await session.run('MATCH ()-[r:OPTION {id: $id}]->() SET r += $props', {
+            id,
+            props: rest,
+          });
+        }
+      } finally {
+        await session.close();
+      }
+    },
+
+    async deleteEdge(id: string): Promise<void> {
+      const session = getDriver().session();
+      try {
+        await session.run('MATCH ()-[r:OPTION {id: $id}]->() DELETE r', { id });
+      } finally {
+        await session.close();
+      }
+    },
   };
 }
