@@ -1,0 +1,10 @@
+# Install on the host with: copy (or symlink) to /etc/systemd/system/,
+# then `systemctl daemon-reload`. Triggered by the paired neo4j-backup.timer.
+[Unit]
+Description=Neo4j database backup
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/natou/USCCF-digital-planning-tool/scripts/backup-neo4j.sh
