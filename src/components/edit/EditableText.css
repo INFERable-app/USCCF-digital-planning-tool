@@ -14,8 +14,20 @@
 	padding: 6px 10px;
 	margin: -6px -10px;
 	resize: none;
-	overflow: hidden;
+	field-sizing: content;
+	overflow-y: auto;
+	/* These fields are items in scrolling flex columns, and a textarea is a
+	   scroll container, so its automatic minimum size is zero — without this it
+	   gets squashed to nothing when the column overflows. */
+	flex-shrink: 0;
 	cursor: text;
+}
+
+/* Browsers without field-sizing keep a readable, scrollable box. */
+@supports not (field-sizing: content) {
+	textarea.editable-text {
+		min-height: 6em;
+	}
 }
 
 .editable-text::placeholder {
