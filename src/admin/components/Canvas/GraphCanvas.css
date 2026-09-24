@@ -5,34 +5,34 @@
 }
 
 .graph-canvas .react-flow {
-	background: #fafafa;
+	background: var(--surface-panel);
 }
 
 .graph-canvas .react-flow__edge:hover .react-flow__edge-path,
 .graph-canvas .react-flow__edge.selected .react-flow__edge-path {
-	stroke: #6366f1 !important;
+	stroke: var(--color-blue-electric) !important;
 	stroke-width: 3 !important;
 }
 
 .graph-canvas .react-flow__controls {
-	background: #1e293b;
+	background: var(--color-navy-midnight);
 	border-radius: 8px;
 	overflow: hidden;
-	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+	box-shadow: 0 2px 8px var(--color-navy-midnight-alpha-20);
 }
 
 .graph-canvas .react-flow__controls-button {
-	background: #1e293b;
-	border-bottom: 1px solid #334155;
-	fill: #e2e8f0;
+	background: var(--color-navy-midnight);
+	border-bottom: 1px solid var(--color-navy-deep);
+	fill: var(--color-blue-ice);
 }
 
 .graph-canvas .react-flow__controls-button:hover {
-	background: #334155;
+	background: var(--color-navy-deep);
 }
 
 .graph-canvas .react-flow__minimap {
 	border-radius: 8px;
 	overflow: hidden;
-	box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+	box-shadow: 0 2px 8px var(--color-navy-midnight-alpha-20);
 }

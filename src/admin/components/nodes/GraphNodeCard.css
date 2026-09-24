@@ -6,10 +6,10 @@
 .graph-node-card__face {
 	display: flex;
 	align-items: stretch;
-	background: #ffffff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-page);
+	border: 1px solid var(--border-subtle);
 	border-radius: 10px;
-	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+	box-shadow: 0 1px 2px var(--color-navy-midnight-alpha-10);
 	overflow: hidden;
 	transition:
 		box-shadow 0.15s,
@@ -17,8 +17,8 @@
 }
 
 .graph-node-card:hover .graph-node-card__face {
-	box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-	border-color: #cbd5e1;
+	box-shadow: 0 4px 12px var(--color-navy-midnight-alpha-10);
+	border-color: var(--color-navy-midnight-alpha-20);
 }
 
 .graph-node-card--selected .graph-node-card__face {
@@ -53,7 +53,7 @@
 .graph-node-card__label {
 	font-size: 13px;
 	font-weight: 600;
-	color: #1e293b;
+	color: var(--text-primary);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -62,7 +62,7 @@
 .graph-node-card__id {
 	font-family: ui-monospace, 'SF Mono', monospace;
 	font-size: 10px;
-	color: #94a3b8;
+	color: var(--color-navy-midnight-alpha-85);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -83,8 +83,8 @@
 	width: 9px;
 	height: 9px;
 	border-radius: 50%;
-	border: 2px solid #ffffff;
-	background: #94a3b8;
+	border: 2px solid var(--surface-page);
+	background: var(--color-navy-midnight-alpha-50);
 	transform: translate(-50%, -50%);
 	pointer-events: none;
 	transition:

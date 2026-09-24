@@ -28,5 +28,5 @@ body {
 	justify-content: center;
 	height: 100vh;
 	gap: 0.5rem;
-	color: #475569;
+	color: var(--color-navy-midnight-alpha-85);
 }

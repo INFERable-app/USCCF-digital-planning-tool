@@ -1,7 +1,7 @@
 .admins-modal-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(0, 0, 0, 0.5);
+	background: var(--color-navy-midnight-alpha-50);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -10,9 +10,9 @@
 }
 
 .admins-modal {
-	background: #fff;
+	background: var(--surface-page);
 	border-radius: 10px;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
 	max-width: 30rem;
 	width: 100%;
 	padding: 1.5rem;
@@ -28,7 +28,7 @@
 .admins-modal__header h2 {
 	font-size: 1.25rem;
 	font-weight: 700;
-	color: #0f172a;
+	color: var(--text-primary);
 	margin: 0;
 }
 
@@ -37,18 +37,18 @@
 	background: none;
 	border: none;
 	line-height: 1;
-	color: #94a3b8;
+	color: var(--color-navy-midnight-alpha-50);
 	cursor: pointer;
 	padding: 0;
 }
 
 .admins-modal__close:hover {
-	color: #475569;
+	color: var(--color-navy-midnight-alpha-85);
 }
 
 .admins-modal__note {
-	background: #eff6ff;
-	border: 1px solid #bfdbfe;
+	background: var(--color-blue-ice);
+	border: 1px solid var(--color-cyan-sky);
 	border-radius: 6px;
 	padding: 0.85rem 1rem;
 	font-size: 0.85rem;
@@ -56,12 +56,12 @@
 }
 
 .admins-modal__note strong {
-	color: #1e3a8a;
+	color: var(--color-navy-midnight);
 }
 
 .admins-modal__note p {
 	margin: 0.25rem 0 0;
-	color: #1e40af;
+	color: var(--color-navy-deep);
 }
 
 .admins-modal__list {
@@ -73,7 +73,7 @@
 
 .admins-modal__empty {
 	font-size: 0.85rem;
-	color: #64748b;
+	color: var(--color-navy-midnight-alpha-85);
 	margin: 0 0 1rem;
 }
 
@@ -82,19 +82,19 @@
 	align-items: center;
 	gap: 0.6rem;
 	padding: 0.55rem 0.7rem;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-page);
+	border: 1px solid var(--border-subtle);
 	border-radius: 6px;
 }
 
 .admins-modal__row--bootstrap {
-	background: #f8fafc;
+	background: var(--surface-panel);
 	opacity: 0.75;
 }
 
 .admins-modal__email {
 	font-size: 0.85rem;
-	color: #0f172a;
+	color: var(--text-primary);
 	flex: 1;
 	min-width: 0;
 	overflow-wrap: anywhere;
@@ -102,7 +102,7 @@
 
 .admins-modal__meta {
 	font-size: 0.7rem;
-	color: #94a3b8;
+	color: var(--color-navy-midnight-alpha-85);
 	white-space: nowrap;
 }
 
@@ -115,13 +115,13 @@
 }
 
 .admins-modal__tag--you {
-	color: #3730a3;
-	background: #e0e7ff;
+	color: var(--color-navy-deep);
+	background: var(--color-blue-ice);
 }
 
 .admins-modal__tag--env {
-	color: #92400e;
-	background: #fef3c7;
+	color: var(--color-brown-mahogany);
+	background: var(--color-yellow-cream);
 }
 
 .admins-modal__remove {
@@ -129,13 +129,13 @@
 	border: none;
 	font-size: 1rem;
 	line-height: 1;
-	color: #94a3b8;
+	color: var(--color-navy-midnight-alpha-50);
 	cursor: pointer;
 	padding: 0 0.2rem;
 }
 
 .admins-modal__remove:hover:not(:disabled) {
-	color: #dc2626;
+	color: var(--color-red-scarlet);
 }
 
 .admins-modal__remove:disabled {
@@ -147,7 +147,7 @@
 	display: block;
 	font-size: 0.8rem;
 	font-weight: 600;
-	color: #334155;
+	color: var(--text-primary);
 	margin-bottom: 0.5rem;
 }
 
@@ -159,8 +159,8 @@
 .admins-modal__add input {
 	flex: 1;
 	min-width: 0;
-	background: #f8fafc;
-	border: 1px solid #cbd5e1;
+	background: var(--surface-panel);
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 6px;
 	padding: 0.5rem 0.65rem;
 	font-size: 0.85rem;
@@ -170,8 +170,8 @@
 
 .admins-modal__add input:focus {
 	outline: none;
-	border-color: #6366f1;
-	box-shadow: 0 0 0 1px #6366f1;
+	border-color: var(--color-blue-electric);
+	box-shadow: 0 0 0 1px var(--color-blue-electric);
 }
 
 .admins-modal__add button {
@@ -181,16 +181,16 @@
 	font-weight: 500;
 	cursor: pointer;
 	border: 1px solid transparent;
-	background: #059669;
-	color: #fff;
+	background: var(--color-green-hunter);
+	color: var(--text-inverse);
 }
 
 .admins-modal__add button:hover:not(:disabled) {
-	background: #10b981;
+	background: var(--color-green-forest);
 }
 
 .admins-modal__add button:disabled {
-	background: #94a3b8;
+	background: var(--color-navy-midnight-alpha-40);
 	cursor: not-allowed;
 }
 
@@ -202,15 +202,15 @@
 }
 
 .admins-modal__message--success {
-	background: #d4edda;
-	color: #155724;
-	border: 1px solid #c3e6cb;
+	background: var(--color-green-mint);
+	color: var(--color-green-forest);
+	border: 1px solid var(--color-green-hunter);
 }
 
 .admins-modal__message--error {
-	background: #f8d7da;
-	color: #721c24;
-	border: 1px solid #f5c6cb;
+	background: var(--color-pink-blush);
+	color: var(--color-red-oxblood);
+	border: 1px solid var(--color-pink-salmon);
 }
 
 .admins-modal__footer {
@@ -219,7 +219,7 @@
 	gap: 0.6rem;
 	padding-top: 1rem;
 	margin-top: 1rem;
-	border-top: 1px solid #e2e8f0;
+	border-top: 1px solid var(--border-subtle);
 }
 
 .admins-modal__done {
@@ -229,10 +229,10 @@
 	font-weight: 500;
 	cursor: pointer;
 	border: 1px solid transparent;
-	background: #f1f5f9;
-	color: #0f172a;
+	background: var(--surface-panel);
+	color: var(--text-primary);
 }
 
 .admins-modal__done:hover {
-	background: #e2e8f0;
+	background: var(--color-blue-ice);
 }

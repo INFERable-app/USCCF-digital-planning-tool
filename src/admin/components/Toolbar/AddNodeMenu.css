@@ -6,10 +6,10 @@
 	position: absolute;
 	top: calc(100% + 6px);
 	left: 0;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-page);
+	border: 1px solid var(--border-subtle);
 	border-radius: 8px;
-	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+	box-shadow: 0 10px 25px var(--color-navy-midnight-alpha-20);
 	padding: 0.4rem;
 	display: flex;
 	flex-direction: column;
@@ -34,5 +34,5 @@
 }
 
 .add-node-menu__item:hover {
-	background: color-mix(in srgb, var(--type-color) 10%, white);
+	background: color-mix(in srgb, var(--type-color) 10%, var(--surface-page));
 }

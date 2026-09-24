@@ -6,10 +6,10 @@
 
 .connect-popover {
 	position: fixed;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-page);
+	border: 1px solid var(--border-subtle);
 	border-radius: 8px;
-	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+	box-shadow: 0 10px 25px var(--color-navy-midnight-alpha-20);
 	padding: 0.75rem;
 	width: 16rem;
 }
@@ -20,7 +20,7 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
-	color: #64748b;
+	color: var(--color-navy-midnight-alpha-85);
 	margin-bottom: 0.3rem;
 }
 
@@ -28,7 +28,7 @@
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0.4rem 0.55rem;
-	border: 1px solid #cbd5e1;
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 6px;
 	font-size: 0.82rem;
 	margin-bottom: 0.6rem;
@@ -36,8 +36,8 @@
 
 .connect-popover input:focus {
 	outline: none;
-	border-color: #6366f1;
-	box-shadow: 0 0 0 1px #6366f1;
+	border-color: var(--color-blue-electric);
+	box-shadow: 0 0 0 1px var(--color-blue-electric);
 }
 
 .connect-popover__types {
@@ -52,8 +52,8 @@
 	gap: 0.35rem;
 	padding: 0.35rem 0.5rem;
 	border-radius: 6px;
-	border: 1px solid #e2e8f0;
-	background: #f8fafc;
+	border: 1px solid var(--border-subtle);
+	background: var(--surface-panel);
 	color: var(--type-color);
 	font-size: 0.72rem;
 	font-weight: 600;
@@ -62,6 +62,6 @@
 }
 
 .connect-popover__type-btn:hover {
-	background: color-mix(in srgb, var(--type-color) 12%, white);
+	background: color-mix(in srgb, var(--type-color) 12%, var(--surface-page));
 	border-color: var(--type-color);
 }

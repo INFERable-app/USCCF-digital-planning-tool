@@ -301,8 +301,13 @@ function GraphEditorInner({ graph, userLabel, save }) {
 				if ('label' in patch) next.label = patch.label;
 				if ('disabled' in patch) {
 					next.style = patch.disabled
-						? { stroke: '#94a3b8', strokeWidth: 2, strokeDasharray: '4 4', opacity: 0.5 }
-						: { stroke: '#94a3b8', strokeWidth: 2 };
+						? {
+								stroke: 'var(--color-navy-midnight-alpha-50)',
+								strokeWidth: 2,
+								strokeDasharray: '4 4',
+								opacity: 0.5
+							}
+						: { stroke: 'var(--color-navy-midnight-alpha-50)', strokeWidth: 2 };
 				}
 				return next;
 			})

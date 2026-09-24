@@ -73,7 +73,7 @@ export default function GraphCanvas({
 				minZoom={0.1}
 				maxZoom={2}
 			>
-				<Background gap={24} size={1.5} color="#e2e8f0" />
+				<Background gap={24} size={1.5} color="var(--color-navy-midnight-alpha-10)" />
 				<Controls />
 				<MiniMap nodeColor={minimapNodeColor} pannable zoomable />
 			</ReactFlow>

@@ -4,8 +4,8 @@
 	justify-content: space-between;
 	gap: 1rem;
 	padding: 0.65rem 1.25rem;
-	background: #1e293b;
-	color: #f1f5f9;
+	background: var(--color-navy-midnight);
+	color: var(--text-inverse);
 	flex-shrink: 0;
 }
 
@@ -18,7 +18,7 @@
 .admin-toolbar__title-text {
 	font-size: 1.05rem;
 	font-weight: 600;
-	background: linear-gradient(90deg, #818cf8, #6366f1);
+	background: linear-gradient(90deg, var(--color-cyan-sky), var(--color-blue-ice));
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
@@ -29,9 +29,9 @@
 	font-size: 0.7rem;
 	padding: 0.2rem 0.55rem;
 	border-radius: 999px;
-	background: #334155;
-	border: 1px solid #475569;
-	color: #cbd5e1;
+	background: var(--color-navy-deep);
+	border: 1px solid var(--color-blue-cobalt);
+	color: var(--color-blue-ice);
 }
 
 .admin-toolbar__actions {
@@ -45,9 +45,9 @@
 	font-weight: 500;
 	padding: 0.25rem 0.6rem;
 	border-radius: 999px;
-	background: rgba(217, 119, 6, 0.25);
-	border: 1px solid rgba(217, 119, 6, 0.4);
-	color: #fcd34d;
+	background: color-mix(in srgb, var(--color-yellow-canary) 25%, transparent);
+	border: 1px solid color-mix(in srgb, var(--color-yellow-canary) 40%, transparent);
+	color: var(--color-yellow-canary);
 }
 
 .admin-toolbar__btn {
@@ -58,9 +58,9 @@
 	font-weight: 500;
 	padding: 0.4rem 0.75rem;
 	border-radius: 6px;
-	border: 1px solid #475569;
-	background: #334155;
-	color: #e2e8f0;
+	border: 1px solid var(--color-blue-cobalt);
+	background: var(--color-navy-deep);
+	color: var(--color-blue-ice);
 	cursor: pointer;
 	transition:
 		background 0.15s,
@@ -68,16 +68,17 @@
 }
 
 .admin-toolbar__btn:hover {
-	background: #475569;
-	border-color: #64748b;
+	background: var(--color-blue-cobalt);
+	border-color: var(--color-blue-electric);
 }
 
 .admin-toolbar__btn--save {
-	background: #059669;
-	border-color: #059669;
+	background: var(--color-green-hunter);
+	border-color: var(--color-green-hunter);
+	color: var(--text-inverse);
 }
 
 .admin-toolbar__btn--save:hover {
-	background: #10b981;
-	border-color: #10b981;
+	background: var(--color-green-forest);
+	border-color: var(--color-green-lime);
 }

@@ -50,7 +50,7 @@ export function addEdge(nodes, edges, { sourceId, targetId, label = '' }) {
 		target: targetId,
 		label,
 		type: 'graphEdge',
-		style: { stroke: '#94a3b8', strokeWidth: 2 },
+		style: { stroke: 'var(--color-navy-midnight-alpha-50)', strokeWidth: 2 },
 		data: { id, label, targetNodeId: targetId, order }
 	};
 	return { nodes, edges: [...edges, newEdge], newEdgeId: id };

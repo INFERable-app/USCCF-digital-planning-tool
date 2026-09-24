@@ -53,8 +53,13 @@ export function toFlowEdges(wizardGraph) {
 				label: edge.label,
 				type: 'graphEdge',
 				style: edge.disabled
-					? { stroke: '#94a3b8', strokeWidth: 2, strokeDasharray: '4 4', opacity: 0.5 }
-					: { stroke: '#94a3b8', strokeWidth: 2 },
+					? {
+							stroke: 'var(--color-navy-midnight-alpha-50)',
+							strokeWidth: 2,
+							strokeDasharray: '4 4',
+							opacity: 0.5
+						}
+					: { stroke: 'var(--color-navy-midnight-alpha-50)', strokeWidth: 2 },
 				data: { ...edge, order }
 			});
 		});
