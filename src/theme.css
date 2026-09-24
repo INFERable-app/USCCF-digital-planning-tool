@@ -1,0 +1,67 @@
+:root {
+	/* Neutrals */
+	--color-black: #000000;
+	--color-white: #ffffff;
+	--color-grey-light: #f5f5f5;
+
+	/* Blues */
+	--color-navy-midnight: #0a152b;
+	--color-navy-deep: #002452;
+	--color-blue-cobalt: #004f91;
+	--color-blue-electric: #005fff;
+	--color-cyan-sky: #85e7ff;
+	--color-blue-ice: #d8f2ff;
+
+	/* Greens */
+	--color-green-forest: #13342b;
+	--color-green-hunter: #376048;
+	--color-green-lime: #87ef00;
+	--color-green-mint: #e3ffe3;
+
+	/* Reds and pinks */
+	--color-red-oxblood: #450012;
+	--color-red-crimson: #9a2136;
+	--color-red-scarlet: #ce0000;
+	--color-pink-salmon: #ffa7b3;
+	--color-pink-blush: #ffebfa;
+
+	/* Purples */
+	--color-purple-midnight: #330066;
+	--color-purple-amethyst: #623e8a;
+	--color-purple-lavender: #f2ebff;
+
+	/* Browns, oranges and yellows */
+	--color-brown-mahogany: #521513;
+	--color-orange-burnt: #9a4018;
+	--color-yellow-canary: #ffe300;
+	--color-yellow-cream: #fffad1;
+
+	/* Midnight navy at partial opacity */
+	--color-navy-midnight-alpha-10: rgb(10 21 43 / 0.1);
+	--color-navy-midnight-alpha-20: rgb(10 21 43 / 0.2);
+	--color-navy-midnight-alpha-40: rgb(10 21 43 / 0.4);
+	--color-navy-midnight-alpha-50: rgb(10 21 43 / 0.5);
+	--color-navy-midnight-alpha-85: rgb(10 21 43 / 0.85);
+	--color-navy-midnight-alpha-90: rgb(10 21 43 / 0.9);
+
+	/* Data blue ramp, lightest to darkest */
+	--color-data-blue-50: hsl(207 100% 98%);
+	--color-data-blue-100: hsl(207 100% 88%);
+	--color-data-blue-200: hsl(207 100% 76%);
+	--color-data-blue-300: hsl(207 100% 65%);
+	--color-data-blue-400: hsl(207 100% 55%);
+	--color-data-blue-500: hsl(207 100% 45%);
+	--color-data-blue-600: hsl(207 100% 35%);
+	--color-data-blue-700: hsl(207 100% 25%);
+	--color-data-blue-800: hsl(207 100% 15%);
+	--color-data-blue-900: hsl(207 100% 5%);
+
+	/* Semantic roles */
+	--accent-primary: var(--color-blue-cobalt);
+	--accent-secondary: var(--color-green-mint);
+	--surface-page: var(--color-white);
+	--surface-panel: var(--color-grey-light);
+	--text-primary: var(--color-navy-midnight);
+	--text-inverse: var(--color-white);
+	--border-subtle: var(--color-navy-midnight-alpha-10);
+}
