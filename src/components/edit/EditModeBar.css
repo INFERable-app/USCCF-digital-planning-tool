@@ -7,7 +7,7 @@
 	gap: 12px;
 	min-height: 52px;
 	padding: 8px 24px;
-	background: #0f172a;
+	background: var(--color-navy-midnight);
 	font-family: 'Roboto', sans-serif;
 	letter-spacing: 0.02em;
 	z-index: 60;
@@ -25,11 +25,11 @@
 	gap: 8px;
 	font-size: 14px;
 	font-weight: 700;
-	color: #f8fafc;
+	color: var(--text-inverse);
 }
 
 .edit-bar__label svg {
-	color: #a5b4fc;
+	color: var(--color-cyan-sky);
 }
 
 .edit-bar__dirty {
@@ -37,14 +37,14 @@
 	align-items: center;
 	gap: 6px;
 	font-size: 13px;
-	color: #f59e0b;
+	color: var(--color-yellow-canary);
 }
 
 .edit-bar__dot {
 	width: 7px;
 	height: 7px;
 	border-radius: 50%;
-	background: #f59e0b;
+	background: var(--color-yellow-canary);
 }
 
 .edit-bar__actions {
@@ -56,7 +56,7 @@
 .edit-bar__divider {
 	width: 1px;
 	height: 24px;
-	background: #334155;
+	background: var(--color-navy-deep);
 }
 
 .edit-bar__btn {
@@ -67,13 +67,13 @@
 	font-size: 14px;
 	cursor: pointer;
 	background: transparent;
-	color: #cbd5e1;
-	border: 1px solid #334155;
+	color: var(--color-blue-ice);
+	border: 1px solid var(--color-blue-cobalt);
 	transition: background 0.15s ease;
 }
 
 .edit-bar__btn:hover:not(:disabled) {
-	background: #1e293b;
+	background: var(--color-navy-deep);
 }
 
 .edit-bar__btn:disabled {
@@ -83,36 +83,36 @@
 
 .edit-bar__btn--save {
 	font-weight: 700;
-	background: #059669;
-	color: white;
-	border-color: #059669;
+	background: var(--color-green-hunter);
+	color: var(--text-inverse);
+	border-color: var(--color-green-hunter);
 }
 
 .edit-bar__btn--save:hover:not(:disabled) {
-	background: #10b981;
-	border-color: #10b981;
+	background: var(--color-green-forest);
+	border-color: var(--color-green-lime);
 }
 
 .edit-bar__btn--exit {
-	color: #f8fafc;
-	border-color: #475569;
+	color: var(--text-inverse);
+	border-color: var(--color-blue-cobalt);
 }
 
 .edit-bar__error {
 	flex-basis: 100%;
-	background: #7f1d1d;
-	border: 1px solid #b91c1c;
+	background: var(--color-red-oxblood);
+	border: 1px solid var(--color-red-crimson);
 	border-radius: 6px;
 	padding: 8px 12px;
 	font-size: 13px;
-	color: #fee2e2;
+	color: var(--color-pink-blush);
 	line-height: 1.45;
 }
 
 .edit-bar__confirm-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(15, 23, 42, 0.55);
+	background: var(--color-navy-midnight-alpha-50);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -121,9 +121,9 @@
 }
 
 .edit-bar__confirm {
-	background: white;
+	background: var(--surface-page);
 	border-radius: 10px;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-40);
 	padding: 20px;
 	max-width: 26rem;
 	width: 100%;
@@ -131,7 +131,7 @@
 
 .edit-bar__confirm p {
 	font-size: 15px;
-	color: #0f172a;
+	color: var(--text-primary);
 	line-height: 1.5;
 	margin-bottom: 16px;
 }
@@ -150,26 +150,26 @@
 	font-size: 14px;
 	cursor: pointer;
 	border: 1px solid transparent;
-	background: #f1f5f9;
-	color: #0f172a;
+	background: var(--surface-panel);
+	color: var(--text-primary);
 }
 
 .edit-bar__confirm-actions button:hover:not(:disabled) {
-	background: #e2e8f0;
+	background: var(--color-blue-ice);
 }
 
 .edit-bar__confirm-discard {
-	color: #dc2626 !important;
+	color: var(--color-red-scarlet) !important;
 }
 
 .edit-bar__confirm-save {
 	font-weight: 700;
-	background: #059669 !important;
-	color: white !important;
+	background: var(--color-green-hunter) !important;
+	color: var(--text-inverse) !important;
 }
 
 .edit-bar__confirm-save:hover:not(:disabled) {
-	background: #10b981 !important;
+	background: var(--color-green-forest) !important;
 }
 
 .edit-bar__confirm-save:disabled {

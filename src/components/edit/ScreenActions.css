@@ -5,8 +5,8 @@
 	gap: 10px;
 	padding: 8px 12px;
 	margin-bottom: 8px;
-	background: #f8fafc;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-panel);
+	border: 1px solid var(--border-subtle);
 	border-radius: 6px;
 	font-family: 'Roboto', sans-serif;
 	letter-spacing: 0.02em;
@@ -16,7 +16,7 @@
 	font-size: 11px;
 	font-weight: 700;
 	text-transform: uppercase;
-	color: white;
+	color: var(--text-inverse);
 	padding: 3px 7px;
 	border-radius: 4px;
 }
@@ -24,43 +24,43 @@
 .screen-actions__id {
 	font-family: ui-monospace, 'SF Mono', monospace;
 	font-size: 12px;
-	color: #64748b;
+	color: var(--color-navy-midnight-alpha-85);
 }
 
 .screen-actions__select {
 	margin-left: auto;
-	background: white;
-	border: 1px solid #cbd5e1;
+	background: var(--surface-page);
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 6px;
 	padding: 5px 8px;
 	font-family: inherit;
 	font-size: 13px;
-	color: #334155;
+	color: var(--text-primary);
 	cursor: pointer;
 }
 
 .screen-actions__select:focus {
 	outline: none;
-	border-color: #6366f1;
-	box-shadow: 0 0 0 1px #6366f1;
+	border-color: var(--color-blue-electric);
+	box-shadow: 0 0 0 1px var(--color-blue-electric);
 }
 
 .screen-actions__delete {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	background: white;
-	border: 1px solid #fecaca;
+	background: var(--surface-page);
+	border: 1px solid var(--color-pink-salmon);
 	border-radius: 6px;
 	padding: 5px 10px;
 	font-family: inherit;
 	font-size: 13px;
-	color: #dc2626;
+	color: var(--color-red-scarlet);
 	cursor: pointer;
 }
 
 .screen-actions__delete:hover {
-	background: #fef2f2;
+	background: var(--color-pink-blush);
 }
 
 .screen-actions__locked {
@@ -68,5 +68,5 @@
 	align-items: center;
 	gap: 5px;
 	font-size: 12px;
-	color: #94a3b8;
+	color: var(--color-navy-midnight-alpha-85);
 }

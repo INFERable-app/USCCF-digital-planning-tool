@@ -18,10 +18,10 @@
 	/* Aligns with the option column, clearing the grip and the two chips. */
 	margin: 6px 76px 0 28px;
 	padding: 14px 24px;
-	background: white;
-	border: 1px dashed #94a3b8;
+	background: var(--surface-page);
+	border: 1px dashed var(--color-navy-midnight-alpha-40);
 	border-radius: 6px;
-	color: #475569;
+	color: var(--color-navy-midnight-alpha-85);
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
 	letter-spacing: 0.02em;
@@ -30,6 +30,6 @@
 }
 
 .edge-list__add:hover {
-	background: #f8fafc;
-	border-color: #64748b;
+	background: var(--color-data-blue-50);
+	border-color: var(--color-navy-midnight-alpha-85);
 }

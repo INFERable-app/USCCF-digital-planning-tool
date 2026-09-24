@@ -1,7 +1,7 @@
 .add-button-popover-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(15, 23, 42, 0.45);
+	background: var(--color-navy-midnight-alpha-50);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -10,10 +10,10 @@
 }
 
 .add-button-popover {
-	background: white;
-	border: 1px solid #cbd5e1;
+	background: var(--surface-page);
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 10px;
-	box-shadow: 0 12px 32px rgba(15, 23, 42, 0.24);
+	box-shadow: 0 12px 32px var(--color-navy-midnight-alpha-20);
 	padding: 18px;
 	width: 100%;
 	max-width: 24rem;
@@ -23,7 +23,7 @@
 .add-button-popover__header {
 	font-size: 15px;
 	font-weight: 700;
-	color: #0f172a;
+	color: var(--text-primary);
 	margin-bottom: 14px;
 }
 
@@ -31,7 +31,7 @@
 	display: block;
 	font-size: 12px;
 	font-weight: 700;
-	color: #334155;
+	color: var(--text-primary);
 	margin-bottom: 6px;
 }
 
@@ -39,13 +39,13 @@
 .add-button-popover select {
 	display: block;
 	width: 100%;
-	background: #f8fafc;
-	border: 1px solid #cbd5e1;
+	background: var(--surface-panel);
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 6px;
 	padding: 9px 11px;
 	font-family: inherit;
 	font-size: 14px;
-	color: #0f172a;
+	color: var(--text-primary);
 	margin-bottom: 14px;
 	box-sizing: border-box;
 }
@@ -53,18 +53,18 @@
 .add-button-popover input:focus,
 .add-button-popover select:focus {
 	outline: none;
-	border-color: #6366f1;
-	box-shadow: 0 0 0 1px #6366f1;
-	background: white;
+	border-color: var(--color-blue-electric);
+	box-shadow: 0 0 0 1px var(--color-blue-electric);
+	background: var(--surface-page);
 }
 
 .add-button-popover__hint {
-	background: #f8fafc;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-panel);
+	border: 1px solid var(--border-subtle);
 	border-radius: 6px;
 	padding: 10px 12px;
 	font-size: 12px;
-	color: #475569;
+	color: var(--color-navy-midnight-alpha-85);
 	line-height: 1.5;
 	margin-bottom: 14px;
 }
@@ -74,7 +74,7 @@
 	justify-content: flex-end;
 	gap: 8px;
 	padding-top: 12px;
-	border-top: 1px solid #e2e8f0;
+	border-top: 1px solid var(--border-subtle);
 }
 
 .add-button-popover__actions button {
@@ -84,25 +84,25 @@
 	font-size: 13px;
 	cursor: pointer;
 	border: 1px solid transparent;
-	background: #f1f5f9;
-	color: #0f172a;
+	background: var(--surface-panel);
+	color: var(--text-primary);
 }
 
 .add-button-popover__actions button:hover:not(:disabled) {
-	background: #e2e8f0;
+	background: var(--color-blue-ice);
 }
 
 .add-button-popover__submit {
 	font-weight: 700;
-	background: #4f46e5 !important;
-	color: white !important;
+	background: var(--accent-primary) !important;
+	color: var(--text-inverse) !important;
 }
 
 .add-button-popover__submit:hover:not(:disabled) {
-	background: #4338ca !important;
+	background: var(--color-navy-deep) !important;
 }
 
 .add-button-popover__submit:disabled {
-	background: #94a3b8 !important;
+	background: var(--color-navy-midnight-alpha-40) !important;
 	cursor: not-allowed;
 }
