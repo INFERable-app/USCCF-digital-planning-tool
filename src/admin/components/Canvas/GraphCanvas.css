@@ -24,7 +24,7 @@
 .graph-canvas .react-flow__controls-button {
 	background: var(--color-navy-midnight);
 	border-bottom: 1px solid var(--color-navy-deep);
-	fill: var(--color-blue-ice);
+	color: var(--color-blue-ice);
 }
 
 .graph-canvas .react-flow__controls-button:hover {
