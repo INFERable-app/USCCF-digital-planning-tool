@@ -3,7 +3,7 @@
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	background: white;
+	background: var(--surface-page);
 	overflow-y: auto;
 }
 
@@ -38,7 +38,7 @@
 .signin-title {
 	font-size: 20px;
 	font-weight: 700;
-	color: #b23c38;
+	color: var(--accent-primary);
 	text-align: center;
 	line-height: 1.2;
 }
@@ -49,7 +49,7 @@
 	gap: 10px;
 	font-size: 14px;
 	line-height: 1.45;
-	color: #444;
+	color: var(--color-navy-midnight-alpha-85);
 	text-align: center;
 }
 
@@ -67,21 +67,21 @@
 	width: 100%;
 	max-width: 400px;
 	padding: 13px 20px;
-	background: white;
-	border: 1.5px solid #d0d0d0;
+	background: var(--surface-page);
+	border: 1.5px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 999px;
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
 	font-weight: 700;
-	color: #000;
+	color: var(--text-primary);
 	cursor: pointer;
 	transition: background 0.15s, border-color 0.15s;
 	line-height: 1;
 }
 
 .signin-provider-btn:hover:not(:disabled) {
-	background: #f7f7f7;
-	border-color: #aaa;
+	background: var(--surface-panel);
+	border-color: var(--color-navy-midnight-alpha-40);
 }
 
 .signin-provider-btn:disabled {
@@ -95,7 +95,7 @@
 	gap: 10px;
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
-	color: #000;
+	color: var(--text-primary);
 	cursor: pointer;
 	user-select: none;
 }
@@ -104,7 +104,7 @@
 	width: 17px;
 	height: 17px;
 	cursor: pointer;
-	accent-color: #8d2f38;
+	accent-color: var(--accent-primary);
 	flex-shrink: 0;
 }
 
@@ -119,21 +119,21 @@
 	font-weight: 700;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	color: #8d2f38;
+	color: var(--accent-primary);
 }
 
 .signin-privacy-title {
 	font-size: 15px;
 	font-weight: 700;
-	color: #222;
+	color: var(--text-primary);
 	margin: -4px 0 2px;
 }
 
 .signin-privacy-scroll {
 	max-height: 170px;
 	overflow-y: auto;
-	background: #faf8f6;
-	border: 1px solid #e6e0dc;
+	background: var(--surface-panel);
+	border: 1px solid var(--border-subtle);
 	border-radius: 10px;
 	padding: 12px 14px;
 }
@@ -143,7 +143,7 @@
 	font-weight: 700;
 	letter-spacing: 0.03em;
 	text-transform: uppercase;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	margin: 12px 0 6px;
 }
 
@@ -154,7 +154,7 @@
 .signin-privacy-scroll p {
 	font-size: 12.5px;
 	line-height: 1.5;
-	color: #444;
+	color: var(--color-navy-midnight-alpha-85);
 	margin: 0 0 6px;
 }
 
@@ -171,7 +171,7 @@
 
 .signin-privacy-icon {
 	flex-shrink: 0;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	margin-top: 2px;
 }
 
@@ -181,15 +181,15 @@
 
 .signin-privacy-hint {
 	font-size: 12.5px;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	text-align: center;
 	margin: 2px 0 0;
 }
 
 .signin-error {
 	font-size: 14px;
-	color: #c0392b;
-	background: #fdf0ef;
+	color: var(--color-red-scarlet);
+	background: var(--color-pink-blush);
 	border-radius: 6px;
 	padding: 8px 12px;
 }
@@ -197,7 +197,7 @@
 /* ── Desktop: centered floating card (min-height excludes landscape phones ~360-430px tall) */
 @media (min-width: 768px) and (min-height: 500px) {
 	.signin-screen {
-		background: #c8c8c8;
+		background: var(--color-blue-ice);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -208,9 +208,9 @@
 	.signin-card {
 		flex: none;
 		width: 460px;
-		background: white;
+		background: var(--surface-page);
 		border-radius: 16px;
-		box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+		box-shadow: 0 12px 48px var(--color-navy-midnight-alpha-20);
 		overflow: hidden;
 	}
 
