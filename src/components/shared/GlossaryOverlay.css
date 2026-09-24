@@ -1,7 +1,7 @@
 .glossary-overlay-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(20, 12, 13, 0.45);
+	background: var(--color-navy-midnight-alpha-50);
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
@@ -23,7 +23,7 @@
 	flex-direction: column;
 	width: 100%;
 	max-height: 92vh;
-	background: white;
+	background: var(--surface-page);
 	border-radius: 20px 20px 0 0;
 	padding: 20px 20px 24px;
 	overflow: hidden;
@@ -53,7 +53,7 @@
 	font-family: 'Roboto', sans-serif;
 	font-size: 20px;
 	font-weight: 700;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	letter-spacing: 0.02em;
 }
 
@@ -65,13 +65,13 @@
 	border: none;
 	border-radius: 50%;
 	padding: 6px;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	cursor: pointer;
 	transition: background 0.15s ease;
 }
 
 .glossary-overlay__close:hover {
-	background: #f5e8e9;
+	background: var(--color-blue-ice);
 }
 
 .glossary-overlay__list {
@@ -88,7 +88,7 @@
 	flex-direction: column;
 	gap: 2px;
 	padding-bottom: 12px;
-	border-bottom: 1px solid #e8e8e8;
+	border-bottom: 1px solid var(--border-subtle);
 }
 
 .glossary-overlay__entry:last-child {
@@ -100,13 +100,13 @@
 	font-family: 'Roboto', sans-serif;
 	font-size: 15px;
 	font-weight: 700;
-	color: #222;
+	color: var(--text-primary);
 }
 
 .glossary-overlay__definition {
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
-	color: #444;
+	color: var(--color-navy-midnight-alpha-85);
 	line-height: 1.45;
 	margin: 0;
 }
@@ -135,7 +135,7 @@
 		max-height: 80vh;
 		border-radius: 16px;
 		padding: 28px 32px 32px;
-		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+		box-shadow: 0 24px 60px var(--color-navy-midnight-alpha-20);
 	}
 	.glossary-overlay__title {
 		font-size: 22px;

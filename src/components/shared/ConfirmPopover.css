@@ -6,10 +6,10 @@
 
 .confirm-popover {
 	position: fixed;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface-page);
+	border: 1px solid var(--color-navy-midnight-alpha-20);
 	border-radius: 8px;
-	box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+	box-shadow: 0 10px 25px var(--color-navy-midnight-alpha-20);
 	padding: 0.75rem;
 	width: 15rem;
 }
@@ -17,7 +17,7 @@
 .confirm-popover p {
 	margin: 0 0 0.6rem;
 	font-size: 0.8rem;
-	color: #334155;
+	color: var(--text-primary);
 }
 
 .confirm-popover__actions {
@@ -36,19 +36,19 @@
 }
 
 .confirm-popover__cancel {
-	background: #f1f5f9;
-	color: #0f172a;
+	background: var(--surface-panel);
+	color: var(--text-primary);
 }
 
 .confirm-popover__cancel:hover {
-	background: #e2e8f0;
+	background: var(--color-blue-ice);
 }
 
 .confirm-popover__confirm {
-	background: #dc2626;
-	color: #fff;
+	background: var(--color-red-scarlet);
+	color: var(--text-inverse);
 }
 
 .confirm-popover__confirm:hover {
-	background: #ef4444;
+	background: var(--color-red-crimson);
 }

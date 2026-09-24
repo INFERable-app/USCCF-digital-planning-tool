@@ -1,6 +1,6 @@
 /* ── Prompt block ─────────────────────────────────────────────────────────── */
 .prompt-block {
-	background: #1a1a1a;
+	background: var(--color-navy-midnight);
 	border-radius: 8px;
 	overflow: hidden;
 	flex-shrink: 0;
@@ -12,34 +12,34 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 8px 12px;
-	background: #2d2d2d;
+	background: var(--color-navy-deep);
 }
 
 .prompt-block-label {
 	font-family: 'Roboto', sans-serif;
 	font-size: 11px;
 	font-weight: 700;
-	color: #ddd;
+	color: var(--color-blue-ice);
 	text-transform: uppercase;
 	letter-spacing: 0.12em;
 }
 
 .prompt-block-copy {
 	background: none;
-	border: 1px solid #888;
+	border: 1px solid var(--color-cyan-sky);
 	border-radius: 3px;
 	padding: 2px 9px;
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	color: #ddd;
+	color: var(--color-blue-ice);
 	cursor: pointer;
 	transition: background 0.15s, color 0.15s;
 	line-height: 1.4;
 }
 
 .prompt-block-copy:hover {
-	background: #444;
-	color: #eee;
+	background: var(--color-blue-cobalt);
+	color: var(--color-white);
 }
 
 
@@ -48,10 +48,10 @@
 	width: 100%;
 	min-height: 160px;
 	padding: 14px;
-	background: #1a1a1a;
+	background: var(--color-navy-midnight);
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
-	color: #d4d4d4;
+	color: var(--color-blue-ice);
 	line-height: 1.6;
 	letter-spacing: 0.03em;
 	white-space: pre-wrap;
@@ -60,7 +60,7 @@
 	outline: none;
 	resize: vertical;
 	box-sizing: border-box;
-	caret-color: #febc2e;
+	caret-color: var(--color-green-lime);
 }
 
 @media (min-width: 768px) {
@@ -70,33 +70,33 @@
 }
 
 .prompt-block-body:focus {
-	background: #111;
+	background: var(--color-black);
 	outline: none;
 }
 
 .prompt-placeholder {
 	background: none;
-	color: #8d2f38;
+	color: var(--color-green-lime);
 	font-weight: 700;
 }
 
 .prompt-block-hint {
 	padding: 6px 14px 10px;
-	background: #2d2d2d;
+	background: var(--color-navy-deep);
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	color: #ddd;
+	color: var(--color-blue-ice);
 	letter-spacing: 0.1em;
 }
 
 .prompt-warning {
 	padding: 10px 14px;
-	background: #fff8f0;
-	border-left: 4px solid #e36200;
+	background: var(--color-yellow-cream);
+	border-left: 4px solid var(--color-orange-burnt);
 	border-radius: 4px;
 	font-family: 'Roboto', sans-serif;
 	font-size: 14px;
-	color: #7a3800;
+	color: var(--color-brown-mahogany);
 	line-height: 1.5;
 	letter-spacing: 0.01em;
 }
@@ -104,7 +104,7 @@
 .prompt-warning-title {
 	display: block;
 	font-weight: 700;
-	color: #e36200;
+	color: var(--color-orange-burnt);
 	margin-bottom: 3px;
 	letter-spacing: 0.04em;
 }

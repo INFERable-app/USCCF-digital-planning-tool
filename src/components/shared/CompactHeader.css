@@ -3,7 +3,7 @@
 	position: relative;
 	height: 200px;
 	flex-shrink: 0;
-	background: white;
+	background: var(--surface-page);
 	overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 12px 16px 0;
-	background: white;
+	background: var(--surface-page);
 }
 
 .screen-compact .compact-header .app-title {
@@ -28,7 +28,7 @@
 	text-align: center;
 	font-size: 18px;
 	font-weight: 400;
-	color: #b23c38;
+	color: var(--accent-primary);
 	white-space: nowrap;
 }
 
@@ -50,7 +50,7 @@
 		position: static;
 		height: auto;
 		padding: 16px 24px;
-		border-bottom: 1px solid #e8e8e8;
+		border-bottom: 1px solid var(--border-subtle);
 	}
 
 	/* App title hidden on desktop */
@@ -70,7 +70,7 @@
 		grid-row: 2 / -1;
 		min-height: 0;
 		overflow: hidden;
-		border-right: 1px solid #e8e8e8;
+		border-right: 1px solid var(--border-subtle);
 	}
 
 	/* Sidebar: fixed width so content never reflows; slides via transform.

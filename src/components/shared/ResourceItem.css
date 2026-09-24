@@ -4,12 +4,12 @@
 	flex-direction: column;
 	gap: 10px;
 	padding: 12px 14px;
-	border: 1px solid #d0d0d0;
-	border-left: 3px solid #8d2f38;
+	border: 1px solid var(--color-navy-midnight-alpha-20);
+	border-left: 3px solid var(--accent-primary);
 	border-radius: 4px;
-	background: #fafafa;
+	background: var(--surface-panel);
 	text-decoration: none;
-	color: #000;
+	color: var(--text-primary);
 	transition:
 		background 0.15s ease,
 		border-color 0.15s ease;
@@ -24,12 +24,12 @@
 
 .resource-card--link:hover,
 .resource-card--pdf[href]:hover {
-	background: #f0f0f0;
+	background: var(--color-data-blue-50);
 }
 
 .resource-card--expanded {
 	padding: 14px 14px 14px 12px;
-	background: #fff;
+	background: var(--surface-page);
 }
 
 .resource-card--expanded .resource-label {
@@ -38,13 +38,13 @@
 
 .resource-card--expanded.resource-card--link:hover,
 .resource-card--expanded.resource-card--pdf[href]:hover {
-	background: #f5e8e9;
+	background: var(--color-blue-ice);
 }
 
 .resource-description {
 	font-size: 14px;
 	font-weight: 400;
-	color: #555;
+	color: var(--color-navy-midnight-alpha-85);
 	line-height: 1.5;
 	letter-spacing: 0.01em;
 }
@@ -52,15 +52,15 @@
 .resource-label {
 	font-size: 15px;
 	font-weight: 400;
-	color: #000;
+	color: var(--text-primary);
 	line-height: 1.2;
 	flex: 1;
 }
 
 .resource-pdf-badge {
 	flex-shrink: 0;
-	background: #8d2f38;
-	color: white;
+	background: var(--accent-primary);
+	color: var(--text-inverse);
 	font-size: 11px;
 	font-weight: 700;
 	padding: 3px 8px;
@@ -71,7 +71,7 @@
 
 .resource-link-arrow {
 	flex-shrink: 0;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	font-size: 14px;
 	font-weight: 700;
 	line-height: 1;

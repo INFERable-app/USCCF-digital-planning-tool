@@ -1,7 +1,7 @@
 .resource-overlay-backdrop {
 	position: fixed;
 	inset: 0;
-	background: rgba(20, 12, 13, 0.45);
+	background: var(--color-navy-midnight-alpha-50);
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
@@ -23,7 +23,7 @@
 	flex-direction: column;
 	width: 100%;
 	max-height: 92vh;
-	background: white;
+	background: var(--surface-page);
 	border-radius: 20px 20px 0 0;
 	padding: 20px 20px 24px;
 	overflow: hidden;
@@ -53,7 +53,7 @@
 	font-family: 'Roboto', sans-serif;
 	font-size: 20px;
 	font-weight: 700;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	letter-spacing: 0.02em;
 }
 
@@ -65,13 +65,13 @@
 	border: none;
 	border-radius: 50%;
 	padding: 6px;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	cursor: pointer;
 	transition: background 0.15s ease;
 }
 
 .resource-overlay__close:hover {
-	background: #f5e8e9;
+	background: var(--color-blue-ice);
 }
 
 .resource-overlay__tabs {
@@ -88,21 +88,21 @@
 	font-weight: 500;
 	padding: 4px 10px;
 	border-radius: 999px;
-	border: 1.5px solid #8d2f38;
+	border: 1.5px solid var(--accent-primary);
 	background: transparent;
-	color: #8d2f38;
+	color: var(--accent-primary);
 	cursor: pointer;
 	transition: background 0.15s ease, color 0.15s ease;
 	line-height: 1.4;
 }
 
 .resource-overlay__tab--active {
-	background: #8d2f38;
-	color: white;
+	background: var(--accent-primary);
+	color: var(--text-inverse);
 }
 
 .resource-overlay__tab:hover:not(.resource-overlay__tab--active) {
-	background: #f5e8e9;
+	background: var(--color-blue-ice);
 }
 
 .resource-overlay__list {
@@ -125,9 +125,9 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
-	color: #666;
+	color: var(--color-navy-midnight-alpha-85);
 	padding-bottom: 6px;
-	border-bottom: 1px solid #e8e8e8;
+	border-bottom: 1px solid var(--border-subtle);
 }
 
 .resource-overlay__items {
@@ -145,7 +145,7 @@
 .resource-overlay__description {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	color: #555;
+	color: var(--color-navy-midnight-alpha-85);
 	line-height: 1.4;
 	padding: 0 2px;
 }
@@ -174,7 +174,7 @@
 		max-height: 80vh;
 		border-radius: 16px;
 		padding: 28px 32px 32px;
-		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+		box-shadow: 0 24px 60px var(--color-navy-midnight-alpha-20);
 	}
 	.resource-overlay__title {
 		font-size: 22px;
