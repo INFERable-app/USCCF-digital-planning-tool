@@ -77,14 +77,18 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
 	}, [setGraph, exit]);
 
 	// ── draft mutators ────────────────────────────────────────────────────
+	// Both take the updater form so rapid per-keystroke commits always build on
+	// the latest draft rather than the graph captured when the callback was made.
 	const setNodeField = useCallback(
-		(nodeId, field, value) => apply(mutations.updateNodeField(graph, nodeId, field, value)),
-		[graph, apply]
+		(nodeId, field, value) =>
+			apply((prev) => mutations.updateNodeField(prev, nodeId, field, value)),
+		[apply]
 	);
 
 	const setEdgeField = useCallback(
-		(edgeId, field, value) => apply(mutations.updateEdgeField(graph, edgeId, field, value)),
-		[graph, apply]
+		(edgeId, field, value) =>
+			apply((prev) => mutations.updateEdgeField(prev, edgeId, field, value)),
+		[apply]
 	);
 
 	const addButton = useCallback(

@@ -4,8 +4,8 @@ import { useEditMode } from '../../contexts/EditModeContext.jsx';
 // Renders the value as-is outside edit mode. Inside edit mode it becomes a
 // textarea that inherits the surrounding typography exactly and sizes itself to
 // its content via CSS field-sizing, so nothing about the screen shifts when
-// editing starts. Uncontrolled with an onBlur commit — a controlled input here
-// would rebuild the whole graph on every keystroke.
+// editing starts. Stays uncontrolled so the caret never jumps, but commits on
+// input so the edit bar reacts to the first keystroke.
 export default function EditableText({
 	as: Tag = 'p',
 	className,
@@ -25,7 +25,11 @@ export default function EditableText({
 		className: `${className ?? ''} editable-text`.trim(),
 		defaultValue: value ?? '',
 		placeholder,
-		onBlur: (e) => {
+		onInput: (e) => {
+			if (e.nativeEvent.isComposing) return;
+			if (e.target.value !== (value ?? '')) onCommit(e.target.value);
+		},
+		onCompositionEnd: (e) => {
 			if (e.target.value !== (value ?? '')) onCommit(e.target.value);
 		}
 	};
