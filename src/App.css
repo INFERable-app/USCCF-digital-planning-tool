@@ -5,7 +5,7 @@
 }
 
 body {
-	background: var(--surface-panel);
+	background: var(--surface-app);
 	color: var(--text-primary);
 	font-family: 'Roboto', sans-serif;
 }
@@ -67,7 +67,7 @@ body {
 	position: relative;
 	width: 402px;
 	height: 874px;
-	background: var(--surface-page);
+	background: var(--surface-app);
 	border-radius: 44px;
 	overflow: hidden;
 }
@@ -130,7 +130,7 @@ body {
 		width: 100%;
 		border-radius: 0;
 		padding: 0;
-		background: var(--surface-page);
+		background: var(--surface-app);
 		box-shadow: none;
 	}
 	.phone-chrome::before,
@@ -306,7 +306,7 @@ body {
 		width: 100%;
 		border-radius: 0;
 		padding: 0;
-		background: var(--surface-page);
+		background: var(--surface-app);
 		box-shadow: none;
 	}
 	.phone-chrome::before,
@@ -368,7 +368,7 @@ body {
 	}
 
 	.sidebar-close-btn:hover {
-		background: var(--color-blue-ice);
+		background: var(--surface-page);
 	}
 
 	/* Open button lives in the content column — shown only when sidebar is closed */
@@ -404,7 +404,7 @@ body {
 
 	.top-hero .sidebar-open-btn:hover,
 	.compact-header .sidebar-open-btn:hover {
-		background: var(--color-blue-ice);
+		background: var(--surface-page);
 	}
 
 	.drawer-closed .top-hero .sidebar-open-btn,

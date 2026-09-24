@@ -37,7 +37,7 @@
 
 .editable-text:hover {
 	border-color: var(--color-navy-midnight-alpha-50);
-	background: var(--surface-panel);
+	background: var(--surface-page);
 }
 
 .editable-text:focus {

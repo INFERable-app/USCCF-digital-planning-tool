@@ -197,7 +197,7 @@
 /* ── Desktop: centered floating card (min-height excludes landscape phones ~360-430px tall) */
 @media (min-width: 768px) and (min-height: 500px) {
 	.signin-screen {
-		background: var(--color-blue-ice);
+		background: var(--surface-app);
 		display: flex;
 		align-items: center;
 		justify-content: center;

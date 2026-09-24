@@ -5,7 +5,7 @@
 	height: 460px;
 	flex-shrink: 0;
 	overflow: hidden;
-	background: var(--surface-page);
+	background: var(--surface-app);
 }
 
 .header-bar {
@@ -19,7 +19,7 @@
 	justify-content: space-between;
 	padding: 12px 16px 0;
 	z-index: 10;
-	background: var(--surface-page);
+	background: var(--surface-app);
 }
 
 .header-start {

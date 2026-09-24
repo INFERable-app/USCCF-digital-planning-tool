@@ -1,7 +1,7 @@
 .usecase-nav {
 	display: none;
 	flex-direction: column;
-	background: var(--surface-page);
+	background: var(--surface-app);
 	padding: 20px 16px;
 	overflow: hidden;
 }
@@ -57,7 +57,7 @@
 }
 
 .usecase-nav__library-link:hover {
-	background: var(--color-blue-ice);
+	background: var(--surface-page);
 }
 
 .usecase-nav__group {
@@ -102,7 +102,7 @@
 }
 
 .usecase-nav__row:hover:not(:disabled) {
-	background: var(--color-blue-ice);
+	background: var(--surface-page);
 }
 
 .usecase-nav__row:disabled {
@@ -139,7 +139,7 @@
 }
 
 .usecase-nav__caret-btn:hover {
-	background: var(--color-blue-ice);
+	background: var(--surface-page);
 }
 
 .usecase-nav__caret-btn svg {
@@ -163,7 +163,7 @@
 }
 
 .usecase-nav__label-btn:hover:not(:disabled) {
-	background: var(--color-blue-ice);
+	background: var(--surface-page);
 }
 
 .usecase-nav__label-btn:disabled {

@@ -3,7 +3,7 @@
 	position: relative;
 	height: 200px;
 	flex-shrink: 0;
-	background: var(--surface-page);
+	background: var(--surface-app);
 	overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 12px 16px 0;
-	background: var(--surface-page);
+	background: var(--surface-app);
 }
 
 .screen-compact .compact-header .app-title {

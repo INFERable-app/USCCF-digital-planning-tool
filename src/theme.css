@@ -59,6 +59,7 @@
 	/* Semantic roles */
 	--accent-primary: var(--color-blue-cobalt);
 	--accent-secondary: var(--color-green-mint);
+	--surface-app: var(--color-blue-ice);
 	--surface-page: var(--color-white);
 	--surface-panel: var(--color-grey-light);
 	--text-primary: var(--color-navy-midnight);
