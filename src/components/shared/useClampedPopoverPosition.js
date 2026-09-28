@@ -5,7 +5,9 @@ const MARGIN = 8;
 // Measures the popover after it mounts and clamps it back inside the viewport —
 // a popover anchored at a click point near the screen edge (e.g. the inspector's
 // delete button, which sits near the bottom-right of the panel) would otherwise
-// render partially or fully off-screen.
+// render partially or fully off-screen. On mobile, ConfirmPopover.css switches
+// the popover to static positioning inside a flex-centered backdrop instead, so
+// these values end up unused there — see the max-width: 767px block.
 export function useClampedPopoverPosition(x, y) {
 	const ref = useRef(null);
 	const [style, setStyle] = useState({ left: x, top: y, visibility: 'hidden' });

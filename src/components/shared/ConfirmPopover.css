@@ -52,3 +52,33 @@
 .confirm-popover__confirm:hover {
 	background: var(--color-red-crimson);
 }
+
+/* Mobile: centered modal instead of anchored at the click point — see
+   useClampedPopoverPosition.js for why the anchored left/top go unused here. */
+@media (max-width: 767px) {
+	.confirm-popover-backdrop {
+		background: var(--color-navy-midnight-alpha-50);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+	}
+
+	.confirm-popover {
+		position: static;
+		width: 100%;
+		max-width: 22rem;
+		padding: 1.25rem;
+		box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
+	}
+
+	.confirm-popover p {
+		font-size: 0.95rem;
+		line-height: 1.5;
+	}
+
+	.confirm-popover__actions button {
+		padding: 0.55rem 1rem;
+		font-size: 0.9rem;
+	}
+}

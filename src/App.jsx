@@ -78,6 +78,12 @@ function AppContent({ engine }) {
 		setShowResume(false);
 	}
 
+	async function resetProgress() {
+		await fetch('/api/progress', { method: 'DELETE', credentials: 'include' });
+		engine.resetToStart();
+		setShowResume(false);
+	}
+
 	const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
 	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
 
@@ -92,6 +98,7 @@ function AppContent({ engine }) {
 			currentEdgeIds={path.map((p) => p.edgeId).filter(Boolean)}
 			startNodeId={startNodeId}
 			jumpAlongPath={jumpAlongPath}
+			resetProgress={resetProgress}
 		>
 			<div className="app-shell">
 				<EditModeBar />

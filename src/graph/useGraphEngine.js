@@ -91,6 +91,12 @@ export function useGraphEngine() {
 		setHistory(progress.history);
 	}
 
+	function resetToStart() {
+		setCurrentNodeId(startNodeId);
+		setAnswers({});
+		setHistory([]);
+	}
+
 	// No dependency array — always registers a fresh closure so back() sees
 	// the latest history state without stale capture issues.
 	useEffect(() => {
@@ -99,5 +105,5 @@ export function useGraphEngine() {
 		return () => window.removeEventListener('popstate', onPopState);
 	});
 
-	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, goToNode, restore, graph, setGraph };
+	return { node, nodes, edges, startNodeId, currentNodeId, answers, history, advance, back, jumpAlongPath, goToNode, restore, resetToStart, graph, setGraph };
 }
