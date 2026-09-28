@@ -47,10 +47,15 @@
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
-	font-size: 14px;
+	font-size: 17px;
 	line-height: 1.45;
 	color: var(--color-navy-midnight-alpha-85);
 	text-align: center;
+}
+
+.signin-tpm-note a {
+	color: var(--accent-primary);
+	font-weight: 600;
 }
 
 .signin-providers {
@@ -115,7 +120,7 @@
 }
 
 .signin-privacy-eyebrow {
-	font-size: 11px;
+	font-size: 14px;
 	font-weight: 700;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -139,7 +144,7 @@
 }
 
 .signin-privacy-scroll h3 {
-	font-size: 11px;
+	font-size: 14px;
 	font-weight: 700;
 	letter-spacing: 0.03em;
 	text-transform: uppercase;
@@ -207,7 +212,7 @@
 
 	.signin-card {
 		flex: none;
-		width: 460px;
+		width: 540px;
 		background: var(--surface-page);
 		border-radius: 16px;
 		box-shadow: 0 12px 48px var(--color-navy-midnight-alpha-20);
@@ -216,9 +221,5 @@
 
 	.signin-body {
 		flex: none;
-	}
-
-	.signin-provider-btn {
-		max-width: 340px;
 	}
 }

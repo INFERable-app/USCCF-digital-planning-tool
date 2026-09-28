@@ -86,8 +86,11 @@ export default function SignInScreen() {
 					<h1 className="signin-title">Digital Transformation Planning Tool</h1>
 
 					<div className="signin-intro">
-						<p>Welcome to the Digital Transformation Planning Tool. Whether you're defining priority skills, building talent pipelines, or strengthening collaboration across employers and training providers, this tool provides tailored recommendations based on your goals.</p>
-						<p>Start by selecting the goal that best matches what you're trying to accomplish, and follow recommended next steps to help move your workforce initiative forward.</p>
+						<p>This tool helps workforce intermediaries identify practical next steps for building employer collaboratives, aligning skills and training, and strengthening talent pipelines. Choose what you are trying to accomplish, then use the recommended guidance, tools, and resources to take action.</p>
+						<p className="signin-tpm-note">
+							This tool draws on Talent Pipeline Management&reg; (TPM) principles. If you're new to TPM, start with this{' '}
+							<a href="https://www.uschamberfoundation.org/workforce/tpm-resource-videos" target="_blank" rel="noopener noreferrer">quick overview</a>.
+						</p>
 					</div>
 
 					<div className="signin-privacy">
