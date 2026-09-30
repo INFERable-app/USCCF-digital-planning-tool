@@ -84,6 +84,8 @@ function AppContent({ engine }) {
 		setShowResume(false);
 	}
 
+	const hasProgress = Boolean(savedProgress) || currentNodeId !== startNodeId || Object.keys(answers).length > 0;
+
 	const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
 	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
 
@@ -99,6 +101,7 @@ function AppContent({ engine }) {
 			startNodeId={startNodeId}
 			jumpAlongPath={jumpAlongPath}
 			resetProgress={resetProgress}
+			hasProgress={hasProgress}
 		>
 			<div className="app-shell">
 				<EditModeBar />

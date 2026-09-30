@@ -8,7 +8,7 @@ import ConfirmPopover from '../shared/ConfirmPopover.jsx';
 
 export default function UserMenu() {
 	const { user, signOut } = useAuth();
-	const { openResourceLibrary, resetProgress } = useWizardNav();
+	const { openResourceLibrary, resetProgress, hasProgress } = useWizardNav();
 	const { canEdit, editMode, enter } = useEditMode();
 	const [open, setOpen] = useState(false);
 	const [confirmAt, setConfirmAt] = useState(null);
@@ -60,17 +60,19 @@ export default function UserMenu() {
 					>
 						Resource Library
 					</button>
-					<button
-						className="user-dropdown-item user-dropdown-item--reset"
-						onClick={(e) => {
-							setConfirmAt({ x: e.clientX, y: e.clientY });
-							setOpen(false);
-						}}
-						role="menuitem"
-					>
-						<RotateCcw size={15} />
-						Start over
-					</button>
+					{hasProgress && (
+						<button
+							className="user-dropdown-item user-dropdown-item--reset"
+							onClick={(e) => {
+								setConfirmAt({ x: e.clientX, y: e.clientY });
+								setOpen(false);
+							}}
+							role="menuitem"
+						>
+							<RotateCcw size={15} />
+							Start over
+						</button>
+					)}
 					{canEdit && !editMode && (
 						<button
 							className="user-dropdown-item user-dropdown-item--edit"
