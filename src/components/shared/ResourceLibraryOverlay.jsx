@@ -7,17 +7,21 @@ import './ResourceLibraryOverlay.css';
 
 const TABS = [
 	{ id: 'all', label: 'All' },
-	{ id: 'foundational', label: 'Foundational' },
-	{ id: 'employer-demand', label: 'Employer Demand' },
-	{ id: 'training-alignment', label: 'Training Alignment' },
-	{ id: 'templates', label: 'Templates' },
+	{ id: 'start', label: 'Start here' },
+	{ id: 'demand', label: 'Coordinating employer demand' },
+	{ id: 'skills', label: 'Skills & training alignment' },
+	{ id: 'providers', label: 'Finding training providers' },
+	{ id: 'tracking', label: 'Tracking talent pipelines' },
+	{ id: 'templates', label: 'Templates & AI prompts' },
 ];
 
 const SECTION_LABELS = {
-	foundational: 'Foundational',
-	'employer-demand': 'Employer Demand',
-	'training-alignment': 'Training Alignment',
-	templates: 'Templates',
+	start: 'Start here',
+	demand: 'Coordinating employer demand',
+	skills: 'Skills & training alignment',
+	providers: 'Finding training providers',
+	tracking: 'Tracking talent pipelines',
+	templates: 'Templates & AI prompts',
 };
 
 function ResourceEntry({ item }) {
@@ -80,7 +84,7 @@ export default function ResourceLibraryOverlay() {
 				<div className="resource-overlay__list">
 					{isAll
 						? Object.keys(SECTION_LABELS).map((cat) => {
-								const items = staticResources.filter((r) => r.categories[0] === cat);
+								const items = staticResources.filter((r) => r.categories.includes(cat));
 								if (!items.length) return null;
 								return (
 									<section key={cat} className="resource-overlay__section">

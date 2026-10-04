@@ -1,5 +1,5 @@
 export const staticResources = [
-	// ── Foundational ──────────────────────────────────────────────────────────
+	// ── Start Here ─────────────────────────────────────────────────────────────
 	{
 		id: 'glossary-learnwork',
 		type: 'link',
@@ -7,7 +7,7 @@ export const staticResources = [
 		description:
 			'Definitions for common education and workforce terms from the Learn Work Ecosystem Library.',
 		url: 'https://learnworkecosystemlibrary.com/glossary/',
-		categories: ['foundational']
+		categories: ['start']
 	},
 	{
 		id: 'ler-ecosystem-map',
@@ -16,16 +16,7 @@ export const staticResources = [
 		description:
 			'Stakeholder pages with roles, value propositions, and action areas for developing and adopting Learning and Employment Records.',
 		url: 'https://lermap.t3networkhub.org/#map-start',
-		categories: ['foundational']
-	},
-	{
-		id: 'gen-ai-tracker',
-		type: 'link',
-		label: 'Generative AI Adoption Tracker',
-		description:
-			'Tracks adoption of generative AI tools across the education and workforce ecosystem.',
-		url: 'https://www.genaiadoptiontracker.com/',
-		categories: ['foundational']
+		categories: ['start']
 	},
 	{
 		id: 'cfs-trusted-skills',
@@ -34,36 +25,17 @@ export const staticResources = [
 		description:
 			"C-BEN's framework for building trusted, stackable skills credentials across education and workforce.",
 		url: 'https://centerforskills.org/#building-blocks',
-		categories: ['foundational']
+		categories: ['start']
 	},
 	{
-		id: 'lightcast-taxonomy',
+		id: 'gen-ai-tracker',
 		type: 'link',
-		label: 'Lightcast Skills Taxonomy',
+		label: 'Generative AI Adoption Tracker',
 		description:
-			'Comprehensive taxonomy of skills used across labor market data and workforce planning.',
-		url: 'https://lightcast.io/open-skills',
-		categories: ['foundational']
+			'Tracks adoption of generative AI tools across the education and workforce ecosystem.',
+		url: 'https://www.genaiadoptiontracker.com/',
+		categories: ['start']
 	},
-	// ── Training Alignment ─────────────────────────────────────────────────────
-	{
-		id: 'lightcast-speed-of-skill',
-		type: 'link',
-		label: 'The Speed of Skill Change',
-		description:
-			'Lightcast Future Ready report examining how quickly in-demand skills are evolving across industries.',
-		url: 'https://lightcast.io/resources/research/speed-of-skill-change',
-		categories: ['training-alignment']
-	},
-	{
-		id: 'skills-validation-guidebook',
-		type: 'pdf',
-		label: 'Skills Validation Guidebook — Education Design Lab',
-		description: '10-step guide for designing high-quality skill validators. October 2024.',
-		url: 'https://eddesignlab.org/wp-content/uploads/2024/10/A-Skills-Validation-Guidebook-10-Steps-to-Design-a-High-Quality-Skill-Validator-October-2024.pdf',
-		categories: ['training-alignment']
-	},
-	// ── Employer Demand ────────────────────────────────────────────────────────
 	{
 		id: 'tpm-academy',
 		type: 'link',
@@ -71,7 +43,7 @@ export const staticResources = [
 		description:
 			'Covers employer collaboration and coordinating skills requirements (Strategies 1–3) and alignment with training providers (Strategies 4–5).',
 		url: 'https://www.tpmacademy.org/the-curriculum/',
-		categories: ['employer-demand', 'training-alignment']
+		categories: ['start']
 	},
 	{
 		id: 'tpm-resource-videos',
@@ -79,7 +51,44 @@ export const staticResources = [
 		label: 'Talent Pipeline Management (TPM) Resource Videos',
 		description: 'Overview of Talent Pipeline Management® (TPM) initiative and strategies.',
 		url: 'https://www.uschamberfoundation.org/workforce/tpm-resource-videos',
-		categories: ['employer-demand', 'training-alignment']
+		categories: ['start']
+	},
+	// ── Coordinating Employer Demand ──────────────────────────────────────────
+	{
+		id: 'shrm-action-planner',
+		type: 'link',
+		label: 'SHRM Foundation — Skilled Credentials Action Planner',
+		description:
+			'Self-paced tool with guided learning to assess organizational readiness and create a custom workplan for skills-first hiring strategies.',
+		url: 'https://www.shrm.org/foundation/skills-first/action-planner',
+		categories: ['demand']
+	},
+	// ── Skills & Training Alignment ───────────────────────────────────────────
+	{
+		id: 'lightcast-taxonomy',
+		type: 'link',
+		label: 'Lightcast Skills Taxonomy',
+		description:
+			'Comprehensive taxonomy of skills used across labor market data and workforce planning.',
+		url: 'https://lightcast.io/open-skills',
+		categories: ['skills']
+	},
+	{
+		id: 'lightcast-speed-of-skill',
+		type: 'link',
+		label: 'The Speed of Skill Change',
+		description:
+			'Lightcast Future Ready report examining how quickly in-demand skills are evolving across industries.',
+		url: 'https://lightcast.io/resources/research/speed-of-skill-change',
+		categories: ['skills']
+	},
+	{
+		id: 'skills-validation-guidebook',
+		type: 'pdf',
+		label: 'Skills Validation Guidebook — Education Design Lab',
+		description: '10-step guide for designing high-quality skill validators. October 2024.',
+		url: 'https://eddesignlab.org/wp-content/uploads/2024/10/A-Skills-Validation-Guidebook-10-Steps-to-Design-a-High-Quality-Skill-Validator-October-2024.pdf',
+		categories: ['skills']
 	},
 	{
 		id: 'skills-first-initiative',
@@ -88,18 +97,27 @@ export const staticResources = [
 		description:
 			'Employer-led model for defining shared hiring needs and aligning training programs with industry requirements.',
 		url: 'https://www.skills-first.org/',
-		categories: ['employer-demand']
+		categories: ['skills']
+	},
+	// ── Finding Training Providers ────────────────────────────────────────────
+	{
+		id: 'nces-cip-codes-finding-data',
+		type: 'pdf',
+		label: 'Finding Data Using CIP Codes',
+		description:
+			'Guide to identifying and using Classification of Instructional Programs (CIP) codes to find education program data.',
+		url: 'https://nces.ed.gov/ipeds/cipcode/files/Finding_Data_CIP_Codes.pdf',
+		categories: ['providers']
 	},
 	{
-		id: 'shrm-action-planner',
+		id: 'careeronestop-wioa-training-finder',
 		type: 'link',
-		label: 'SHRM Foundation — Skilled Credentials Action Planner',
-		description:
-			'Self-paced tool with guided learning to assess organizational readiness and create a custom workplan for skills-first hiring strategies.',
-		url: 'https://www.shrm.org/foundation/skills-first/action-planner',
-		categories: ['employer-demand']
+		label: 'CareerOneStop — Find WIOA Training Programs',
+		description: 'Search for WIOA-approved training programs by location and occupation.',
+		url: 'https://www.careeronestop.org/LocalHelp/EmploymentAndTraining/find-WIOA-training-programs.aspx',
+		categories: ['providers']
 	},
-	// ── Templates ──────────────────────────────────────────────────────────────
+	// ── Templates & AI Prompts ────────────────────────────────────────────────
 	{
 		id: 'ai-prompt-identify-employer-partners',
 		type: 'prompt',
