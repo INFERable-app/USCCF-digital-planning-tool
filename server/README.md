@@ -1,72 +1,61 @@
 # @usccf/api-gateway
 
-Node.js + Express API gateway for the USCCF Digital Transformation Planning Tool.
+The Express + TypeScript gateway for the USCCF Digital Transformation Planning Tool. It
+handles Google sign-in (server-side OIDC with PKCE and a session cookie), serves and edits the
+wizard graph in Neo4j, stores per-user progress, manages the admin list, and accepts PDF
+uploads. The React client only ever talks to this gateway.
 
 ## Quick start
 
-```bash
-cp .env.example .env
-# fill in SESSION_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
-pnpm dev
+From the repository root, with Neo4j running (see the [root README](../README.md#local-setup)):
+
+```sh
+cp server/.env.example server/.env   # then fill it in, see docs/configuration.md
+pnpm dev:server                      # tsx watch, http://localhost:3001
 ```
 
-Runs on `http://localhost:3001` by default.
+## Scripts
 
-## Environment variables
+Run these with `pnpm --filter @usccf/api-gateway <script>`, or plain `pnpm <script>` from
+inside `server/`.
 
-See `.env.example` for the full list with descriptions.
+| Script                              | Does                                                 |
+| ----------------------------------- | ---------------------------------------------------- |
+| `dev`                               | Run `src/server.ts` with `tsx watch`                 |
+| `build`                             | Compile to `dist/` with `tsc`                        |
+| `start`                             | Run the compiled `dist/server.js`                    |
+| `seed:graph`                        | Load `docs/wizardGraph.json` into an **empty** Neo4j |
+| `migrate:pdf-page-ranges`           | One-off migration, already applied                   |
+| `migrate:prompt-block-to-resources` | One-off migration, already applied                   |
 
-| Variable | Required | Default |
-|---|---|---|
-| `PORT` | | `3001` |
-| `SESSION_SECRET` | ✓ | — |
-| `GOOGLE_CLIENT_ID` | ✓ | — |
-| `GOOGLE_CLIENT_SECRET` | ✓ | — |
-| `GOOGLE_REDIRECT_URI` | | `http://localhost:3001/auth/callback` |
-| `GRAPH_BACKEND` | | `stub` |
-| `NEO4J_URI` | if neo4j | `bolt://localhost:7687` |
-| `NEO4J_USER` | if neo4j | `neo4j` |
-| `NEO4J_PASSWORD` | if neo4j | — |
-| `WEB_ORIGIN` | | `http://localhost:5173` |
+## Source layout
 
-## Routes
+```
+src/
+├─ server.ts              starts the app on PORT
+├─ app.ts                 middleware, router mounting, the /admin gate
+├─ config.ts              zod-validated environment (exits on invalid config)
+├─ middleware.ts          requireAuth, requireAdmin
+├─ routes/health.ts       GET /healthz
+├─ connectors/
+│  ├─ oidc/               /auth/login, /auth/callback, /auth/logout, /auth/me
+│  ├─ graph/              /api/graph… (Neo4j repository + in-memory stub)
+│  ├─ progress/           /api/progress
+│  ├─ resources/          /api/resources/upload, /api/resources/files
+│  ├─ admins/             /api/admins, isAdminEmail()
+│  ├─ neo4j/driver.ts     shared Neo4j driver
+│  └─ xapi/               placeholder for a future integration (README only)
+├─ seed/graphSeed.ts      seed script
+├─ scripts/               one-off data migrations
+└─ types/session.d.ts     express-session typings (user, pkce, returnTo)
+```
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `GET` | `/healthz` | — | Connector readiness |
-| `GET` | `/auth/login` | — | Start Google OIDC login (PKCE) |
-| `GET` | `/auth/callback` | — | Google OAuth callback |
-| `POST` | `/auth/logout` | — | Destroy session |
-| `GET` | `/auth/me` | session | Current user profile |
-| `GET` | `/api/graph` | session | Full wizard graph |
-| `GET` | `/api/graph/nodes/:id` | session | Single node |
+Each connector follows the same pattern: a `types.ts` with a repository interface, a Neo4j
+implementation of it, and a `routes.ts` router.
 
-## Connectors
+## Further reading
 
-- **OIDC (`src/connectors/oidc/`)** — BFF flow: gateway holds the Google client secret and issues an httpOnly session cookie. The React app never touches tokens directly.
-- **Graph (`src/connectors/graph/`)** — `GraphRepository` interface with two implementations: `stubRepository` (reads `docs/wizardGraph.json`) and `neo4jRepository` (not yet implemented). Switch with `GRAPH_BACKEND=neo4j`.
-- **xAPI** — seam only; see `src/connectors/xapi/README.md`.
-
-## Integrating the React frontend
-
-To switch the frontend from client-side Google sign-in to the gateway BFF:
-
-1. **Add a Vite dev proxy** in `vite.config.js`:
-   ```js
-   server: {
-     proxy: {
-       '/auth': 'http://localhost:3001',
-       '/api': 'http://localhost:3001',
-     }
-   }
-   ```
-
-2. **Replace `SignInScreen.jsx`** — instead of `useGoogleLogin`, redirect to `/auth/login`.
-
-3. **Replace `AuthContext.jsx`** — instead of `localStorage`, call `GET /auth/me` on load; call `POST /auth/logout` on sign-out.
-
-4. **Remove `VITE_GOOGLE_CLIENT_SECRET`** from `.env.local` and all Vite env usage. Rotate the secret — it was exposed via the `VITE_` prefix.
-
-## Session store
-
-The scaffold uses Express's default in-memory store. Replace with a Redis-backed store before deploying to production.
+- [Architecture](../docs/architecture.md): route table, sign-in flow, how the client uses the
+  API, known gotchas
+- [Data model](../docs/data-model.md): Neo4j schema and the graph JSON
+- [Configuration](../docs/configuration.md): every environment variable
