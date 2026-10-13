@@ -32,6 +32,13 @@
 	white-space: nowrap;
 }
 
+.screen-compact .compact-header .breadcrumb {
+	position: absolute;
+	top: 110px;
+	left: 16px;
+	right: 16px;
+}
+
 /* Hidden on mobile, becomes left column on desktop */
 .compact-hero-wrap {
 	display: none;
@@ -63,6 +70,14 @@
 		display: none;
 	}
 
+	/* Progress tracker: own row at the top of the content column */
+	.screen-compact .compact-header .breadcrumb {
+		grid-column: 2;
+		grid-row: 2;
+		position: static;
+		padding: 24px 16px 0;
+	}
+
 	/* Track: occupies the grid column, clips the sliding sidebar */
 	.screen-compact .compact-header .usecase-nav-track {
 		display: flex;
@@ -89,7 +104,7 @@
 	   centered as the grid column animates open/closed. */
 	.screen-compact .survey-content {
 		grid-column: 2;
-		grid-row: 2;
+		grid-row: 3;
 		padding: 64px max(64px, calc((100% - 772px) / 2));
 		align-self: center;
 		max-height: 100%;
@@ -104,7 +119,7 @@
 
 	.screen-compact .bottom-cta {
 		grid-column: 2;
-		grid-row: 3;
+		grid-row: 4;
 		padding: 12px max(64px, calc((100% - 772px) / 2)) 24px;
 		display: flex;
 		justify-content: flex-start;

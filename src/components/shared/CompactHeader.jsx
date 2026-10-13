@@ -1,6 +1,7 @@
 import './CompactHeader.css';
 import UserMenu from '../auth/UserMenu.jsx';
 import UseCaseNav from './UseCaseNav.jsx';
+import Breadcrumb from './Breadcrumb.jsx';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { Menu } from 'lucide-react';
 const IMG_LOGO = '/images/uscoc-logo.png';
@@ -21,6 +22,7 @@ export default function CompactHeader({ onBack }) {
 				<UserMenu />
 			</div>
 			<p className="app-title">Digital Transformation Planning Tool</p>
+			<Breadcrumb />
 			<div className="compact-hero-wrap" aria-hidden="true">
 				<img src={IMG_TPM_MAN} alt="" className="hero-image" />
 			</div>
