@@ -6,6 +6,39 @@
 	overflow: hidden;
 }
 
+.usecase-nav-backdrop {
+	display: none;
+}
+
+/* Mobile: nav becomes a slide-in drawer over the screen */
+@media (max-width: 767px) {
+	.usecase-nav {
+		display: flex;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: min(85vw, 360px);
+		z-index: 100;
+		transform: translateX(-100%);
+		visibility: hidden;
+		transition: transform 0.3s ease, visibility 0.3s;
+	}
+
+	.app-screen:not(.drawer-closed) .usecase-nav {
+		transform: translateX(0);
+		visibility: visible;
+	}
+
+	.usecase-nav-backdrop {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 99;
+		background: var(--color-navy-midnight-alpha-40);
+	}
+}
+
 .usecase-nav__heading-row {
 	display: flex;
 	align-items: center;

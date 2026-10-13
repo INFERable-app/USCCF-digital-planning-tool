@@ -12,6 +12,9 @@ export default function HeroHeader({ onBack }) {
 		<div className="top-hero">
 			<div className="header-bar">
 				<div className="header-start">
+					<button className="mobile-nav-btn" onClick={toggle} aria-label="Open navigation">
+						<Menu size={22} />
+					</button>
 					{onBack && <button className="btn-back" onClick={onBack}>‹ Back</button>}
 					<img src={IMG_LOGO} alt="U.S. Chamber of Commerce Foundation" className="logo" />
 				</div>

@@ -274,10 +274,36 @@ body {
 	text-decoration: underline;
 }
 
-/* ── Sidebar toggle buttons (hidden on mobile) ───────────────────────────── */
-.sidebar-close-btn,
+/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
 .sidebar-open-btn {
 	display: none;
+}
+
+/* Close button lives in the sidebar heading row, right side */
+.sidebar-close-btn {
+	display: flex;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--accent-primary);
+	transition: background 0.15s ease;
+}
+
+.sidebar-close-btn:hover {
+	background: var(--surface-page);
+}
+
+/* Mobile-only nav button in the header bar */
+.mobile-nav-btn {
+	display: flex;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--accent-primary);
 }
 
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
@@ -355,20 +381,8 @@ body {
 	}
 
 	/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
-	/* Close button lives in the sidebar heading row, right side */
-	.sidebar-close-btn {
-		display: flex;
-		background: none;
-		border: none;
-		border-radius: 6px;
-		padding: 4px;
-		cursor: pointer;
-		color: var(--accent-primary);
-		transition: background 0.15s ease;
-	}
-
-	.sidebar-close-btn:hover {
-		background: var(--surface-page);
+	.mobile-nav-btn {
+		display: none;
 	}
 
 	/* Open button lives in the content column — shown only when sidebar is closed */

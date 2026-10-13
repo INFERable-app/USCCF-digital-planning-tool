@@ -8,7 +8,7 @@ import ConfirmPopover from '../shared/ConfirmPopover.jsx';
 
 export default function UserMenu() {
 	const { user, signOut } = useAuth();
-	const { openResourceLibrary, resetProgress, hasProgress } = useWizardNav();
+	const { resetProgress, hasProgress } = useWizardNav();
 	const { canEdit, editMode, enter } = useEditMode();
 	const [open, setOpen] = useState(false);
 	const [confirmAt, setConfirmAt] = useState(null);
@@ -50,16 +50,6 @@ export default function UserMenu() {
 						<span className="user-dropdown-name">{user.name}</span>
 						<span className="user-dropdown-email">{user.email}</span>
 					</div>
-					<button
-						className="user-dropdown-item"
-						onClick={() => {
-							openResourceLibrary();
-							setOpen(false);
-						}}
-						role="menuitem"
-					>
-						Resource Library
-					</button>
 					{hasProgress && (
 						<button
 							className="user-dropdown-item user-dropdown-item--reset"

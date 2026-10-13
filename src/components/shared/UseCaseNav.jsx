@@ -61,7 +61,7 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 }
 
 export default function UseCaseNav() {
-	const { toggle, close } = useDrawer();
+	const { isOpen, toggle, close } = useDrawer();
 	const { nodes, edges, currentEdgeIds, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
@@ -79,6 +79,7 @@ export default function UseCaseNav() {
 
 	return (
 		<div className="usecase-nav-track">
+			{isOpen && <div className="usecase-nav-backdrop" onClick={close} aria-hidden="true" />}
 			<aside className="usecase-nav" aria-label="Use case navigation">
 				<div className="usecase-nav__heading-row">
 					<h2 className="usecase-nav__title">Your Goals</h2>
