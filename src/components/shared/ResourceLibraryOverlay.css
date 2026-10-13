@@ -125,7 +125,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
-	color: var(--color-navy-midnight-alpha-85);
+	color: var(--text-primary);
 	padding-bottom: 6px;
 	border-bottom: 1px solid var(--border-subtle);
 }
@@ -144,8 +144,8 @@
 
 .resource-overlay__description {
 	font-family: 'Roboto', sans-serif;
-	font-size: 12px;
-	color: var(--color-navy-midnight-alpha-85);
+	font-size: 14px;
+	color: var(--text-primary);
 	line-height: 1.4;
 	padding: 0 2px;
 }
