@@ -4,7 +4,6 @@
 	height: 200px;
 	flex-shrink: 0;
 	background: var(--surface-app);
-	overflow: hidden;
 }
 
 .screen-compact .compact-header .header-bar {
