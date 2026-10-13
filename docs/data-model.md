@@ -1,17 +1,22 @@
 # Data model
 
-All persistent data lives in one Neo4j database: the wizard's content graph, each user's saved
-progress, and the admin list. Uploaded PDFs are the only data outside Neo4j; they are stored
-as files in `UPLOADS_DIR` (see [architecture.md](architecture.md#pdf-uploads)).
+All persistent data lives in one Neo4j database:
 
-The wizard graph exists in three shapes, and most bugs in this area come from converting
-between them:
+- the wizard's content graph
+- each user's saved progress
+- the admin list
 
-1. **Neo4j storage**: `:WizardNode` nodes joined by `:OPTION` relationships.
-2. **API JSON** (`WizardGraph` in `server/src/connectors/graph/types.ts`): what
-   `GET /api/graph` returns and the client works with.
-3. **Graph editor state**: React Flow node and edge arrays, used only inside `/admin`
-   (`src/admin/state/graphFlowAdapter.js`).
+Uploaded PDFs are the only data outside Neo4j. They are files in `UPLOADS_DIR`. See
+[architecture.md](architecture.md#pdf-uploads).
+
+The wizard graph exists in three shapes. Most bugs in this area come from converting between
+them.
+
+1. **Neo4j storage:** `:WizardNode` nodes joined by `:OPTION` relationships.
+2. **API JSON:** the `WizardGraph` type in `server/src/connectors/graph/types.ts`.
+   `GET /api/graph` returns it, and the client works with it.
+3. **Graph editor state:** React Flow node and edge arrays. Only `/admin` uses this shape. The
+   conversion lives in `src/admin/state/graphFlowAdapter.js`.
 
 > The live database is the source of truth. `docs/wizardGraph.json` is seed data only and is
 > usually out of date.
@@ -20,53 +25,72 @@ between them:
 
 ```mermaid
 flowchart LR
-    WN1["(:WizardNode)<br/>id, type, question, …<br/>resolversJson, positionX/Y"]
-    WN2["(:WizardNode)"]
-    WN1 -- "[:OPTION]<br/>id, label, order,<br/>storeKey, value, disabled" --> WN2
-    U["(:User)<br/>sub, progress, updatedAt"]
-    A["(:Admin)<br/>email, addedBy, addedAt"]
+    WN1[":WizardNode<br/>id, type, question, …<br/>resolversJson, positionX/Y"]
+    WN2[":WizardNode"]
+    WN1 -- ":OPTION<br/>id, label, order,<br/>storeKey, value, disabled" --> WN2
+    U[":User<br/>sub, progress, updatedAt"]
+    A[":Admin<br/>email, addedBy, addedAt"]
 ```
 
-`:User` and `:Admin` are standalone nodes with no relationships.
+`:User` and `:Admin` nodes stand alone. They have no relationships.
 
-| Label / type  | Properties                                                                                                                | Written by                                       |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `:WizardNode` | `id` plus every node field below. `resolvers` is stored as a JSON string in `resolversJson`. `edgeIds` is **not** stored. | `connectors/graph/neo4jRepository.ts`, seed      |
-| `:OPTION`     | `id`, `label`, `order` (0-based position among the source node's options), and optionally `storeKey`, `value`, `disabled` | `connectors/graph/neo4jRepository.ts`, seed      |
-| `:User`       | `sub` (Google subject id), `progress` (JSON string), `updatedAt` (datetime)                                               | `connectors/progress/neo4jProgressRepository.ts` |
-| `:Admin`      | `email` (trimmed and lowercased), `addedBy` (email), `addedAt` (datetime)                                                 | `connectors/admins/neo4jAdminRepository.ts`      |
+**`:WizardNode`**
 
-Constraints, created by the seed script with `IF NOT EXISTS`:
+- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Holds `id` plus every node field listed below.
+- `resolvers` is stored as a JSON string in `resolversJson`.
+- `edgeIds` is not stored.
 
-- `:WizardNode(id)` is unique
-- `:Admin(email)` is unique
+**`:OPTION`**
+
+- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Always has `id`, `label` and `order`. `order` is the zero-based position among the source
+  node's options.
+- May have `storeKey`, `value` and `disabled`.
+
+**`:User`**
+
+- Written by `connectors/progress/neo4jProgressRepository.ts`.
+- `sub` is the Google subject id.
+- `progress` is a JSON string.
+- `updatedAt` is a datetime.
+
+**`:Admin`**
+
+- Written by `connectors/admins/neo4jAdminRepository.ts`.
+- `email` is trimmed and lowercased.
+- `addedBy` is the email of the admin who added it.
+- `addedAt` is a datetime.
+
+The seed script creates two uniqueness constraints with `IF NOT EXISTS`:
+
+- `:WizardNode(id)`
+- `:Admin(email)`
 
 `:User.sub` has no constraint. Progress writes use `MERGE` on it.
 
 ### How storage maps to the API
 
-The functions involved are `nodeToProps` and `edgeToRelProps` in
-`server/src/connectors/graph/graphUtils.ts`, and `buildNode`/`buildEdge` in
+The mapping code is `nodeToProps` and `edgeToRelProps` in
+`server/src/connectors/graph/graphUtils.ts`, and `buildNode` and `buildEdge` in
 `neo4jRepository.ts`.
 
-- **Edges belong to nodes implicitly.** In the API, an edge has no `sourceId`. It belongs to
-  whichever node lists it in `edgeIds`. In Neo4j that ownership is the relationship's start
-  node.
-- **`edgeIds` order comes from `OPTION.order`.** On read, `edgeIds` is built by collecting
-  outgoing `OPTION` ids sorted by `order`. To reorder options, `PATCH` the node with a new
-  `edgeIds` array, and the repository rewrites each relationship's `order`.
-- **`resolvers` round-trips through JSON.** It is written as `resolversJson` and parsed back
-  on read. Other node fields are stored as plain properties, so node fields must be
-  primitives or arrays of primitives.
-- **`null` clears a field.** `PATCH` bodies go into Cypher `SET n += $props`, and setting a
+- **Edges belong to nodes implicitly.** An API edge has no `sourceId`. It belongs to whichever
+  node lists it in `edgeIds`. In Neo4j the owner is the relationship's start node.
+- **`edgeIds` order comes from `OPTION.order`.** A read collects the outgoing `OPTION` ids
+  sorted by `order`. To reorder options, `PATCH` the node with a new `edgeIds` array. The
+  repository then rewrites each relationship's `order`.
+- **`resolvers` round-trips through JSON.** It is written as `resolversJson` and parsed back on
+  read. Every other node field is a plain property, so node fields must be primitives or
+  arrays of primitives.
+- **`null` clears a field.** `PATCH` bodies go into Cypher `SET n += $props`. Setting a
   property to `null` removes it. `diffGraph` relies on this to delete fields.
-- **Re-targeting an edge recreates it.** Neo4j can't move a relationship's end node, so
+- **Re-targeting an edge recreates it.** Neo4j can't move a relationship's end node.
   `updateEdge` deletes the relationship and creates a new one with the same properties and
   `order`.
-- **`startNodeId` is always `"welcome"`.** It isn't stored anywhere; `getWizardGraph`
-  hard-codes it.
+- **`startNodeId` is always `"welcome"`.** It isn't stored. `getWizardGraph` hard-codes it.
 
-## Wizard graph (API JSON)
+## Wizard graph JSON
 
 ```json
 {
@@ -76,60 +100,89 @@ The functions involved are `nodeToProps` and `edgeToRelProps` in
 }
 ```
 
-A **node** is one screen. An **edge** is one option or button on that screen, pointing to the
+A **node** is one screen. An **edge** is one option or button on a screen. It points to the
 screen it leads to.
 
-### Node fields (all types)
+### Fields on every node
 
-| Field          | Type     | Notes                                                                                                                                  |
-| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | string   | Unique. New nodes get `node-<n>`. Renaming is possible in the graph editor.                                                            |
-| `type`         | string   | `welcome`, `multiChoice`, `radioSurvey`, `checkboxSurvey`, `videoInfo` or `results`. Chooses the component in `src/components/nodes/`. |
-| `edgeIds`      | string[] | This screen's options in display order. Derived, not stored.                                                                           |
-| `label`        | string   | Optional display name on the graph editor canvas. Falls back to `id`.                                                                  |
-| `layout`       | string   | `hero` or `compact`. Stored and editable but not rendered (see [Quirks](#quirks)).                                                     |
-| `challengeBar` | boolean  | Stored and editable but not rendered (see [Quirks](#quirks)).                                                                          |
-| `positionX/Y`  | number   | Canvas position in the graph editor. Missing positions are auto-laid-out on load.                                                      |
+| Field          | Type     | Notes                                                                                    |
+| -------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `id`           | string   | Unique. New nodes get `node-<n>`. The graph editor can rename it.                        |
+| `type`         | string   | Picks the component in `src/components/nodes/`. Values are listed in the next table.     |
+| `edgeIds`      | string[] | This screen's options in display order. Derived from Neo4j, not stored.                  |
+| `label`        | string   | Optional name shown on the graph editor canvas. Falls back to `id`.                      |
+| `layout`       | string   | `hero` or `compact`. Stored and editable, but nothing renders it. See [Quirks](#quirks). |
+| `challengeBar` | boolean  | Stored and editable, but nothing renders it. See [Quirks](#quirks).                      |
+| `positionX/Y`  | number   | Canvas position in the graph editor. The editor lays out nodes that have none.           |
 
 ### Node types
 
-The fields each type reads are taken from its component in `src/components/nodes/`. New-node
-defaults come from `NODE_TYPE_DEFAULTS` in `src/admin/components/nodes/nodeTypeMeta.js`.
+Each type's fields come from its component in `src/components/nodes/`. New nodes start with
+the values in `NODE_TYPE_DEFAULTS`, in `src/admin/components/nodes/nodeTypeMeta.js`.
 
-| Type             | Fields it renders                                              | Behaviour                                                                                                                                                                           |
-| ---------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `welcome`        | `heading`, `body`                                              | Hero screen. Only the **first** edge is rendered, as the call-to-action button.                                                                                                     |
-| `multiChoice`    | `question`                                                     | One button per edge. Tapping one advances immediately. These screens also form the sidebar's "Your Goals" tree.                                                                     |
-| `radioSurvey`    | `intro` (optional), `question`, `submitLabel` (default `Next`) | One radio per edge. The submit button follows the selected edge.                                                                                                                    |
-| `checkboxSurvey` | `question`, `submitEdgeId`                                     | One checkbox per edge. The submit button follows `submitEdgeId`, and its label is that edge's `label`. The submit edge's `storeKey` receives an **array of the selected edge ids**. |
-| `videoInfo`      | `intro`, `videoUrl`, `videoAlt`, `linkLabel`, `linkDisplay`    | Video card, plus an optional link to `videoUrl` shown as `linkDisplay`. Only the **first** edge is rendered, as the continue button.                                                |
-| `results`        | `resolvers`                                                    | End screen. Content is chosen from `resolvers` based on the user's answers. Outgoing edges are not rendered.                                                                        |
+**`welcome`**
 
-The live content currently uses only `welcome`, `multiChoice`, `radioSurvey` and `results`.
+- Renders `heading` and `body` on a hero screen.
+- Renders only the **first** edge, as the call-to-action button.
+
+**`multiChoice`**
+
+- Renders `question` and one button per edge.
+- Tapping a button advances immediately.
+- These screens also build the sidebar's "Your Goals" tree.
+
+**`radioSurvey`**
+
+- Renders `intro`, `question` and one radio button per edge. `intro` is optional.
+- The submit button follows the selected edge. Its label is `submitLabel`, which defaults to
+  `Next`.
+
+**`checkboxSurvey`**
+
+- Renders `question` and one checkbox per edge.
+- The submit button follows the edge named in `submitEdgeId`. Its label is that edge's
+  `label`.
+- The submit edge's `storeKey` receives an **array of the selected edge ids**.
+
+**`videoInfo`**
+
+- Renders `intro` and a video card from `videoUrl` and `videoAlt`.
+- Optionally shows `linkLabel` and a link to `videoUrl` displayed as `linkDisplay`.
+- Renders only the **first** edge, as the continue button.
+
+**`results`**
+
+- The end screen.
+- Picks its content from `resolvers` based on the user's answers.
+- Renders no outgoing edges.
+
+The live content uses only `welcome`, `multiChoice`, `radioSurvey` and `results`.
 
 ### Edge fields
 
-| Field          | Type    | Notes                                                                                                                 |
-| -------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| `id`           | string  | Unique across the graph. New edges get `e_<sourceId>_<targetId>` (with `_<n>` added if that id is taken).             |
-| `label`        | string  | The button or option text.                                                                                            |
-| `targetNodeId` | string  | The screen this edge leads to.                                                                                        |
-| `storeKey`     | string  | Optional. When the edge is taken, `answers[storeKey]` is set.                                                         |
-| `value`        | string  | The value stored at `storeKey`. If it's missing, the value passed to `advance()` is used instead (the checkbox case). |
-| `disabled`     | boolean | Optional. The option renders but can't be clicked; breadcrumb, path and sidebar logic skip it.                        |
+| Field          | Type    | Notes                                                                                                                      |
+| -------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | string  | Unique across the graph. New edges get `e_<sourceId>_<targetId>`. If taken, `_<n>` is added.                               |
+| `label`        | string  | The button or option text.                                                                                                 |
+| `targetNodeId` | string  | The screen this edge leads to.                                                                                             |
+| `storeKey`     | string  | Optional. Taking the edge sets `answers[storeKey]`.                                                                        |
+| `value`        | string  | The value stored at `storeKey`. When missing, the value passed to `advance()` is used. The checkbox submit relies on this. |
+| `disabled`     | boolean | Optional. The option shows but can't be clicked. Breadcrumb, path and sidebar logic skip it.                               |
 
 ### Answers
 
-`answers` is a flat object built up as the user moves through the wizard, e.g.
-`{ "category": "employer", "role": "…", "challenge": "…" }`. Taking a second edge with the same
-`storeKey` overwrites the earlier value. The live graph uses the keys `category`, `role`,
-`challenge` and `skills-framework`. Answers matter for two things: they are saved with
-progress, and they select a results screen's content.
+`answers` is a flat object that grows as the user moves through the wizard. Example:
+`{ "category": "employer", "role": "…", "challenge": "…" }`.
+
+- Taking a second edge with the same `storeKey` overwrites the earlier value.
+- The live graph uses the keys `category`, `role`, `challenge` and `skills-framework`.
+- Answers are saved with progress.
+- Answers select a results screen's content.
 
 ## Resolvers
 
 A `results` node has an ordered `resolvers` array. `src/graph/resolveResult.js` renders the
-**first** resolver whose `when` matches the current answers. If none match, it uses the
+**first** resolver whose `when` matches the current answers. If none match, it renders the
 **last** one.
 
 ```json
@@ -142,24 +195,26 @@ A `results` node has an ordered `resolvers` array. `src/graph/resolveResult.js` 
 }
 ```
 
-`when` matches only if **every** key matches (AND across keys), and a key matches if the
-user's answer is **one of** the listed values (OR within a key). An empty `when: {}` always
-matches, which makes it a good catch-all as the last resolver.
+How `when` matches:
+
+- **Every** key must match. Keys combine with AND.
+- A key matches when the user's answer is **one of** its listed values. Values combine with OR.
+- An empty `when: {}` always matches. Use it as a catch-all in the last resolver.
 
 | Field                  | Notes                                                                      |
 | ---------------------- | -------------------------------------------------------------------------- |
-| `when`                 | See above. Required.                                                       |
+| `when`                 | Required. Matching rules are above.                                        |
 | `recommendation`       | Lead sentence.                                                             |
 | `bodyText`             | Body copy.                                                                 |
-| `resources`            | Resource cards, rendered in array order (see below).                       |
+| `resources`            | Resource cards, rendered in array order. See below.                        |
 | `footer`               | Small closing line.                                                        |
-| `videoUrl`, `videoAlt` | Optional video card. Rendered, but no editor form exposes these.           |
+| `videoUrl`, `videoAlt` | Optional video card. Rendered, but no editor form exposes these fields.    |
 | `cta`                  | Optional `{ label, url }` button. Rendered, but no editor form exposes it. |
 
 ### Resources
 
-Defined by `src/components/shared/ResourceItem.jsx`, which renders them, and
-`src/components/editor/ResolversEditor/resolverSanitize.js`, which cleans them on save.
+`src/components/shared/ResourceItem.jsx` renders resources.
+`src/components/editor/ResolversEditor/resolverSanitize.js` cleans them on save.
 
 | `type`      | Fields                                                                 | Required to be saved                         |
 | ----------- | ---------------------------------------------------------------------- | -------------------------------------------- |
@@ -168,22 +223,23 @@ Defined by `src/components/shared/ResourceItem.jsx`, which renders them, and
 | `reference` | `label`, `description`                                                 | `label`                                      |
 | `prompt`    | `label`, `text`                                                        | `label` or `text`                            |
 
-- **PDF page links.** `pageStart` is the source of truth. On save, any `#page=` anchor on
-  `url` is replaced with `#page=<pageStart>`. If `pageStart` is empty, it is backfilled from an
-  existing anchor. The badge shows `p. N` or `p. N–M`, or "Whole document".
-- **Incomplete resources are silently dropped on save.** The editor shows a warning while
-  editing (`missingResourceFieldLabel`), but anything still incomplete at save time is removed.
-- **Prompts** render as a copyable text block (`PromptBlock.jsx`) with a fixed warning not to
-  paste sensitive data.
-- **`_key`.** Both editors add a client-only `_key` to each resolver and resource so lists
-  have stable React keys. `sanitizeResolvers` copies only known fields, so `_key` never
-  reaches the server. The migration scripts did write some `_key`s into Neo4j; they're
+- **PDF page links.** `pageStart` is the source of truth.
+  - On save, any `#page=` anchor on `url` is replaced with `#page=<pageStart>`.
+  - If `pageStart` is empty, it is filled from an existing anchor.
+  - The badge shows `p. N`, `p. N–M` or "Whole document".
+- **Incomplete resources are dropped on save, silently.** The editor warns while editing
+  through `missingResourceFieldLabel`. Anything still incomplete at save time is removed.
+- **Prompts** render as a copyable text block in `PromptBlock.jsx`. The block shows a fixed
+  warning not to paste sensitive data.
+- **`_key`.** Both editors add a client-only `_key` to each resolver and resource, so React
+  lists have stable keys. `sanitizeResolvers` copies only known fields, so `_key` never
+  reaches the server. The migration scripts did write some `_key` values into Neo4j. They are
   harmless.
 
 ## User progress
 
-Stored on `(:User {sub})` as a JSON string in `progress`. Shape
-(`server/src/connectors/progress/types.ts`):
+Progress is stored on the `:User` node as a JSON string in `progress`. Its shape is defined in
+`server/src/connectors/progress/types.ts`:
 
 ```json
 {
@@ -193,42 +249,47 @@ Stored on `(:User {sub})` as a JSON string in `progress`. Shape
 }
 ```
 
-`PUT /api/progress` replaces it whole. `DELETE` removes `progress` and `updatedAt` but leaves
-the `:User` node. Nothing validates that `currentNodeId` still exists, so progress pointing at
-a deleted screen will break that user's wizard until they start over.
+- `PUT /api/progress` replaces it whole.
+- `DELETE /api/progress` removes `progress` and `updatedAt` and keeps the `:User` node.
+- Nothing checks that `currentNodeId` still exists. Progress that points at a deleted screen
+  breaks that user's wizard until they start over.
 
 ## Admins
 
-`(:Admin {email})` nodes are managed from the graph editor's Admins modal
-(`/api/admins`). Emails in the `ADMIN_EMAILS` env var count as admins too, but they are not
-stored. The API refuses to remove the caller's own email or the last stored admin.
+- Admins are `:Admin` nodes, managed in the graph editor's Admins modal through
+  `/api/admins`.
+- Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
+- The API refuses to remove the caller's own email or the last stored admin.
 
 ## Seeding and migrations
 
-`pnpm --filter @usccf/api-gateway seed:graph` (`server/src/seed/graphSeed.ts`):
+`pnpm --filter @usccf/api-gateway seed:graph` runs `server/src/seed/graphSeed.ts`. It does
+three things:
 
 1. Creates the two uniqueness constraints.
-2. For every node in `docs/wizardGraph.json`, does `MERGE` by `id` and **replaces** all its
-   properties.
-3. **Deletes every `OPTION` relationship in the database**, then recreates the edges from
-   the JSON.
+2. For every node in `docs/wizardGraph.json`, runs `MERGE` by `id` and **replaces** all the
+   node's properties.
+3. **Deletes every `OPTION` relationship in the database**, then recreates the edges from the
+   JSON.
 
-> **Do not run the seed against a database with real content.** Nodes that exist only in
-> Neo4j keep their properties but lose all their outgoing edges, and any node also in the
-> JSON is reset to the JSON version. It is meant for empty databases.
+> **Never run the seed against a database with real content.** Nodes that exist only in Neo4j
+> keep their properties but lose every outgoing edge. Nodes that are also in the JSON are
+> reset to the JSON version. The seed is for empty databases only.
 
-`server/src/scripts/` holds two one-off migrations that rewrote `resolversJson` in place. Both
-have been applied and are kept for reference:
+`server/src/scripts/` holds two one-off migrations. Both rewrote `resolversJson` in place.
+Both have already run. Do not run them again.
 
-- `migratePromptBlockToResources.ts` turned the old per-resolver `promptBlock` object into a
+- `migratePromptBlockToResources.ts` turned each resolver's old `promptBlock` object into a
   `prompt` resource at the front of `resources`.
-- `migratePdfPageRanges.ts` turned the old free-text PDF `pages` field into
-  `pageStart`/`pageEnd`. `"all"` became `wholeDocument`, and comma-separated lists were split
-  into one resource per range.
+- `migratePdfPageRanges.ts` turned the old free-text PDF `pages` field into `pageStart` and
+  `pageEnd`.
+  - `"all"` became `wholeDocument`.
+  - Comma-separated lists became one resource per range.
 
 ## Inspecting the data
 
-Read-only Cypher you can run in the Neo4j browser (`localhost:7474`) or `cypher-shell`:
+These queries only read. Run them in the Neo4j Browser at `localhost:7474`, or in
+`cypher-shell`.
 
 ```cypher
 // Screens by type
@@ -238,10 +299,10 @@ MATCH (n:WizardNode) RETURN n.type, count(*) ORDER BY count(*) DESC;
 MATCH (n:WizardNode {id: 'welcome'})-[r:OPTION]->(t)
 RETURN r.order, r.id, r.label, t.id ORDER BY r.order;
 
-// Screens nothing links to (other than the start screen)
+// Screens nothing links to, other than the start screen
 MATCH (n:WizardNode) WHERE NOT ()-[:OPTION]->(n) AND n.id <> 'welcome' RETURN n.id;
 
-// Every value recorded for a given answer key, and where each edge leads
+// Every value recorded for one answer key, and where each edge leads
 MATCH ()-[r:OPTION {storeKey: 'challenge'}]->(t:WizardNode) RETURN r.value, t.id;
 
 // Admins
@@ -250,14 +311,15 @@ MATCH (a:Admin) RETURN a.email, a.addedBy, a.addedAt;
 
 ## Quirks
 
-- **`layout` and `challengeBar` don't do anything.** Every node has them and both editors
-  expose them, but no component reads them. Each node type always uses its own fixed
-  layout. The same goes for `submitLabel` on `multiChoice` and `checkboxSurvey` nodes.
-- **`checkboxSurvey` is half-built.** Its submit edge has to be one of the node's own
-  outgoing edges (Neo4j can only store edges that have a source), so it also renders as a
-  checkbox option. The stored answer is an array of edge ids, and `resolveResult` can't match
-  arrays. No live content uses this type.
-- **Orphan edges.** An edge in `edges` that no node lists in `edgeIds` can exist in JSON, but
-  not in Neo4j. The graph editor carries such edges through a save, and `replaceGraph` then
-  quietly drops them.
-- **The start node is fixed.** It must have id `welcome`.
+- **`layout` and `challengeBar` do nothing.** Every node has them and both editors expose
+  them. No component reads them. Each node type always uses its own fixed layout.
+  `submitLabel` on `multiChoice` and `checkboxSurvey` nodes is ignored the same way.
+- **`checkboxSurvey` is half-built.**
+  - Its submit edge must be one of the node's own outgoing edges, because Neo4j can only store
+    edges that have a source. So the submit edge also shows as a checkbox option.
+  - The stored answer is an array of edge ids. `resolveResult` can't match arrays.
+  - No live content uses this type.
+- **Orphan edges.** JSON can hold an edge that no node lists in `edgeIds`. Neo4j can't. The
+  graph editor keeps such edges through a save, then `replaceGraph` drops them without a
+  warning.
+- **The start node is fixed.** It must have the id `welcome`.
