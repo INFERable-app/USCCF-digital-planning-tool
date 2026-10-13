@@ -1,5 +1,5 @@
 import './PromptBlock.css';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 function fallbackCopy(text, onSuccess) {
 	const el = document.createElement('textarea');
@@ -15,6 +15,8 @@ function fallbackCopy(text, onSuccess) {
 export default function PromptBlock({ label, text }) {
 	const [value, setValue] = useState(text);
 	const [copied, setCopied] = useState(false);
+	const labelId = useId();
+	const hintId = useId();
 
 	function handleCopy() {
 		const succeed = () => { setCopied(true); setTimeout(() => setCopied(false), 2000); };
@@ -29,7 +31,9 @@ export default function PromptBlock({ label, text }) {
 		<>
 			<div className="prompt-block">
 				<div className="prompt-block-bar">
-					<span className="prompt-block-label">✏ {label}</span>
+					<span className="prompt-block-label" id={labelId}>
+						<span aria-hidden="true">✏</span> {label}
+					</span>
 					<button className="prompt-block-copy" onClick={handleCopy}>
 						{copied ? 'Copied ✓' : 'Copy'}
 					</button>
@@ -39,8 +43,10 @@ export default function PromptBlock({ label, text }) {
 					value={value}
 					onChange={e => setValue(e.target.value)}
 					spellCheck={false}
+					aria-labelledby={labelId}
+					aria-describedby={hintId}
 				/>
-				<div className="prompt-block-hint">click to edit</div>
+				<div className="prompt-block-hint" id={hintId}>click to edit</div>
 			</div>
 			<div className="prompt-warning">
 				<span className="prompt-warning-title">⚠ Caution</span>
