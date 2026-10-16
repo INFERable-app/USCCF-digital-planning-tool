@@ -22,9 +22,10 @@
 }
 
 .signin-logo {
-	height: 55px;
-	width: auto;
-	object-fit: contain;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--accent-primary);
 }
 
 .signin-body {

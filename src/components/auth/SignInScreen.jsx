@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './SignInScreen.css';
-
-const IMG_LOGO = '/images/uscoc-logo.png';
+import FoundationLogo from '../shared/FoundationLogo.jsx';
 
 function GoogleIcon() {
 	return (
@@ -79,7 +78,9 @@ export default function SignInScreen() {
 		<div className="signin-screen">
 			<div className="signin-card">
 				<div className="signin-header">
-					<img src={IMG_LOGO} alt="U.S. Chamber of Commerce Foundation" className="signin-logo" />
+					<div className="signin-logo" role="img" aria-label="U.S. Chamber of Commerce Foundation">
+						<FoundationLogo />
+					</div>
 				</div>
 
 				<div className="signin-body">

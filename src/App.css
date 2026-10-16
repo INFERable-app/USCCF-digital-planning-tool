@@ -298,10 +298,25 @@ body {
 /* Logo doubles as the Home button */
 .logo-home-btn {
 	display: flex;
+	align-items: center;
+	gap: 8px;
 	background: none;
 	border: none;
 	padding: 0;
+	color: var(--accent-primary);
 	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+/* Hover deepens the mark and wordmark together */
+.logo-home-btn:hover {
+	color: var(--color-navy-midnight);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.logo-home-btn {
+		transition: none;
+	}
 }
 
 /* Mobile-only nav button in the header bar */
