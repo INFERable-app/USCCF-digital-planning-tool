@@ -85,6 +85,10 @@
 	transition: background 0.15s;
 }
 
+a.user-dropdown-item {
+	text-decoration: none;
+}
+
 .user-dropdown-item:hover {
 	background: var(--surface-panel);
 }

@@ -2,7 +2,7 @@ import './UserMenu.css';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
-import { Pencil } from 'lucide-react';
+import { Pencil, ShieldCheck } from 'lucide-react';
 
 export default function UserMenu() {
 	const { user, signOut } = useAuth();
@@ -58,6 +58,19 @@ export default function UserMenu() {
 							<Pencil size={15} />
 							Edit Mode
 						</button>
+					)}
+					{canEdit && (
+						<a
+							className="user-dropdown-item user-dropdown-item--edit"
+							href="/admin"
+							target="_blank"
+							rel="noopener noreferrer"
+							role="menuitem"
+							onClick={() => setOpen(false)}
+						>
+							<ShieldCheck size={15} />
+							Admin
+						</a>
 					)}
 					<button className="user-dropdown-signout" onClick={signOut} role="menuitem">
 						Sign out
