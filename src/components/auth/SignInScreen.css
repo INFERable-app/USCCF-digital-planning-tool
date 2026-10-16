@@ -205,14 +205,15 @@
 	.signin-screen {
 		background: var(--surface-app);
 		display: flex;
-		align-items: center;
-		justify-content: center;
 		height: 100%;
-		overflow: hidden;
+		padding: 24px 16px;
+		overflow-y: auto;
 	}
 
+	/* Auto margins center the card, and let it start at the top and scroll when taller than the window */
 	.signin-card {
 		flex: none;
+		margin: auto;
 		width: 540px;
 		background: var(--surface-page);
 		border-radius: 16px;
