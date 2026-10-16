@@ -100,6 +100,7 @@ function AppContent({ engine }) {
 			path={path}
 			startNodeId={startNodeId}
 			jumpAlongPath={jumpAlongPath}
+			goHome={() => engine.goToNode(startNodeId)}
 			resetProgress={resetProgress}
 			hasProgress={hasProgress}
 		>
