@@ -95,6 +95,10 @@
 	cursor: not-allowed;
 }
 
+.signin-provider-btn[hidden] {
+	display: none;
+}
+
 .signin-stay {
 	display: flex;
 	align-items: center;

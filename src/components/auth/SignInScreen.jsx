@@ -148,11 +148,11 @@ export default function SignInScreen() {
 							<GoogleIcon />
 							<span>Continue with Google</span>
 						</button>
-						<button className="signin-provider-btn" disabled>
+						<button className="signin-provider-btn" disabled hidden>
 							<MicrosoftIcon />
 							<span>Continue with Microsoft</span>
 						</button>
-						<button className="signin-provider-btn" disabled>
+						<button className="signin-provider-btn" disabled hidden>
 							<AppleIcon />
 							<span>Continue with Apple</span>
 						</button>
