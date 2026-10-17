@@ -156,9 +156,9 @@ export default function SignInScreen() {
 							<AppleIcon />
 							<span>Continue with Apple</span>
 						</button>
-						{!agreed && (
-							<p className="signin-privacy-hint">Accept the notice above to continue.</p>
-						)}
+						<p className={`signin-privacy-hint${agreed ? ' signin-privacy-hint--hidden' : ''}`}>
+							Accept the notice above to continue.
+						</p>
 					</div>
 				</div>
 			</div>

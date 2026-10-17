@@ -196,6 +196,11 @@
 	margin: 2px 0 0;
 }
 
+/* Keeps its line so the card doesn't resize when the hint toggles */
+.signin-privacy-hint--hidden {
+	visibility: hidden;
+}
+
 .signin-error {
 	font-size: 14px;
 	color: var(--color-red-scarlet);
