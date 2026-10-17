@@ -19,6 +19,15 @@ export const staticResources = [
 		categories: ['start']
 	},
 	{
+		id: 'edl-lers-overview',
+		type: 'link',
+		label: 'Education Design Lab — LERs Overview',
+		description:
+			'Plain-language explainer of Learning & Employment Records and skills visibility.',
+		url: 'https://eddesignlab.org/lers/',
+		categories: ['start']
+	},
+	{
 		id: 'cfs-trusted-skills',
 		type: 'link',
 		label: 'Center for Skills (CFS) — Trusted Skills Infrastructure',
@@ -70,7 +79,7 @@ export const staticResources = [
 		label: 'Lightcast Skills Taxonomy',
 		description:
 			'Comprehensive taxonomy of skills used across labor market data and workforce planning.',
-		url: 'https://lightcast.io/open-skills',
+		url: 'https://lightcast.io/taxonomies/skills-taxonomy',
 		categories: ['skills']
 	},
 	{
@@ -99,6 +108,15 @@ export const staticResources = [
 		url: 'https://www.skills-first.org/',
 		categories: ['skills']
 	},
+	{
+		id: 'credential-transparency-toolkit',
+		type: 'link',
+		label: 'Credential Engine — Credential Transparency Toolkit',
+		description:
+			'Resources to learn, plan, and implement credential transparency initiatives.',
+		url: 'https://credentialengine.org/credential-engine-partners/credential-transparency-toolkit/',
+		categories: ['skills']
+	},
 	// ── Finding Training Providers ────────────────────────────────────────────
 	{
 		id: 'nces-cip-codes-finding-data',
@@ -116,6 +134,16 @@ export const staticResources = [
 		description: 'Search for WIOA-approved training programs by location and occupation.',
 		url: 'https://www.careeronestop.org/LocalHelp/EmploymentAndTraining/find-WIOA-training-programs.aspx',
 		categories: ['providers']
+	},
+	// ── Tracking Talent Pipelines ─────────────────────────────────────────────
+	{
+		id: 'ceds-connect',
+		type: 'link',
+		label: 'CEDS Connect (NCES)',
+		description:
+			'Tool for defining and analyzing shared metrics using common education data elements.',
+		url: 'https://ceds.ed.gov/connect.aspx',
+		categories: ['tracking']
 	},
 	// ── Templates & AI Prompts ────────────────────────────────────────────────
 	{

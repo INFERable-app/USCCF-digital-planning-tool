@@ -274,10 +274,60 @@ body {
 	text-decoration: underline;
 }
 
-/* ── Sidebar toggle buttons (hidden on mobile) ───────────────────────────── */
-.sidebar-close-btn,
+/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
 .sidebar-open-btn {
 	display: none;
+}
+
+/* Close button lives in the sidebar heading row, right side */
+.sidebar-close-btn {
+	display: flex;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--accent-primary);
+	transition: background 0.15s ease;
+}
+
+.sidebar-close-btn:hover {
+	background: var(--surface-page);
+}
+
+/* Logo doubles as the Home button */
+.logo-home-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: none;
+	border: none;
+	padding: 0;
+	color: var(--accent-primary);
+	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+/* Hover deepens the mark and wordmark together */
+.logo-home-btn:hover {
+	color: var(--color-navy-midnight);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.logo-home-btn {
+		transition: none;
+	}
+}
+
+/* Mobile-only nav button in the header bar */
+.mobile-nav-btn {
+	display: flex;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	padding: 4px;
+	cursor: pointer;
+	color: var(--accent-primary);
 }
 
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
@@ -330,7 +380,7 @@ body {
 	.screen {
 		display: grid;
 		grid-template-columns: 40% 60%;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto auto 1fr auto;
 		flex: 1;
 		min-height: 0;
 		height: auto;
@@ -355,20 +405,8 @@ body {
 	}
 
 	/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
-	/* Close button lives in the sidebar heading row, right side */
-	.sidebar-close-btn {
-		display: flex;
-		background: none;
-		border: none;
-		border-radius: 6px;
-		padding: 4px;
-		cursor: pointer;
-		color: var(--accent-primary);
-		transition: background 0.15s ease;
-	}
-
-	.sidebar-close-btn:hover {
-		background: var(--surface-page);
+	.mobile-nav-btn {
+		display: none;
 	}
 
 	/* Open button lives in the content column — shown only when sidebar is closed */
@@ -420,11 +458,6 @@ body {
 	.drawer-closed .top-hero .usecase-nav,
 	.drawer-closed .compact-header .usecase-nav {
 		transform: translateX(-100%);
-	}
-
-	/* ── Breadcrumb centering when drawer closed ──────────────────────────────── */
-	.drawer-closed .breadcrumb {
-		margin-left: 0;
 	}
 }
 

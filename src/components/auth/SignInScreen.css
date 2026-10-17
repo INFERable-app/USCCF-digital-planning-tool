@@ -22,9 +22,10 @@
 }
 
 .signin-logo {
-	height: 55px;
-	width: auto;
-	object-fit: contain;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--accent-primary);
 }
 
 .signin-body {
@@ -92,6 +93,10 @@
 .signin-provider-btn:disabled {
 	opacity: 0.4;
 	cursor: not-allowed;
+}
+
+.signin-provider-btn[hidden] {
+	display: none;
 }
 
 .signin-stay {
@@ -191,6 +196,11 @@
 	margin: 2px 0 0;
 }
 
+/* Keeps its line so the card doesn't resize when the hint toggles */
+.signin-privacy-hint--hidden {
+	visibility: hidden;
+}
+
 .signin-error {
 	font-size: 14px;
 	color: var(--color-red-scarlet);
@@ -204,14 +214,15 @@
 	.signin-screen {
 		background: var(--surface-app);
 		display: flex;
-		align-items: center;
-		justify-content: center;
 		height: 100%;
-		overflow: hidden;
+		padding: 24px 16px;
+		overflow-y: auto;
 	}
 
+	/* Auto margins center the card, and let it start at the top and scroll when taller than the window */
 	.signin-card {
 		flex: none;
+		margin: auto;
 		width: 540px;
 		background: var(--surface-page);
 		border-radius: 16px;

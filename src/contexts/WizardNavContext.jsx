@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 const WizardNavContext = createContext(null);
 
-export function WizardNavProvider({ nodes, edges, answers, currentNodeId, currentEdgeIds, startNodeId, jumpAlongPath, resetProgress, hasProgress, children }) {
+export function WizardNavProvider({ nodes, edges, answers, currentNodeId, currentEdgeIds, path, startNodeId, jumpAlongPath, goHome, resetProgress, hasProgress, children }) {
 	const [isResourceLibraryOpen, setResourceLibraryOpen] = useState(false);
 	const openResourceLibrary = () => setResourceLibraryOpen(true);
 	const closeResourceLibrary = () => setResourceLibraryOpen(false);
@@ -23,8 +23,10 @@ export function WizardNavProvider({ nodes, edges, answers, currentNodeId, curren
 				answers,
 				currentNodeId,
 				currentEdgeIds,
+				path,
 				startNodeId,
 				jumpAlongPath,
+				goHome,
 				resetProgress,
 				hasProgress,
 				isResourceLibraryOpen,

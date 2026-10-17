@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './SignInScreen.css';
-
-const IMG_LOGO = '/images/uscoc-logo.png';
+import FoundationLogo from '../shared/FoundationLogo.jsx';
 
 function GoogleIcon() {
 	return (
@@ -79,7 +78,9 @@ export default function SignInScreen() {
 		<div className="signin-screen">
 			<div className="signin-card">
 				<div className="signin-header">
-					<img src={IMG_LOGO} alt="U.S. Chamber of Commerce Foundation" className="signin-logo" />
+					<div className="signin-logo" role="img" aria-label="U.S. Chamber of Commerce Foundation">
+						<FoundationLogo />
+					</div>
 				</div>
 
 				<div className="signin-body">
@@ -147,17 +148,17 @@ export default function SignInScreen() {
 							<GoogleIcon />
 							<span>Continue with Google</span>
 						</button>
-						<button className="signin-provider-btn" disabled>
+						<button className="signin-provider-btn" disabled hidden>
 							<MicrosoftIcon />
 							<span>Continue with Microsoft</span>
 						</button>
-						<button className="signin-provider-btn" disabled>
+						<button className="signin-provider-btn" disabled hidden>
 							<AppleIcon />
 							<span>Continue with Apple</span>
 						</button>
-						{!agreed && (
-							<p className="signin-privacy-hint">Accept the notice above to continue.</p>
-						)}
+						<p className={`signin-privacy-hint${agreed ? ' signin-privacy-hint--hidden' : ''}`}>
+							Accept the notice above to continue.
+						</p>
 					</div>
 				</div>
 			</div>

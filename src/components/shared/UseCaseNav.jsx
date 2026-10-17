@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
-import { ChevronLeft, ChevronRight, Library, HelpCircle, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Library, HelpCircle, BookOpen, RotateCcw } from 'lucide-react';
+import ConfirmPopover from './ConfirmPopover.jsx';
 import './UseCaseNav.css';
 
 function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
@@ -61,8 +62,9 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 }
 
 export default function UseCaseNav() {
-	const { toggle, close } = useDrawer();
-	const { nodes, edges, currentEdgeIds, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary } = useWizardNav();
+	const { isOpen, toggle, close } = useDrawer();
+	const { nodes, edges, currentEdgeIds, startNodeId, jumpAlongPath, openResourceLibrary, openFaq, openGlossary, resetProgress, hasProgress } = useWizardNav();
+	const [confirmAt, setConfirmAt] = useState(null);
 
 	const tree = useMemo(() => buildUseCaseTree(nodes, edges, startNodeId), [nodes, edges, startNodeId]);
 
@@ -79,6 +81,7 @@ export default function UseCaseNav() {
 
 	return (
 		<div className="usecase-nav-track">
+			{isOpen && <div className="usecase-nav-backdrop" onClick={close} aria-hidden="true" />}
 			<aside className="usecase-nav" aria-label="Use case navigation">
 				<div className="usecase-nav__heading-row">
 					<h2 className="usecase-nav__title">Your Goals</h2>
@@ -108,8 +111,32 @@ export default function UseCaseNav() {
 						<BookOpen size={16} aria-hidden="true" />
 						<span>Glossary</span>
 					</button>
+					{hasProgress && (
+						<button
+							type="button"
+							className="usecase-nav__reset"
+							onClick={(e) => setConfirmAt({ x: e.clientX, y: e.clientY })}
+						>
+							<RotateCcw size={16} aria-hidden="true" />
+							<span>Start over</span>
+						</button>
+					)}
 				</div>
 			</aside>
+			{confirmAt && (
+				<ConfirmPopover
+					x={confirmAt.x}
+					y={confirmAt.y}
+					message="Start over? This clears your saved progress."
+					confirmLabel="Start over"
+					onConfirm={() => {
+						setConfirmAt(null);
+						resetProgress();
+						close();
+					}}
+					onCancel={() => setConfirmAt(null)}
+				/>
+			)}
 		</div>
 	);
 }

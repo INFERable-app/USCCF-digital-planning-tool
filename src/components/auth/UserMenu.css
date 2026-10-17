@@ -85,6 +85,10 @@
 	transition: background 0.15s;
 }
 
+a.user-dropdown-item {
+	text-decoration: none;
+}
+
 .user-dropdown-item:hover {
 	background: var(--surface-panel);
 }
@@ -114,15 +118,5 @@
 }
 
 .user-dropdown-item--edit svg {
-	color: var(--color-navy-midnight-alpha-85);
-}
-
-.user-dropdown-item--reset {
-	display: flex;
-	align-items: center;
-	gap: 9px;
-}
-
-.user-dropdown-item--reset svg {
 	color: var(--color-navy-midnight-alpha-85);
 }

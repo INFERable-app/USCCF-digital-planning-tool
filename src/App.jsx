@@ -4,7 +4,6 @@ import { useGraphEngine } from './graph/useGraphEngine.js';
 import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
 import { getNodePath } from './graph/getNodePath.js';
 import NodeRenderer from './components/NodeRenderer.jsx';
-import Breadcrumb from './components/shared/Breadcrumb.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
 import FaqOverlay from './components/shared/FaqOverlay.jsx';
 import GlossaryOverlay from './components/shared/GlossaryOverlay.jsx';
@@ -98,8 +97,10 @@ function AppContent({ engine }) {
 			answers={answers}
 			currentNodeId={currentNodeId}
 			currentEdgeIds={path.map((p) => p.edgeId).filter(Boolean)}
+			path={path}
 			startNodeId={startNodeId}
 			jumpAlongPath={jumpAlongPath}
+			goHome={() => engine.goToNode(startNodeId)}
 			resetProgress={resetProgress}
 			hasProgress={hasProgress}
 		>
@@ -125,9 +126,6 @@ function AppContent({ engine }) {
 								previousAnswerLabel={previousAnswerLabel}
 								isStartNode={currentNodeId === startNodeId}
 							/>
-						)}
-						{user && !showResume && (
-							<Breadcrumb path={path} nodes={nodes} onJumpTo={jumpAlongPath} />
 						)}
 						<div className="home-indicator" aria-hidden="true" />
 					</div>
