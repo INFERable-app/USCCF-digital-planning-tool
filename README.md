@@ -1,14 +1,13 @@
 # USCCF Digital Transformation Planning Tool
 
-A guided wizard for digital transformation planning. It helps employers, education providers, workforce boards and
-similar organizations pick their next step in a digital transformation.
+A guided flow for digital transformation planning. It helps workforce intermediaries pick their next step in a digital transformation.
 
 Users sign in with an OIDC povider and answer a short series of questions. They land on a results
-screen with a recommendation and curated resources. The app saves their place so they can come back later.
+screen with a recommendation and curated resources. The app saves their place so they can come back later
+when they are ready for the next step.
 
 All wizard content lives in a Neo4j graph. Admins edit it
-inside the wizard or in a visual graph editor at `/admin`. Changing content needs no code
-change.
+inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content updates require no changes to the code.
 
 ## Repository layout
 
@@ -19,7 +18,7 @@ change.
 | `server/`           | The API gateway. Express 4 and TypeScript, package `@usccf/api-gateway`.           |
 | `docs/`             | Developer docs, the graph seed file, and the legacy editor served by GitHub Pages. |
 | `static/`           | Files served as-is at the site root, such as images and `robots.txt`.              |
-| `scripts/`          | The Neo4j backup script and its systemd service and timer.                         |
+| `scripts/`          | A Neo4j backup script and its systemd service and timer.                           |
 | `Dockerfile`        | Builds the client and serves `dist/` with nginx.                                   |
 | `server/Dockerfile` | Builds and runs the gateway.                                                       |
 | `compose.yaml`      | Runs the `app`, `gateway` and `neo4j` containers together.                         |
@@ -66,7 +65,7 @@ change.
    ```
 
    This loads `docs/wizardGraph.json`. Run it only against a fresh database. See
-   [Seeding](docs/data-model.md#seeding-and-migrations).
+   [Seeding](docs/data-model.md#seeding).
 
 6. Start the gateway in one terminal:
 
@@ -109,21 +108,16 @@ Root `package.json`:
 
 Gateway scripts. Run them with `pnpm --filter @usccf/api-gateway <script>`:
 
-| Script                              | Does                                                    |
-| ----------------------------------- | ------------------------------------------------------- |
-| `dev`                               | Runs `tsx watch src/server.ts`.                         |
-| `build`                             | Compiles with `tsc` into `server/dist/`.                |
-| `start`                             | Runs `node dist/server.js`.                             |
-| `seed:graph`                        | Loads `docs/wizardGraph.json` into Neo4j.               |
-| `migrate:pdf-page-ranges`           | One-off data migration. Already applied. Do not re-run. |
-| `migrate:prompt-block-to-resources` | One-off data migration. Already applied. Do not re-run. |
+| Script       | Does                                      |
+| ------------ | ----------------------------------------- |
+| `dev`        | Runs `tsx watch src/server.ts`.           |
+| `build`      | Compiles with `tsc` into `server/dist/`.  |
+| `start`      | Runs `node dist/server.js`.               |
+| `seed:graph` | Loads `docs/wizardGraph.json` into Neo4j. |
 
 ## Checks
 
 Run `pnpm lint` before opening a PR.
-
-There is no automated test suite. Playwright is configured in `playwright.config.js`, but no
-`*.e2e.*` tests exist. Verify changes by hand in the running app.
 
 ## Conventions
 

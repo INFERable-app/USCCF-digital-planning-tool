@@ -233,8 +233,8 @@ How `when` matches:
   warning not to paste sensitive data.
 - **`_key`.** Both editors add a client-only `_key` to each resolver and resource, so React
   lists have stable keys. `sanitizeResolvers` copies only known fields, so `_key` never
-  reaches the server. The migration scripts did write some `_key` values into Neo4j. They are
-  harmless.
+  reaches the server. Some resolvers in Neo4j still carry `_key` values written by earlier
+  data migrations. They are harmless.
 
 ## User progress
 
@@ -261,7 +261,7 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 - Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
 - The API refuses to remove the caller's own email or the last stored admin.
 
-## Seeding and migrations
+## Seeding
 
 `pnpm --filter @usccf/api-gateway seed:graph` runs `server/src/seed/graphSeed.ts`. It does
 three things:
@@ -275,16 +275,6 @@ three things:
 > **Never run the seed against a database with real content.** Nodes that exist only in Neo4j
 > keep their properties but lose every outgoing edge. Nodes that are also in the JSON are
 > reset to the JSON version. The seed is for empty databases only.
-
-`server/src/scripts/` holds two one-off migrations. Both rewrote `resolversJson` in place.
-Both have already run. Do not run them again.
-
-- `migratePromptBlockToResources.ts` turned each resolver's old `promptBlock` object into a
-  `prompt` resource at the front of `resources`.
-- `migratePdfPageRanges.ts` turned the old free-text PDF `pages` field into `pageStart` and
-  `pageEnd`.
-  - `"all"` became `wholeDocument`.
-  - Comma-separated lists became one resource per range.
 
 ## Inspecting the data
 

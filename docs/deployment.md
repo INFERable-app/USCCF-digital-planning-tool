@@ -136,7 +136,7 @@ Apache on the host:
     ```
 
     Run this only once, on an empty database. See
-    [Seeding](data-model.md#seeding-and-migrations).
+    [Seeding](data-model.md#seeding).
 
 14. Open `https://<domain>` and sign in with an email from `ADMIN_EMAILS`.
 

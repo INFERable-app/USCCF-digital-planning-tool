@@ -37,14 +37,12 @@ root:
 Run these with `pnpm --filter @usccf/api-gateway <script>` from the root, or `pnpm <script>`
 from inside `server/`.
 
-| Script                              | Does                                                   |
-| ----------------------------------- | ------------------------------------------------------ |
-| `dev`                               | Runs `src/server.ts` with `tsx watch`.                 |
-| `build`                             | Compiles to `dist/` with `tsc`.                        |
-| `start`                             | Runs the compiled `dist/server.js`.                    |
-| `seed:graph`                        | Loads `docs/wizardGraph.json` into an **empty** Neo4j. |
-| `migrate:pdf-page-ranges`           | One-off migration. Already applied. Do not re-run.     |
-| `migrate:prompt-block-to-resources` | One-off migration. Already applied. Do not re-run.     |
+| Script       | Does                                                   |
+| ------------ | ------------------------------------------------------ |
+| `dev`        | Runs `src/server.ts` with `tsx watch`.                 |
+| `build`      | Compiles to `dist/` with `tsc`.                        |
+| `start`      | Runs the compiled `dist/server.js`.                    |
+| `seed:graph` | Loads `docs/wizardGraph.json` into an **empty** Neo4j. |
 
 ## Source layout
 
@@ -64,7 +62,6 @@ src/
 │  ├─ neo4j/driver.ts     shared Neo4j driver
 │  └─ xapi/               placeholder for a future integration; README only
 ├─ seed/graphSeed.ts      seed script
-├─ scripts/               one-off data migrations
 └─ types/session.d.ts     express-session typings: user, pkce, returnTo
 ```
 

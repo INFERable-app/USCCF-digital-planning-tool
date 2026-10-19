@@ -17,9 +17,8 @@ Templates: `server/.env.example` for the local gateway, `.env.example` for compo
 `server/src/config.ts` validates `process.env` with zod at startup. **If any variable is
 missing or invalid, the gateway prints the errors and exits.**
 
-> The seed and migration scripts load the same config. They need a complete, valid
-> `server/.env`, including the Google and session values, even though they only talk to
-> Neo4j.
+> The seed script loads the same config. It needs a complete, valid `server/.env`, including
+> the Google and session values, even though it only talks to Neo4j.
 
 ## Gateway environment variables
 
