@@ -3,7 +3,7 @@
 ## Tech Stack
 
 - Core: React 19, Vite 8 (client, `src/`); Express 4 + TypeScript API gateway (`server/`, package `@usccf/api-gateway`, run via `tsx`)
-- Database: Neo4j (`neo4j-driver`), accessed via `server/src/connectors/graph/neo4jRepository.ts`. The live database is the source of truth for the wizard graph, served at runtime via `GET /api/graph` — the checked-in `docs/wizardGraph.json` is only used to seed Neo4j and may not reflect current state.
+- Database: Neo4j (`neo4j-driver`), accessed via `server/src/connectors/graph/neo4jRepository.ts`. The live database is the only source of the wizard graph, served at runtime via `GET /api/graph`.
 - Auth: Google/OIDC via `openid-client` + `express-session` on the server
 - Styling: plain per-component CSS, no framework
 - Package manager: pnpm only (`pnpm@10.33.4`, enforced via `only-allow pnpm`)
@@ -14,7 +14,7 @@
 - Dev (server): `pnpm dev:server` (Express gateway, `tsx watch`)
 - Build: `pnpm build` (client), `pnpm --filter @usccf/api-gateway build` (server, `tsc`)
 - Lint: `pnpm lint` (`prettier --check . && eslint .`), format: `pnpm format`
-- Seed graph data into Neo4j: `pnpm --filter @usccf/api-gateway seed:graph`
+- Bootstrap an empty Neo4j (constraints + welcome screen, run manually): `pnpm --filter @usccf/api-gateway bootstrap:db`
 - No root test script exists. Playwright is configured (`playwright.config.js`, `testMatch: '**/*.e2e.{ts,js}'`) but no `.e2e.*` test files exist yet — there is currently no automated test suite to run before considering a task complete; rely on `pnpm lint` plus manual verification of the running app instead.
 
 ## Anti-Regression & Surgical Style Rules

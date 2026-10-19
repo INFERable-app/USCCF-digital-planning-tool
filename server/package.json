@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "seed:graph": "tsx src/seed/graphSeed.ts"
+    "bootstrap:db": "tsx src/seed/bootstrap.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

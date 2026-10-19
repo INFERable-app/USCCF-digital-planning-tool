@@ -17,8 +17,7 @@ The wizard graph exists in three shapes.
 3. **Graph editor state:** React Flow node and edge arrays. Only `/admin` uses this shape. The
    conversion lives in `src/admin/state/graphFlowAdapter.js`.
 
-> The live database is the source of truth. `docs/wizardGraph.json` is seed data only and is
-> usually out of date.
+> The live database is the only source of wizard content. No content file is checked in.
 
 ## Neo4j schema
 
@@ -35,14 +34,15 @@ flowchart LR
 
 **`:WizardNode`**
 
-- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Written by `connectors/graph/neo4jRepository.ts`. The bootstrap script creates the
+  `welcome` node.
 - Holds `id` plus every node field listed below.
 - `resolvers` is stored as a JSON string in `resolversJson`.
 - `edgeIds` is not stored.
 
 **`:OPTION`**
 
-- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Written by `connectors/graph/neo4jRepository.ts`.
 - Always has `id`, `label` and `order`. `order` is the zero-based position among the source
   node's options.
 - May have `storeKey`, `value` and `disabled`.
@@ -61,7 +61,7 @@ flowchart LR
 - `addedBy` is the email of the admin who added it.
 - `addedAt` is a datetime.
 
-The seed script creates two uniqueness constraints with `IF NOT EXISTS`:
+The bootstrap script creates two uniqueness constraints with `IF NOT EXISTS`:
 
 - `:WizardNode(id)`
 - `:Admin(email)`
@@ -259,20 +259,27 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 - Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
 - The API refuses to remove the caller's own email or the last stored admin.
 
-## Seeding
+## Starting from an empty database
 
-`pnpm --filter @usccf/api-gateway seed:graph` runs `server/src/seed/graphSeed.ts`. It does
-three things:
+A new environment starts empty. The admin setting it up runs the bootstrap script once by
+hand. The backend never runs it automatically.
+
+```sh
+pnpm --filter @usccf/api-gateway bootstrap:db
+```
+
+In production: `docker compose exec gateway node dist/seed/bootstrap.js`.
+
+`server/src/seed/bootstrap.ts` does two things:
 
 1. Creates the two uniqueness constraints.
-2. For every node in `docs/wizardGraph.json`, runs `MERGE` by `id` and **replaces** all the
-   node's properties.
-3. **Deletes every `OPTION` relationship in the database**, then recreates the edges from the
-   JSON.
+2. Creates a `welcome` node with placeholder text if none exists. It has no buttons.
 
-> **Never run the seed against a database with real content.** Nodes that exist only in Neo4j
-> keep their properties but lose every outgoing edge. Nodes that are also in the JSON are
-> reset to the JSON version. The seed is for empty databases only.
+It never changes existing nodes or edges, so running it again, or against a database with real
+content, is safe. Admins then build the rest of the wizard in `/admin`.
+
+`PUT /api/graph` rejects a graph that has no `welcome` node, so the start screen cannot be
+removed through a whole-graph save.
 
 ## Inspecting the data
 

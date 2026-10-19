@@ -92,12 +92,6 @@ The connectors:
 | `neo4j`     | `driver.ts` creates one shared Neo4j driver on first use. |
 | `xapi`      | A README describing a future integration. No code.        |
 
-The graph connector has a second implementation, `stubRepository.ts`:
-
-- It serves `docs/wizardGraph.json` from memory when `GRAPH_BACKEND=stub`.
-- Writes to it are lost on restart.
-- Progress and admins always use Neo4j, so the stub only helps rough front-end work.
-
 ### Authorization
 
 `server/src/middleware.ts` has two guards:

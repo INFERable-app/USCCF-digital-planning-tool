@@ -17,7 +17,7 @@ Templates: `server/.env.example` for the local backend, `.env.example` for compo
 `server/src/config.ts` validates `process.env` with zod at startup. **If any variable is
 missing or invalid, the backend prints the errors and exits.**
 
-> The seed script loads the same config. It needs a complete, valid `server/.env`, including
+> The bootstrap script loads the same config. It needs a complete, valid `server/.env`, including
 > the Google and session values, even though it only talks to Neo4j.
 
 ## Backend environment variables
@@ -32,7 +32,6 @@ missing or invalid, the backend prints the errors and exits.**
 | `NEO4J_URI`            |          | `bolt://localhost:7687`               |
 | `NEO4J_USER`           |          | `neo4j`                               |
 | `NEO4J_PASSWORD`       |          | empty                                 |
-| `GRAPH_BACKEND`        |          | `neo4j`                               |
 | `WEB_ORIGIN`           |          | `http://localhost:5173`               |
 | `NODE_ENV`             |          | `development`                         |
 | `ADMIN_EMAILS`         |          | empty                                 |
@@ -77,13 +76,6 @@ The Neo4j Bolt URL. `compose.yaml` fixes it to `bolt://neo4j:7687`.
 - Under compose, they also initialise the database through `NEO4J_AUTH`. Changing them later
   does not change the password of an existing database.
 
-### `GRAPH_BACKEND`
-
-- `neo4j` reads and writes the graph in Neo4j.
-- `stub` serves `docs/wizardGraph.json` from memory.
-- `server/.env.example` sets `stub`. Change it to `neo4j` for real work.
-- Progress and admins always use Neo4j, whatever this is set to.
-
 ### `WEB_ORIGIN`
 
 The one origin CORS allows, with credentials. In production it is the site's public origin.
@@ -121,7 +113,7 @@ These settings have no environment variable. Change them in the listed file.
 | OIDC issuer                | `https://accounts.google.com`.                                                                        | `server/src/connectors/oidc/client.ts`                                  |
 | OIDC scopes                | `openid email profile`.                                                                               | `server/src/connectors/oidc/routes.ts`                                  |
 | Upload limits              | `application/pdf` only, 25 MB.                                                                        | `server/src/connectors/resources/routes.ts`                             |
-| Start screen id            | `welcome`.                                                                                            | `neo4jRepository.ts`, `stubRepository.ts`, `connectors/graph/routes.ts` |
+| Start screen id            | `welcome`.                                                                                            | `neo4jRepository.ts`, `connectors/graph/routes.ts`, `seed/bootstrap.ts` |
 | Published ports            | app on `127.0.0.1:8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
 | Neo4j memory               | 32 MB page cache, 96 MB heap.                                                                         | `compose.yaml`                                                          |
 

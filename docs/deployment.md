@@ -139,11 +139,11 @@ Apache on the host:
 13. Seed the empty database:
 
     ```sh
-    docker compose exec gateway node dist/seed/graphSeed.js
+    docker compose exec gateway node dist/seed/bootstrap.js
     ```
 
-    Run this only once, on an empty database. See
-    [Seeding](data-model.md#seeding).
+    This creates the constraints and a placeholder welcome screen. It never changes existing
+    content. See [Starting from an empty database](data-model.md#starting-from-an-empty-database).
 
 14. Open `https://<domain>` and sign in with an email from `ADMIN_EMAILS`.
 
