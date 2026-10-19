@@ -7,9 +7,7 @@ import { config } from '../../config.js';
 import type { GraphRepository, WizardGraph, GraphNode, GraphEdge } from './types.js';
 
 const repo: GraphRepository =
-  config.GRAPH_BACKEND === 'neo4j'
-    ? createNeo4jRepository()
-    : stubRepository;
+  config.GRAPH_BACKEND === 'neo4j' ? createNeo4jRepository() : stubRepository;
 
 const router = Router();
 
@@ -61,7 +59,7 @@ const nodeSchema = z
     type: z.string().min(1),
     layout: z.enum(['hero', 'compact']),
     challengeBar: z.boolean(),
-    edgeIds: z.array(z.string()),
+    edgeIds: z.array(z.string())
   })
   .passthrough();
 
@@ -69,7 +67,7 @@ const edgeSchema = z
   .object({
     id: z.string().min(1),
     label: z.string(),
-    targetNodeId: z.string().min(1),
+    targetNodeId: z.string().min(1)
   })
   .passthrough();
 

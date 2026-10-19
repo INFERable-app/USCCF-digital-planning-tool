@@ -5,7 +5,7 @@ services:
     container_name: usccf-planning-tool
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8080:80"
+      - '127.0.0.1:8080:80'
 
   gateway:
     build:
@@ -28,7 +28,7 @@ services:
       ADMIN_EMAILS: ${ADMIN_EMAILS}
       UPLOADS_DIR: ./uploads
     ports:
-      - "127.0.0.1:3001:3001"
+      - '127.0.0.1:3001:3001'
     volumes:
       - uploads_data:/app/server/uploads
     depends_on:
@@ -45,12 +45,12 @@ services:
       NEO4J_server_memory_heap_initial__size: 96m
       NEO4J_server_memory_heap_max__size: 96m
     ports:
-      - "127.0.0.1:7687:7687"
-      - "127.0.0.1:7474:7474"
+      - '127.0.0.1:7687:7687'
+      - '127.0.0.1:7474:7474'
     volumes:
       - neo4j_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:7474 || exit 1"]
+      test: ['CMD-SHELL', 'wget -qO /dev/null http://localhost:7474 || exit 1']
       interval: 10s
       timeout: 5s
       retries: 12

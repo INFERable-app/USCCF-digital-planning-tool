@@ -93,9 +93,9 @@ The mapping code is `nodeToProps` and `edgeToRelProps` in
 
 ```json
 {
- "startNodeId": "welcome",
- "nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
- "edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
+  "startNodeId": "welcome",
+  "nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
+  "edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
 }
 ```
 
@@ -185,11 +185,11 @@ A `results` node has an ordered `resolvers` array. `src/graph/resolveResult.js` 
 
 ```json
 {
- "when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
- "recommendation": "Lead sentence, shown highlighted.",
- "bodyText": "Supporting text.",
- "resources": [],
- "footer": "Closing line."
+  "when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
+  "recommendation": "Lead sentence, shown highlighted.",
+  "bodyText": "Supporting text.",
+  "resources": [],
+  "footer": "Closing line."
 }
 ```
 
@@ -241,9 +241,9 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 
 ```json
 {
- "currentNodeId": "role",
- "answers": { "category": "employer" },
- "history": ["welcome", "category"]
+  "currentNodeId": "role",
+  "answers": { "category": "employer" },
+  "history": ["welcome", "category"]
 }
 ```
 

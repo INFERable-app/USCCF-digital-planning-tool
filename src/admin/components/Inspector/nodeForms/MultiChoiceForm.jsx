@@ -1,11 +1,11 @@
 import { TextField } from '../../../../components/editor/Field.jsx';
 
 export default function MultiChoiceForm({ node, onChange }) {
-	return (
-		<TextField
-			label="Question"
-			value={node.data.question}
-			onChange={(v) => onChange({ question: v })}
-		/>
-	);
+  return (
+    <TextField
+      label="Question"
+      value={node.data.question}
+      onChange={(v) => onChange({ question: v })}
+    />
+  );
 }

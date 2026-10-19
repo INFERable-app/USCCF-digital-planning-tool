@@ -23,7 +23,7 @@ router.get('/login', async (req, res) => {
       redirect_uri: config.GOOGLE_REDIRECT_URI,
       code_challenge,
       code_challenge_method: 'S256',
-      state,
+      state
     });
     res.redirect(authUrl);
   } catch (err) {
@@ -44,7 +44,7 @@ router.get('/callback', async (req, res) => {
     const params = client.callbackParams(req);
     const tokenSet = await client.callback(config.GOOGLE_REDIRECT_URI, params, {
       code_verifier: pkce.code_verifier,
-      state: pkce.state,
+      state: pkce.state
     });
     const claims = tokenSet.claims();
 
@@ -53,7 +53,7 @@ router.get('/callback', async (req, res) => {
       sub: claims.sub,
       email: claims.email ?? '',
       name: typeof claims.name === 'string' ? claims.name : '',
-      picture: typeof claims.picture === 'string' ? claims.picture : undefined,
+      picture: typeof claims.picture === 'string' ? claims.picture : undefined
     };
     const returnTo = req.session.returnTo ?? new URL(config.GOOGLE_REDIRECT_URI).origin;
     delete req.session.returnTo;

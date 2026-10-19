@@ -11,24 +11,19 @@ const graphData = JSON.parse(raw) as {
   edges: Record<string, Record<string, unknown>>;
 };
 
-
 async function seed() {
   const driver = getDriver();
   const session = driver.session();
 
   try {
-    await session.run(
-      'CREATE CONSTRAINT IF NOT EXISTS FOR (n:WizardNode) REQUIRE n.id IS UNIQUE'
-    );
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (n:WizardNode) REQUIRE n.id IS UNIQUE');
 
-    await session.run(
-      'CREATE CONSTRAINT IF NOT EXISTS FOR (a:Admin) REQUIRE a.email IS UNIQUE'
-    );
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (a:Admin) REQUIRE a.email IS UNIQUE');
 
     for (const node of Object.values(graphData.nodes)) {
       await session.run('MERGE (n:WizardNode {id: $id}) SET n = $props', {
         id: node.id,
-        props: nodeToProps(node),
+        props: nodeToProps(node)
       });
     }
 
@@ -46,7 +41,7 @@ async function seed() {
           {
             srcId: node.id,
             tgtId: edge.targetNodeId,
-            props: edgeToRelProps(edge, i),
+            props: edgeToRelProps(edge, i)
           }
         );
       }

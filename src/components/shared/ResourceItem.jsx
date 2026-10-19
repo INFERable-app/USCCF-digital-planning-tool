@@ -1,77 +1,77 @@
 import './ResourceItem.css';
 import PromptBlock from './PromptBlock.jsx';
 export default function ResourceItem({ item, showDescription = true }) {
-	const hasDescription = showDescription && !!(item.description && item.description.trim());
-	const cardClass = (base) => (hasDescription ? `${base} resource-card--expanded` : base);
+  const hasDescription = showDescription && !!(item.description && item.description.trim());
+  const cardClass = (base) => (hasDescription ? `${base} resource-card--expanded` : base);
 
-	if (item.type === 'prompt') {
-		return <PromptBlock label={item.label} text={item.text} />;
-	}
+  if (item.type === 'prompt') {
+    return <PromptBlock label={item.label} text={item.text} />;
+  }
 
-	if (item.type === 'pdf') {
-		const badge = item.wholeDocument
-			? 'Whole document'
-			: item.pageStart
-				? item.pageEnd && item.pageEnd !== item.pageStart
-					? `p. ${item.pageStart}–${item.pageEnd}`
-					: `p. ${item.pageStart}`
-				: null;
-		const href =
-			item.url && item.pageStart && !item.wholeDocument
-				? `${item.url.split('#')[0]}#page=${item.pageStart}`
-				: item.url;
-		const content = (
-			<>
-				<div className="resource-card-header">
-					<span className="resource-label">{item.label}</span>
-					{badge && <span className="resource-pdf-badge">{badge}</span>}
-				</div>
-				{hasDescription && <p className="resource-description">{item.description}</p>}
-			</>
-		);
-		return href ? (
-			<a
-				href={href}
-				className={cardClass('resource-card resource-card--pdf')}
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				{content}
-			</a>
-		) : (
-			<div className={cardClass('resource-card resource-card--pdf')}>{content}</div>
-		);
-	}
+  if (item.type === 'pdf') {
+    const badge = item.wholeDocument
+      ? 'Whole document'
+      : item.pageStart
+        ? item.pageEnd && item.pageEnd !== item.pageStart
+          ? `p. ${item.pageStart}–${item.pageEnd}`
+          : `p. ${item.pageStart}`
+        : null;
+    const href =
+      item.url && item.pageStart && !item.wholeDocument
+        ? `${item.url.split('#')[0]}#page=${item.pageStart}`
+        : item.url;
+    const content = (
+      <>
+        <div className="resource-card-header">
+          <span className="resource-label">{item.label}</span>
+          {badge && <span className="resource-pdf-badge">{badge}</span>}
+        </div>
+        {hasDescription && <p className="resource-description">{item.description}</p>}
+      </>
+    );
+    return href ? (
+      <a
+        href={href}
+        className={cardClass('resource-card resource-card--pdf')}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {content}
+      </a>
+    ) : (
+      <div className={cardClass('resource-card resource-card--pdf')}>{content}</div>
+    );
+  }
 
-	if (item.type === 'link') {
-		return (
-			<a
-				href={item.url}
-				className={cardClass('resource-card resource-card--link')}
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				<div className="resource-card-header">
-					<span className="resource-label">{item.label}</span>
-					<span className="resource-link-arrow" aria-hidden="true">
-						↗
-					</span>
-				</div>
-				{hasDescription && <p className="resource-description">{item.description}</p>}
-			</a>
-		);
-	}
+  if (item.type === 'link') {
+    return (
+      <a
+        href={item.url}
+        className={cardClass('resource-card resource-card--link')}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div className="resource-card-header">
+          <span className="resource-label">{item.label}</span>
+          <span className="resource-link-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </div>
+        {hasDescription && <p className="resource-description">{item.description}</p>}
+      </a>
+    );
+  }
 
-	// reference — no URL yet
-	if (hasDescription) {
-		return (
-			<div className="resource-card resource-card--reference resource-card--expanded">
-				<div className="resource-card-header">
-					<span className="resource-label">{item.label}</span>
-				</div>
-				<p className="resource-description">{item.description}</p>
-			</div>
-		);
-	}
-	return <p className="results-recommendation">{item.label}</p>;
+  // reference — no URL yet
+  if (hasDescription) {
+    return (
+      <div className="resource-card resource-card--reference resource-card--expanded">
+        <div className="resource-card-header">
+          <span className="resource-label">{item.label}</span>
+        </div>
+        <p className="resource-description">{item.description}</p>
+      </div>
+    );
+  }
+  return <p className="results-recommendation">{item.label}</p>;
 }

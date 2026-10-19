@@ -137,9 +137,7 @@
       "challengeBar": false,
       "heading": "Welcome to the planning tool.",
       "body": "After answering a few quick questions we can get you started on your digital transformation.",
-      "edgeIds": [
-        "cta-start"
-      ],
+      "edgeIds": ["cta-start"],
       "label": "Welcome",
       "positionX": 0,
       "positionY": 180
@@ -167,9 +165,7 @@
       "layout": "hero",
       "challengeBar": false,
       "question": "What is your primary role?",
-      "edgeIds": [
-        "pick-role-coord"
-      ],
+      "edgeIds": ["pick-role-coord"],
       "label": "Primary Role",
       "positionX": 340,
       "positionY": 120
@@ -180,11 +176,7 @@
       "layout": "hero",
       "challengeBar": false,
       "question": "What challenge do you want to address?",
-      "edgeIds": [
-        "pick-ced-01",
-        "pick-ced-02",
-        "pick-ced-03"
-      ],
+      "edgeIds": ["pick-ced-01", "pick-ced-02", "pick-ced-03"],
       "label": "Challenge to Address",
       "positionX": 680,
       "positionY": 120
@@ -213,9 +205,7 @@
       "challengeBar": true,
       "question": "What is your current context?",
       "submitLabel": "Next",
-      "edgeIds": [
-        "ced02-same-industry"
-      ],
+      "edgeIds": ["ced02-same-industry"],
       "label": "Convene Employers",
       "positionX": 1020,
       "positionY": 120
@@ -227,9 +217,7 @@
       "challengeBar": true,
       "question": "What is your current context?",
       "submitLabel": "Next",
-      "edgeIds": [
-        "ced03-need-framework"
-      ],
+      "edgeIds": ["ced03-need-framework"],
       "label": "Build Consensus",
       "positionX": 1020,
       "positionY": 0

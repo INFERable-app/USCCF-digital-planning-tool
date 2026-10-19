@@ -17,54 +17,54 @@ import { sanitizeResolvers } from '../../components/editor/ResolversEditor/resol
 // DOM node for a different resource and show stale text. Never sent back to the
 // server — sanitizeResolvers() only copies known fields into the save payload.
 function withStableKeys(resolvers) {
-	return (resolvers || []).map((r) => ({
-		...r,
-		_key: r._key || crypto.randomUUID(),
-		resources: (r.resources || []).map((res) => ({ ...res, _key: res._key || crypto.randomUUID() }))
-	}));
+  return (resolvers || []).map((r) => ({
+    ...r,
+    _key: r._key || crypto.randomUUID(),
+    resources: (r.resources || []).map((res) => ({ ...res, _key: res._key || crypto.randomUUID() }))
+  }));
 }
 
 export function toFlowNodes(wizardGraph) {
-	return Object.values(wizardGraph.nodes).map((node) => ({
-		id: node.id,
-		type: 'graphNode',
-		position: {
-			x: node.positionX ?? 0,
-			y: node.positionY ?? 0
-		},
-		data: {
-			...node,
-			...(node.resolvers ? { resolvers: withStableKeys(node.resolvers) } : {}),
-			hasPosition: node.positionX !== undefined && node.positionY !== undefined
-		}
-	}));
+  return Object.values(wizardGraph.nodes).map((node) => ({
+    id: node.id,
+    type: 'graphNode',
+    position: {
+      x: node.positionX ?? 0,
+      y: node.positionY ?? 0
+    },
+    data: {
+      ...node,
+      ...(node.resolvers ? { resolvers: withStableKeys(node.resolvers) } : {}),
+      hasPosition: node.positionX !== undefined && node.positionY !== undefined
+    }
+  }));
 }
 
 export function toFlowEdges(wizardGraph) {
-	const flowEdges = [];
-	Object.values(wizardGraph.nodes).forEach((node) => {
-		(node.edgeIds || []).forEach((edgeId, order) => {
-			const edge = wizardGraph.edges[edgeId];
-			if (!edge) return;
-			flowEdges.push({
-				id: edge.id,
-				source: node.id,
-				target: edge.targetNodeId,
-				label: edge.label,
-				type: 'graphEdge',
-				style: edge.disabled
-					? {
-							stroke: 'var(--color-navy-midnight-alpha-50)',
-							strokeWidth: 2,
-							strokeDasharray: '4 4',
-							opacity: 0.5
-						}
-					: { stroke: 'var(--color-navy-midnight-alpha-50)', strokeWidth: 2 },
-				data: { ...edge, order }
-			});
-		});
-	});
-	return flowEdges;
+  const flowEdges = [];
+  Object.values(wizardGraph.nodes).forEach((node) => {
+    (node.edgeIds || []).forEach((edgeId, order) => {
+      const edge = wizardGraph.edges[edgeId];
+      if (!edge) return;
+      flowEdges.push({
+        id: edge.id,
+        source: node.id,
+        target: edge.targetNodeId,
+        label: edge.label,
+        type: 'graphEdge',
+        style: edge.disabled
+          ? {
+              stroke: 'var(--color-navy-midnight-alpha-50)',
+              strokeWidth: 2,
+              strokeDasharray: '4 4',
+              opacity: 0.5
+            }
+          : { stroke: 'var(--color-navy-midnight-alpha-50)', strokeWidth: 2 },
+        data: { ...edge, order }
+      });
+    });
+  });
+  return flowEdges;
 }
 
 // `orphanEdges` are entries from the originally-loaded graph's `edges` map that no
@@ -72,49 +72,49 @@ export function toFlowEdges(wizardGraph) {
 // can't render an edge with no source node, but a save still shouldn't silently
 // delete them, so they're passed through unchanged here.
 export function toWizardGraph(flowNodes, flowEdges, startNodeId, orphanEdges = {}) {
-	const nodes = {};
-	flowNodes.forEach((flowNode) => {
-		const { hasPosition, ...node } = flowNode.data;
-		void hasPosition;
-		nodes[flowNode.id] = {
-			...node,
-			...(node.resolvers ? { resolvers: sanitizeResolvers(node.resolvers) } : {}),
-			id: flowNode.id,
-			positionX: flowNode.position.x,
-			positionY: flowNode.position.y,
-			edgeIds: []
-		};
-	});
+  const nodes = {};
+  flowNodes.forEach((flowNode) => {
+    const { hasPosition, ...node } = flowNode.data;
+    void hasPosition;
+    nodes[flowNode.id] = {
+      ...node,
+      ...(node.resolvers ? { resolvers: sanitizeResolvers(node.resolvers) } : {}),
+      id: flowNode.id,
+      positionX: flowNode.position.x,
+      positionY: flowNode.position.y,
+      edgeIds: []
+    };
+  });
 
-	const edgesBySource = {};
-	flowEdges.forEach((flowEdge) => {
-		(edgesBySource[flowEdge.source] ??= []).push(flowEdge);
-	});
+  const edgesBySource = {};
+  flowEdges.forEach((flowEdge) => {
+    (edgesBySource[flowEdge.source] ??= []).push(flowEdge);
+  });
 
-	const edges = {};
-	Object.entries(edgesBySource).forEach(([sourceId, sourceEdges]) => {
-		const ordered = [...sourceEdges].sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-		if (!nodes[sourceId]) return;
-		nodes[sourceId].edgeIds = ordered.map((flowEdge) => flowEdge.id);
-		ordered.forEach((flowEdge) => {
-			const { order, ...edge } = flowEdge.data;
-			void order;
-			edges[flowEdge.id] = { ...edge, id: flowEdge.id, targetNodeId: flowEdge.target };
-		});
-	});
+  const edges = {};
+  Object.entries(edgesBySource).forEach(([sourceId, sourceEdges]) => {
+    const ordered = [...sourceEdges].sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+    if (!nodes[sourceId]) return;
+    nodes[sourceId].edgeIds = ordered.map((flowEdge) => flowEdge.id);
+    ordered.forEach((flowEdge) => {
+      const { order, ...edge } = flowEdge.data;
+      void order;
+      edges[flowEdge.id] = { ...edge, id: flowEdge.id, targetNodeId: flowEdge.target };
+    });
+  });
 
-	return { startNodeId, nodes, edges: { ...orphanEdges, ...edges } };
+  return { startNodeId, nodes, edges: { ...orphanEdges, ...edges } };
 }
 
 // Edges present in wizardGraph.edges but not referenced by any node's edgeIds.
 export function findOrphanEdges(wizardGraph) {
-	const referenced = new Set();
-	Object.values(wizardGraph.nodes).forEach((node) => {
-		(node.edgeIds || []).forEach((edgeId) => referenced.add(edgeId));
-	});
-	const orphans = {};
-	Object.entries(wizardGraph.edges).forEach(([id, edge]) => {
-		if (!referenced.has(id)) orphans[id] = edge;
-	});
-	return orphans;
+  const referenced = new Set();
+  Object.values(wizardGraph.nodes).forEach((node) => {
+    (node.edgeIds || []).forEach((edgeId) => referenced.add(edgeId));
+  });
+  const orphans = {};
+  Object.entries(wizardGraph.edges).forEach(([id, edge]) => {
+    if (!referenced.has(id)) orphans[id] = edge;
+  });
+  return orphans;
 }

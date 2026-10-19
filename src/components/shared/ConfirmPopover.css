@@ -1,84 +1,84 @@
 .confirm-popover-backdrop {
-	position: fixed;
-	inset: 0;
-	z-index: 60;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
 }
 
 .confirm-popover {
-	position: fixed;
-	background: var(--surface-page);
-	border: 1px solid var(--color-navy-midnight-alpha-20);
-	border-radius: 8px;
-	box-shadow: 0 10px 25px var(--color-navy-midnight-alpha-20);
-	padding: 0.75rem;
-	width: 15rem;
+  position: fixed;
+  background: var(--surface-page);
+  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px var(--color-navy-midnight-alpha-20);
+  padding: 0.75rem;
+  width: 15rem;
 }
 
 .confirm-popover p {
-	margin: 0 0 0.6rem;
-	font-size: 0.8rem;
-	color: var(--text-primary);
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-primary);
 }
 
 .confirm-popover__actions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
 }
 
 .confirm-popover__actions button {
-	padding: 0.3rem 0.65rem;
-	border-radius: 5px;
-	font-size: 0.75rem;
-	font-weight: 500;
-	border: 1px solid transparent;
-	cursor: pointer;
+  padding: 0.3rem 0.65rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
 }
 
 .confirm-popover__cancel {
-	background: var(--surface-panel);
-	color: var(--text-primary);
+  background: var(--surface-panel);
+  color: var(--text-primary);
 }
 
 .confirm-popover__cancel:hover {
-	background: var(--color-blue-ice);
+  background: var(--color-blue-ice);
 }
 
 .confirm-popover__confirm {
-	background: var(--color-red-scarlet);
-	color: var(--text-inverse);
+  background: var(--color-red-scarlet);
+  color: var(--text-inverse);
 }
 
 .confirm-popover__confirm:hover {
-	background: var(--color-red-crimson);
+  background: var(--color-red-crimson);
 }
 
 /* Mobile: centered modal instead of anchored at the click point — see
    useClampedPopoverPosition.js for why the anchored left/top go unused here. */
 @media (max-width: 767px) {
-	.confirm-popover-backdrop {
-		background: var(--color-navy-midnight-alpha-50);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 1rem;
-	}
+  .confirm-popover-backdrop {
+    background: var(--color-navy-midnight-alpha-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
 
-	.confirm-popover {
-		position: static;
-		width: 100%;
-		max-width: 22rem;
-		padding: 1.25rem;
-		box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
-	}
+  .confirm-popover {
+    position: static;
+    width: 100%;
+    max-width: 22rem;
+    padding: 1.25rem;
+    box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
+  }
 
-	.confirm-popover p {
-		font-size: 0.95rem;
-		line-height: 1.5;
-	}
+  .confirm-popover p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 
-	.confirm-popover__actions button {
-		padding: 0.55rem 1rem;
-		font-size: 0.9rem;
-	}
+  .confirm-popover__actions button {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+  }
 }

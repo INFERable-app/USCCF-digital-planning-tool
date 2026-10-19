@@ -102,7 +102,7 @@ export function createNeo4jRepository(): GraphRepository {
         for (const node of Object.values(graph.nodes)) {
           await session.run('MERGE (n:WizardNode {id: $id}) SET n = $props', {
             id: node.id,
-            props: nodeToProps(node as unknown as Record<string, unknown>),
+            props: nodeToProps(node as unknown as Record<string, unknown>)
           });
         }
 
@@ -118,7 +118,7 @@ export function createNeo4jRepository(): GraphRepository {
               {
                 srcId: node.id,
                 tgtId: edge.targetNodeId,
-                props: edgeToRelProps(edge as unknown as Record<string, unknown>, i),
+                props: edgeToRelProps(edge as unknown as Record<string, unknown>, i)
               }
             );
           }
@@ -132,7 +132,7 @@ export function createNeo4jRepository(): GraphRepository {
       const session = getDriver().session();
       try {
         await session.run('CREATE (n:WizardNode) SET n = $props', {
-          props: nodeToProps(node as unknown as Record<string, unknown>),
+          props: nodeToProps(node as unknown as Record<string, unknown>)
         });
       } finally {
         await session.close();
@@ -188,7 +188,7 @@ export function createNeo4jRepository(): GraphRepository {
           {
             sourceId,
             targetNodeId: edge.targetNodeId,
-            props: edgeToRelProps(edge as unknown as Record<string, unknown>, order),
+            props: edgeToRelProps(edge as unknown as Record<string, unknown>, order)
           }
         );
       } finally {
@@ -227,7 +227,7 @@ export function createNeo4jRepository(): GraphRepository {
         if (Object.keys(rest).length > 0) {
           await session.run('MATCH ()-[r:OPTION {id: $id}]->() SET r += $props', {
             id,
-            props: rest,
+            props: rest
           });
         }
       } finally {
@@ -242,6 +242,6 @@ export function createNeo4jRepository(): GraphRepository {
       } finally {
         await session.close();
       }
-    },
+    }
   };
 }

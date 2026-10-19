@@ -7,6 +7,7 @@ from the React app, anonymizes the actor (hash `sub`/email before forwarding),
 and POSTs xAPI statements to the configured LRS endpoint.
 
 Suggested integration point:
+
 - `POST /xapi/statements` — receives events from the client
 - Anonymize actor field (hash PII before forwarding)
 - Forward to `{XAPI_LRS_ENDPOINT}/statements` with LRS Basic auth

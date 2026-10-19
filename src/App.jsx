@@ -16,149 +16,150 @@ import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
 
 function AppContent({ engine }) {
-	const { user, loading } = useAuth();
-	const { isOpen } = useDrawer();
-	const { editMode } = useEditMode();
-	const {
-		node,
-		nodes,
-		edges,
-		startNodeId,
-		currentNodeId,
-		answers,
-		history,
-		advance,
-		back,
-		jumpAlongPath,
-		restore
-	} = engine;
+  const { user, loading } = useAuth();
+  const { isOpen } = useDrawer();
+  const { editMode } = useEditMode();
+  const {
+    node,
+    nodes,
+    edges,
+    startNodeId,
+    currentNodeId,
+    answers,
+    history,
+    advance,
+    back,
+    jumpAlongPath,
+    restore
+  } = engine;
 
-	// undefined = not yet fetched, null = no saved progress, object = has progress
-	const [savedProgress, setSavedProgress] = useState(undefined);
-	const [showResume, setShowResume] = useState(false);
+  // undefined = not yet fetched, null = no saved progress, object = has progress
+  const [savedProgress, setSavedProgress] = useState(undefined);
+  const [showResume, setShowResume] = useState(false);
 
-	useEffect(() => {
-		if (!user) {
-			setSavedProgress(undefined);
-			return;
-		}
-		fetch('/api/progress', { credentials: 'include' })
-			.then((r) => (r.ok ? r.json() : null))
-			.then((data) => {
-				setSavedProgress(data);
-				if (data) {
-					const isRefresh = sessionStorage.getItem('session-user') === user.sub;
-					if (isRefresh) {
-						restore(data);
-					} else {
-						setShowResume(true);
-					}
-				}
-				sessionStorage.setItem('session-user', user.sub);
-			})
-			.catch(() => setSavedProgress(null));
-	}, [user]);
+  useEffect(() => {
+    if (!user) {
+      setSavedProgress(undefined);
+      return;
+    }
+    fetch('/api/progress', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        setSavedProgress(data);
+        if (data) {
+          const isRefresh = sessionStorage.getItem('session-user') === user.sub;
+          if (isRefresh) {
+            restore(data);
+          } else {
+            setShowResume(true);
+          }
+        }
+        sessionStorage.setItem('session-user', user.sub);
+      })
+      .catch(() => setSavedProgress(null));
+  }, [user]);
 
-	// Auto-save on each wizard step. Suppressed in edit mode — an admin walking
-	// the tree to edit it would otherwise overwrite their own saved place.
-	useEffect(() => {
-		if (!user || savedProgress === undefined || showResume || editMode) return;
-		if (currentNodeId === startNodeId && Object.keys(answers).length === 0) return;
-		fetch('/api/progress', {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			credentials: 'include',
-			body: JSON.stringify({ currentNodeId, answers, history })
-		});
-	}, [currentNodeId, answers, history, editMode]);
+  // Auto-save on each wizard step. Suppressed in edit mode — an admin walking
+  // the tree to edit it would otherwise overwrite their own saved place.
+  useEffect(() => {
+    if (!user || savedProgress === undefined || showResume || editMode) return;
+    if (currentNodeId === startNodeId && Object.keys(answers).length === 0) return;
+    fetch('/api/progress', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ currentNodeId, answers, history })
+    });
+  }, [currentNodeId, answers, history, editMode]);
 
-	function handleResume() {
-		restore(savedProgress);
-		setShowResume(false);
-	}
+  function handleResume() {
+    restore(savedProgress);
+    setShowResume(false);
+  }
 
-	async function resetProgress() {
-		await fetch('/api/progress', { method: 'DELETE', credentials: 'include' });
-		engine.resetToStart();
-		setShowResume(false);
-	}
+  async function resetProgress() {
+    await fetch('/api/progress', { method: 'DELETE', credentials: 'include' });
+    engine.resetToStart();
+    setShowResume(false);
+  }
 
-	const hasProgress = Boolean(savedProgress) || currentNodeId !== startNodeId || Object.keys(answers).length > 0;
+  const hasProgress =
+    Boolean(savedProgress) || currentNodeId !== startNodeId || Object.keys(answers).length > 0;
 
-	const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
-	const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
+  const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
+  const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
 
-	if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
+  if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
 
-	return (
-		<WizardNavProvider
-			nodes={nodes}
-			edges={edges}
-			answers={answers}
-			currentNodeId={currentNodeId}
-			currentEdgeIds={path.map((p) => p.edgeId).filter(Boolean)}
-			path={path}
-			startNodeId={startNodeId}
-			jumpAlongPath={jumpAlongPath}
-			goHome={() => engine.goToNode(startNodeId)}
-			resetProgress={resetProgress}
-			hasProgress={hasProgress}
-		>
-			<div className="app-shell">
-				<EditModeBar />
-				<div className="phone-chrome">
-					<div
-						className={`app-screen${!isOpen ? ' drawer-closed' : ''}${editMode ? ' edit-mode' : ''}`}
-					>
-						<div className="dynamic-island" aria-hidden="true" />
-						{!user ? (
-							<SignInScreen />
-						) : showResume ? (
-							<ResumeScreen user={user} onResume={handleResume} />
-						) : (
-							<NodeRenderer
-								node={node}
-								nodes={nodes}
-								edges={edges}
-								answers={answers}
-								advance={advance}
-								onBack={back}
-								previousAnswerLabel={previousAnswerLabel}
-								isStartNode={currentNodeId === startNodeId}
-							/>
-						)}
-						<div className="home-indicator" aria-hidden="true" />
-					</div>
-				</div>
-				{user && <ResourceLibraryOverlay />}
-				{user && <FaqOverlay />}
-				{user && <GlossaryOverlay />}
-			</div>
-		</WizardNavProvider>
-	);
+  return (
+    <WizardNavProvider
+      nodes={nodes}
+      edges={edges}
+      answers={answers}
+      currentNodeId={currentNodeId}
+      currentEdgeIds={path.map((p) => p.edgeId).filter(Boolean)}
+      path={path}
+      startNodeId={startNodeId}
+      jumpAlongPath={jumpAlongPath}
+      goHome={() => engine.goToNode(startNodeId)}
+      resetProgress={resetProgress}
+      hasProgress={hasProgress}
+    >
+      <div className="app-shell">
+        <EditModeBar />
+        <div className="phone-chrome">
+          <div
+            className={`app-screen${!isOpen ? ' drawer-closed' : ''}${editMode ? ' edit-mode' : ''}`}
+          >
+            <div className="dynamic-island" aria-hidden="true" />
+            {!user ? (
+              <SignInScreen />
+            ) : showResume ? (
+              <ResumeScreen user={user} onResume={handleResume} />
+            ) : (
+              <NodeRenderer
+                node={node}
+                nodes={nodes}
+                edges={edges}
+                answers={answers}
+                advance={advance}
+                onBack={back}
+                previousAnswerLabel={previousAnswerLabel}
+                isStartNode={currentNodeId === startNodeId}
+              />
+            )}
+            <div className="home-indicator" aria-hidden="true" />
+          </div>
+        </div>
+        {user && <ResourceLibraryOverlay />}
+        {user && <FaqOverlay />}
+        {user && <GlossaryOverlay />}
+      </div>
+    </WizardNavProvider>
+  );
 }
 
 // The engine is created here so EditModeProvider can drive the same graph state
 // the wizard renders from — edit mode edits the live draft rather than a copy.
 function AppWithEngine() {
-	const engine = useGraphEngine();
+  const engine = useGraphEngine();
 
-	return (
-		<EditModeProvider
-			graph={engine.graph}
-			setGraph={engine.setGraph}
-			currentNodeId={engine.currentNodeId}
-			goToNode={engine.goToNode}
-		>
-			<AppContent engine={engine} />
-		</EditModeProvider>
-	);
+  return (
+    <EditModeProvider
+      graph={engine.graph}
+      setGraph={engine.setGraph}
+      currentNodeId={engine.currentNodeId}
+      goToNode={engine.goToNode}
+    >
+      <AppContent engine={engine} />
+    </EditModeProvider>
+  );
 }
 
 export default function App() {
-	return (
-		<DrawerProvider>
-			<AppWithEngine />
-		</DrawerProvider>
-	);
+  return (
+    <DrawerProvider>
+      <AppWithEngine />
+    </DrawerProvider>
+  );
 }

@@ -1,37 +1,37 @@
 /* Mobile: compact three-line lockup so the header row fits */
 .foundation-logo__mark {
-	width: 38px;
-	height: 38px;
-	flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
 }
 
 .foundation-logo__text {
-	max-width: 96px;
-	font-family: 'Roboto', sans-serif;
-	font-size: 12px;
-	line-height: 14px;
-	text-align: left;
+  max-width: 96px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: left;
 }
 
 .foundation-logo__text br {
-	display: none;
+  display: none;
 }
 
 /* Desktop: two-line lockup matching uschamberfoundation.org */
 @media (min-width: 768px) {
-	.foundation-logo__mark {
-		width: 54px;
-		height: 54px;
-	}
+  .foundation-logo__mark {
+    width: 54px;
+    height: 54px;
+  }
 
-	.foundation-logo__text {
-		max-width: none;
-		font-size: 16px;
-		line-height: 19px;
-		white-space: nowrap;
-	}
+  .foundation-logo__text {
+    max-width: none;
+    font-size: 16px;
+    line-height: 19px;
+    white-space: nowrap;
+  }
 
-	.foundation-logo__text br {
-		display: inline;
-	}
+  .foundation-logo__text br {
+    display: inline;
+  }
 }

@@ -1,8 +1,8 @@
 {
-	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": false,
-		"moduleResolution": "bundler",
-		"jsx": "react-jsx"
-	}
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx"
+  }
 }

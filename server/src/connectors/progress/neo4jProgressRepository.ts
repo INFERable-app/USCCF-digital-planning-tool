@@ -34,13 +34,10 @@ export function createProgressRepository(): ProgressRepository {
     async clearProgress(sub: string): Promise<void> {
       const session = getDriver().session();
       try {
-        await session.run(
-          'MATCH (u:User {sub: $sub}) REMOVE u.progress, u.updatedAt',
-          { sub }
-        );
+        await session.run('MATCH (u:User {sub: $sub}) REMOVE u.progress, u.updatedAt', { sub });
       } finally {
         await session.close();
       }
-    },
+    }
   };
 }

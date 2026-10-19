@@ -16,49 +16,57 @@
 const MAX_TREE_DEPTH = 2;
 
 export function buildUseCaseTree(nodes, edges, startNodeId, maxDepth = MAX_TREE_DEPTH) {
-	if (!startNodeId || !nodes[startNodeId]) return [];
-	return walk(startNodeId, new Set([startNodeId]), 0, []);
+  if (!startNodeId || !nodes[startNodeId]) return [];
+  return walk(startNodeId, new Set([startNodeId]), 0, []);
 
-	function walk(nodeId, visited, depth, edgePath) {
-		const node = nodes[nodeId];
-		if (!node) return [];
+  function walk(nodeId, visited, depth, edgePath) {
+    const node = nodes[nodeId];
+    if (!node) return [];
 
-		if (node.type !== 'multiChoice') {
-			const [firstEdgeId] = node.edgeIds ?? [];
-			const edge = firstEdgeId ? edges[firstEdgeId] : null;
-			if (!edge || visited.has(edge.targetNodeId)) return [];
-			return walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId), depth, [...edgePath, edge.id]);
-		}
+    if (node.type !== 'multiChoice') {
+      const [firstEdgeId] = node.edgeIds ?? [];
+      const edge = firstEdgeId ? edges[firstEdgeId] : null;
+      if (!edge || visited.has(edge.targetNodeId)) return [];
+      return walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId), depth, [
+        ...edgePath,
+        edge.id
+      ]);
+    }
 
-		return (node.edgeIds ?? [])
-			.map((edgeId) => edges[edgeId])
-			.filter(Boolean)
-			.map((edge) => buildRow(edge, visited, depth, edgePath));
-	}
+    return (node.edgeIds ?? [])
+      .map((edgeId) => edges[edgeId])
+      .filter(Boolean)
+      .map((edge) => buildRow(edge, visited, depth, edgePath));
+  }
 
-	function buildRow(edge, visited, depth, edgePath) {
-		const disabled = !!edge.disabled;
-		const targetNode = nodes[edge.targetNodeId];
-		const path = [...edgePath, edge.id];
-		const row = {
-			id: edge.id,
-			label: edge.label,
-			disabled,
-			storeKey: edge.storeKey,
-			value: edge.value,
-			children: null,
-			targetNodeId: null,
-			edgePath: path,
-		};
+  function buildRow(edge, visited, depth, edgePath) {
+    const disabled = !!edge.disabled;
+    const targetNode = nodes[edge.targetNodeId];
+    const path = [...edgePath, edge.id];
+    const row = {
+      id: edge.id,
+      label: edge.label,
+      disabled,
+      storeKey: edge.storeKey,
+      value: edge.value,
+      children: null,
+      targetNodeId: null,
+      edgePath: path
+    };
 
-		if (disabled || !targetNode || visited.has(edge.targetNodeId)) return row;
+    if (disabled || !targetNode || visited.has(edge.targetNodeId)) return row;
 
-		row.targetNodeId = edge.targetNodeId;
+    row.targetNodeId = edge.targetNodeId;
 
-		const isBranch = targetNode.type === 'multiChoice' && depth + 1 < maxDepth;
-		if (isBranch) {
-			row.children = walk(edge.targetNodeId, new Set(visited).add(edge.targetNodeId), depth + 1, path);
-		}
-		return row;
-	}
+    const isBranch = targetNode.type === 'multiChoice' && depth + 1 < maxDepth;
+    if (isBranch) {
+      row.children = walk(
+        edge.targetNodeId,
+        new Set(visited).add(edge.targetNodeId),
+        depth + 1,
+        path
+      );
+    }
+    return row;
+  }
 }

@@ -5,12 +5,15 @@ import type { GraphRepository, WizardGraph, GraphNode, GraphEdge } from './types
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const raw = readFileSync(resolve(__dirname, '../../../../docs/wizardGraph.json'), 'utf8');
-const graphData = JSON.parse(raw) as { nodes: Record<string, GraphNode>; edges: Record<string, GraphEdge> };
+const graphData = JSON.parse(raw) as {
+  nodes: Record<string, GraphNode>;
+  edges: Record<string, GraphEdge>;
+};
 
 const graph: WizardGraph = {
   startNodeId: 'welcome',
   nodes: graphData.nodes,
-  edges: graphData.edges,
+  edges: graphData.edges
 };
 
 export const stubRepository: GraphRepository = {
@@ -60,5 +63,5 @@ export const stubRepository: GraphRepository = {
     for (const node of Object.values(graph.nodes)) {
       node.edgeIds = node.edgeIds.filter((edgeId) => edgeId !== id);
     }
-  },
+  }
 };

@@ -1,178 +1,178 @@
 .edit-bar {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 12px;
-	min-height: 52px;
-	padding: 8px 24px;
-	background: var(--color-navy-midnight);
-	font-family: 'Roboto', sans-serif;
-	letter-spacing: 0.02em;
-	z-index: 60;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 24px;
+  background: var(--color-navy-midnight);
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.02em;
+  z-index: 60;
 }
 
 .edit-bar__status {
-	display: flex;
-	align-items: center;
-	gap: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .edit-bar__label {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 14px;
-	font-weight: 700;
-	color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-inverse);
 }
 
 .edit-bar__label svg {
-	color: var(--color-cyan-sky);
+  color: var(--color-cyan-sky);
 }
 
 .edit-bar__dirty {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 13px;
-	color: var(--color-yellow-canary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-yellow-canary);
 }
 
 .edit-bar__dot {
-	width: 7px;
-	height: 7px;
-	border-radius: 50%;
-	background: var(--color-yellow-canary);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-yellow-canary);
 }
 
 .edit-bar__actions {
-	display: flex;
-	align-items: center;
-	gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .edit-bar__divider {
-	width: 1px;
-	height: 24px;
-	background: var(--color-navy-deep);
+  width: 1px;
+  height: 24px;
+  background: var(--color-navy-deep);
 }
 
 .edit-bar__btn {
-	padding: 7px 16px;
-	border-radius: 6px;
-	font-family: inherit;
-	letter-spacing: inherit;
-	font-size: 14px;
-	cursor: pointer;
-	background: transparent;
-	color: var(--color-blue-ice);
-	border: 1px solid var(--color-blue-cobalt);
-	transition: background 0.15s ease;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  letter-spacing: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-blue-ice);
+  border: 1px solid var(--color-blue-cobalt);
+  transition: background 0.15s ease;
 }
 
 .edit-bar__btn:hover:not(:disabled) {
-	background: var(--color-navy-deep);
+  background: var(--color-navy-deep);
 }
 
 .edit-bar__btn:disabled {
-	opacity: 0.45;
-	cursor: not-allowed;
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .edit-bar__btn--save {
-	font-weight: 700;
-	background: var(--color-green-hunter);
-	color: var(--text-inverse);
-	border-color: var(--color-green-hunter);
+  font-weight: 700;
+  background: var(--color-green-hunter);
+  color: var(--text-inverse);
+  border-color: var(--color-green-hunter);
 }
 
 .edit-bar__btn--save:hover:not(:disabled) {
-	background: var(--color-green-forest);
-	border-color: var(--color-green-lime);
+  background: var(--color-green-forest);
+  border-color: var(--color-green-lime);
 }
 
 .edit-bar__btn--exit {
-	color: var(--text-inverse);
-	border-color: var(--color-blue-cobalt);
+  color: var(--text-inverse);
+  border-color: var(--color-blue-cobalt);
 }
 
 .edit-bar__error {
-	flex-basis: 100%;
-	background: var(--color-red-oxblood);
-	border: 1px solid var(--color-red-crimson);
-	border-radius: 6px;
-	padding: 8px 12px;
-	font-size: 13px;
-	color: var(--color-pink-blush);
-	line-height: 1.45;
+  flex-basis: 100%;
+  background: var(--color-red-oxblood);
+  border: 1px solid var(--color-red-crimson);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--color-pink-blush);
+  line-height: 1.45;
 }
 
 .edit-bar__confirm-backdrop {
-	position: fixed;
-	inset: 0;
-	background: var(--color-navy-midnight-alpha-50);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 200;
-	padding: 16px;
+  position: fixed;
+  inset: 0;
+  background: var(--color-navy-midnight-alpha-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
 }
 
 .edit-bar__confirm {
-	background: var(--surface-page);
-	border-radius: 10px;
-	box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-40);
-	padding: 20px;
-	max-width: 26rem;
-	width: 100%;
+  background: var(--surface-page);
+  border-radius: 10px;
+  box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-40);
+  padding: 20px;
+  max-width: 26rem;
+  width: 100%;
 }
 
 .edit-bar__confirm p {
-	font-size: 15px;
-	color: var(--text-primary);
-	line-height: 1.5;
-	margin-bottom: 16px;
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 16px;
 }
 
 .edit-bar__confirm-actions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-	flex-wrap: wrap;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .edit-bar__confirm-actions button {
-	padding: 8px 14px;
-	border-radius: 6px;
-	font-family: inherit;
-	font-size: 14px;
-	cursor: pointer;
-	border: 1px solid transparent;
-	background: var(--surface-panel);
-	color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: var(--surface-panel);
+  color: var(--text-primary);
 }
 
 .edit-bar__confirm-actions button:hover:not(:disabled) {
-	background: var(--color-blue-ice);
+  background: var(--color-blue-ice);
 }
 
 .edit-bar__confirm-discard {
-	color: var(--color-red-scarlet) !important;
+  color: var(--color-red-scarlet) !important;
 }
 
 .edit-bar__confirm-save {
-	font-weight: 700;
-	background: var(--color-green-hunter) !important;
-	color: var(--text-inverse) !important;
+  font-weight: 700;
+  background: var(--color-green-hunter) !important;
+  color: var(--text-inverse) !important;
 }
 
 .edit-bar__confirm-save:hover:not(:disabled) {
-	background: var(--color-green-forest) !important;
+  background: var(--color-green-forest) !important;
 }
 
 .edit-bar__confirm-save:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
