@@ -36,14 +36,14 @@ echo "==> Saving dump to $BACKUP_DIR"
 mkdir -p "$BACKUP_DIR"
 mv "$DUMP_DIR/neo4j.dump" "$BACKUP_DIR/neo4j-$TIMESTAMP.dump"
 
-echo "==> Waiting for gateway to come back up"
+echo "==> Waiting for backend to come back up"
 for i in $(seq 1 12); do
 	if curl -sf "http://localhost:3001/healthz" >/dev/null 2>&1; then
-		echo "==> Gateway healthy."
+		echo "==> Backend healthy."
 		break
 	fi
 	if [ "$i" -eq 12 ]; then
-		echo "WARNING: gateway did not report healthy after restart; check it manually." >&2
+		echo "WARNING: backend did not report healthy after restart; check it manually." >&2
 	fi
 	sleep 5
 done

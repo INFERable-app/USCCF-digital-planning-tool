@@ -1,7 +1,7 @@
 # Architecture
 
-This page shows how the planning tool's pieces fit together: the two browser apps, the
-Express gateway, Neo4j and Google sign-in.
+This page shows how the planning tool's pieces fit together: the main app + the admin graph editor, the
+Express backend, the Neo4j graph database, and Google sign-in.
 
 - Data fields are in [data-model.md](data-model.md).
 - Environment variables are in [configuration.md](configuration.md).
@@ -12,7 +12,7 @@ Express gateway, Neo4j and Google sign-in.
 ```mermaid
 flowchart LR
     subgraph Browser
-        W["Wizard<br/>index.html → src/main.jsx"]
+        W["Planning Tool<br/>index.html → src/main.jsx"]
         A["Graph editor<br/>admin.html → src/admin/main.jsx"]
     end
 
@@ -25,7 +25,7 @@ flowchart LR
         N["app container: nginx :8080<br/>serves dist/"]
     end
 
-    G["gateway container: Express :3001<br/>server/src/app.ts"]
+    G["backend container: Express :3001<br/>server/src/app.ts"]
     DB[("neo4j container :7687")]
     U[("uploads volume<br/>UPLOADS_DIR")]
     GO["Google OIDC<br/>accounts.google.com"]
@@ -39,25 +39,22 @@ flowchart LR
     RP -->|"/auth, /api, /admin"| G
     G --> DB
     G --> U
-    G <-->|"OIDC code + PKCE"| GO
+    G <-->|"OIDC"| GO
 ```
 
-Three rules hold everywhere:
+Things to be aware of:
 
-- **Two front-ends come from one build.** `vite.config.js` declares two inputs: `index.html`
+- **The build outputs two front-ends.** `vite.config.js` declares two inputs: `index.html`
   for the wizard and `admin.html` for the graph editor. They share
   `src/contexts/AuthContext.jsx`, `src/theme.css` and parts of `src/components/`.
-- **The browser talks only to its own origin.** Every API call is a same-origin `fetch` with
-  `credentials: 'include'`.
-  - In development, Vite forwards `/auth`, `/api` and the exact path `/admin` to the gateway.
-  - In production, Apache sends those paths to the gateway on `127.0.0.1:3001` and everything
+- **HTTP requests work differently depending on the environment.**
+  - In development, Vite forwards `/auth`, `/api` and the exact path `/admin` to the backend.
+  - In production, Apache sends those paths to the backend on `127.0.0.1:3001` and everything
     else to the `app` container on port 8080. See [deployment.md](deployment.md).
-- **The gateway owns all secrets and all data access.** The browser never sees a Google token
-  and never talks to Neo4j.
 
-## Gateway
+## Backend
 
-The gateway lives in `server/`. `server/src/server.ts` starts the app built in
+The backend lives in `server/`. `server/src/server.ts` starts the app built in
 `server/src/app.ts`. `server/src/config.ts` loads and validates the configuration once. See
 [configuration.md](configuration.md).
 
@@ -79,7 +76,7 @@ The gateway lives in `server/`. `server/src/server.ts` starts the app built in
 Each feature lives in `server/src/connectors/<name>/`, usually as three files:
 
 - `types.ts` defines the data shapes and a `*Repository` interface.
-- `neo4j*Repository.ts` implements the interface. All Cypher lives here.
+- `neo4j*Repository.ts` implements the interface. All Cypher code lives here.
 - `routes.ts` is an Express `Router`. It validates input, often with zod, calls the
   repository, and turns errors into JSON `{ error }` responses.
 
@@ -148,38 +145,18 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 
 ## Sign-in
 
-The gateway is a backend-for-frontend. It runs Google's OAuth authorization-code flow with
-PKCE in `connectors/oidc/`. The browser only ever gets a session cookie.
+Sign-in uses Google OIDC and runs entirely on the backend, in `server/src/connectors/oidc/`,
+with `openid-client` and `express-session`. The browser only ever holds a session cookie.
 
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant G as Gateway
-    participant Google
-
-    B->>G: GET /auth/me
-    G-->>B: 401, no session
-    Note over B: SignInScreen shows "Sign in"
-    B->>G: GET /auth/login
-    G->>G: create code_verifier and state,<br/>store them in session.pkce
-    G-->>B: 302 to Google with code_challenge S256
-    B->>Google: consent
-    Google-->>B: 302 to GOOGLE_REDIRECT_URI with code and state
-    B->>G: GET /auth/callback
-    G->>Google: exchange code and code_verifier
-    Google-->>G: ID token claims
-    G->>G: session.user = sub, email, name, picture
-    G-->>B: 302 to session.returnTo,<br/>or the origin of GOOGLE_REDIRECT_URI
-    B->>G: GET /auth/me
-    G-->>B: user and isAdmin
-```
+Setup: create a Google OAuth client and set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and
+`GOOGLE_REDIRECT_URI`. See [Google OAuth client](configuration.md#google-oauth-client).
 
 - `src/contexts/AuthContext.jsx` calls `/auth/me` once on load. It exposes
   `{ user, loading, signOut }`. Both front-ends wrap their tree in `AuthProvider`.
 - After sign-in, the browser goes to `session.returnTo` if it is set. Only `/admin` sets it.
   Otherwise the browser goes to the origin of `GOOGLE_REDIRECT_URI`. That variable therefore
   also decides where users land.
-- The gateway discovers the OIDC client from `https://accounts.google.com` on first use and
+- The backend discovers the OIDC client from `https://accounts.google.com` on first use and
   caches it.
 - Nothing records sign-ins. A `(:User)` node appears only when a user's progress is first
   saved.
@@ -195,9 +172,9 @@ sequenceDiagram
 `admin.html` itself is a public static file. The real protection is that every write route
 requires an admin, and `AdminApp` shows a 403 screen when `user.isAdmin` is false.
 
-## Wizard runtime
+## Front-end structure
 
-The wizard lives in `src/`.
+The front-end code lives in `src/`.
 
 ### Component and provider tree
 
@@ -346,7 +323,7 @@ saved this way too.
 An admin can upload a PDF in the resolver editor, `ResolversEditor/ResourceRow.jsx`, instead
 of pasting a URL.
 
-1. The gateway stores the file in `UPLOADS_DIR` under a random UUID name.
+1. The backend stores the file in `UPLOADS_DIR` under a random UUID name.
 2. It returns `/api/resources/files/<uuid>.pdf`.
 3. The editor saves that path as the resource's `url`.
 
@@ -371,10 +348,10 @@ resource uses them.
   rewrites the whole graph from the editor's copy. Any inline edit-mode save made after the
   editor loaded is lost. Reload the editor before saving if someone may have edited inline.
 - **Sessions are in memory.**
-  - Restarting the gateway signs everyone out.
-  - A second gateway instance would break sign-in.
+  - Restarting the backend signs everyone out.
+  - A second backend instance would break sign-in.
   - Scaling out needs a persistent store such as Redis.
-- **Duplicate dev servers break sign-in.** Two running `tsx watch` gateway processes each keep
+- **Duplicate dev servers break sign-in.** Two running `tsx watch` backend processes each keep
   their own session store. Requests can land on either one, which shows up as
   `Missing PKCE session` on `/auth/callback`. Kill the stale process.
 - **The start node is hard-coded.** `neo4jRepository.getWizardGraph` always returns

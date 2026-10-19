@@ -2,7 +2,7 @@
 
 This connector is owned by a separate team and is not implemented here.
 
-When ready, the gateway should expose a route that receives learning events
+When ready, the backend should expose a route that receives learning events
 from the React app, anonymizes the actor (hash `sub`/email before forwarding),
 and POSTs xAPI statements to the configured LRS endpoint.
 

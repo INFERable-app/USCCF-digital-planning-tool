@@ -1,9 +1,9 @@
 # @usccf/api-gateway
 
-The Express and TypeScript gateway for the USCCF Digital Transformation Planning Tool. The
-React client talks only to this gateway.
+The Express and TypeScript backend for the USCCF Digital Transformation Planning Tool. The
+React client talks only to this backend.
 
-The gateway does five jobs:
+The backend does five jobs:
 
 - Runs Google sign-in on the server, using OIDC with PKCE, and issues a session cookie.
 - Serves and edits the wizard graph in Neo4j.
@@ -24,7 +24,7 @@ root:
 
 2. Fill in `server/.env`. See [docs/configuration.md](../docs/configuration.md).
 
-3. Start the gateway:
+3. Start the backend:
 
    ```sh
    pnpm dev:server
@@ -73,8 +73,8 @@ Each connector follows the same pattern:
 
 ## Further reading
 
-- [Architecture](../docs/architecture.md): route table, sign-in flow, how the client uses the
+- [Architecture](../docs/architecture.md): route table, sign-in, how the client uses the
   API, known gotchas.
 - [Data model](../docs/data-model.md): the Neo4j schema and the graph JSON.
 - [Configuration](../docs/configuration.md): every environment variable.
-- [Deployment and operations](../docs/deployment.md): running the gateway in production.
+- [Deployment and operations](../docs/deployment.md): running the backend in production.

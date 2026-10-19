@@ -11,7 +11,7 @@ the site's domain.
 ```mermaid
 flowchart LR
     I["Browser"] -->|HTTPS :443| AP["Apache<br/>TLS, reverse proxy"]
-    AP -->|"/api, /auth, /admin"| G["gateway container<br/>127.0.0.1:3001"]
+    AP -->|"/api, /auth, /admin"| G["backend (gateway container)<br/>127.0.0.1:3001"]
     AP -->|everything else| N["app container<br/>nginx :8080"]
     G --> DB[("neo4j container<br/>127.0.0.1:7687")]
     G --> UV[("uploads_data volume")]
@@ -37,8 +37,8 @@ Apache on the host:
 
 - Terminates TLS with a Let's Encrypt certificate. `certbot.timer` renews it automatically.
 - Redirects port 80 to HTTPS.
-- Sends `/api`, `/auth` and `/admin` to the gateway and everything else to the app container.
-- Sets the `X-Forwarded-Proto: https` header. The gateway needs it: without it, the session
+- Sends `/api`, `/auth` and `/admin` to the backend and everything else to the app container.
+- Sets the `X-Forwarded-Proto: https` header. The backend needs it: without it, the session
   cookie is dropped and nobody can stay signed in.
 
 ## First-time server setup
@@ -168,7 +168,7 @@ Apache on the host:
    docker compose up -d --build
    ```
 
-5. Check the gateway:
+5. Check the backend:
 
    ```sh
    curl -s localhost:3001/healthz
@@ -178,7 +178,7 @@ Apache on the host:
 
 6. Open `https://<domain>` and sign in.
 
-Restarting the gateway signs every user out, because sessions live in memory. Saved progress
+Restarting the backend signs every user out, because sessions live in memory. Saved progress
 is kept.
 
 ## Rolling back
@@ -217,7 +217,7 @@ What the script does:
 2. Dumps the database with `neo4j-admin database dump` in a one-off `neo4j:5` container.
 3. Starts Neo4j again.
 4. Saves the dump as `/var/backups/usccf-neo4j/neo4j-<timestamp>.dump`.
-5. Waits for the gateway's `/healthz` to answer.
+5. Waits for the backend's `/healthz` to answer.
 6. Deletes dumps older than 30 days.
 
 While Neo4j is stopped, the API returns errors. This lasts a few seconds.
@@ -274,7 +274,7 @@ A restore replaces the whole database: content, progress and admins.
    cd ~/USCCF-digital-planning-tool
    ```
 
-2. Stop the gateway and Neo4j:
+2. Stop the backend and Neo4j:
 
    ```sh
    docker compose stop gateway neo4j
@@ -297,13 +297,13 @@ A restore replaces the whole database: content, progress and admins.
      neo4j:5 neo4j-admin database load neo4j --from-path=/backups --overwrite-destination=true
    ```
 
-5. Start Neo4j and the gateway:
+5. Start Neo4j and the backend:
 
    ```sh
    docker compose start neo4j gateway
    ```
 
-6. Check the gateway with `curl -s localhost:3001/healthz`, then sign in and look at the
+6. Check the backend with `curl -s localhost:3001/healthz`, then sign in and look at the
    wizard.
 
 7. Delete the temporary folder:
@@ -387,7 +387,7 @@ Neo4j listens only on the server's localhost. Use an SSH tunnel from your own ma
 Use this when nobody can reach the Admins panel.
 
 1. Add the email to `ADMIN_EMAILS` in `.env`.
-2. Restart the gateway:
+2. Restart the backend:
 
    ```sh
    docker compose up -d gateway
@@ -436,8 +436,6 @@ Observed on staging. Each one is a candidate for a fix.
 - **Backups stay on the same server.** Losing the server's disk loses the database and every
   backup.
 - **Uploaded PDFs are not backed up.**
-- **The disk is 85% full.** Old Docker images and build cache are the usual cause. See
-  [Free disk space](#free-disk-space).
-- **The gateway does not wait for Neo4j.** `depends_on` only orders container start-up. If
+- **The backend does not wait for Neo4j.** `depends_on` only orders container start-up. If
   Neo4j is slow to start, the first requests fail.
-- **Restarts sign everyone out.** Sessions live in the gateway's memory.
+- **Restarts sign everyone out.** Sessions live in the backend's memory.

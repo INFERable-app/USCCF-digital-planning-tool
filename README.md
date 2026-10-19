@@ -15,12 +15,12 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
 | ------------------- | ---------------------------------------------------------------------------------- |
 | `src/`              | The wizard. React 19 and Vite. Entry: `index.html` → `src/main.jsx`.               |
 | `src/admin/`        | The graph editor, built on React Flow. Entry: `admin.html` → `src/admin/main.jsx`. |
-| `server/`           | The API gateway. Express 4 and TypeScript, package `@usccf/api-gateway`.           |
+| `server/`           | The backend. Express 4 and TypeScript, package `@usccf/api-gateway`.               |
 | `docs/`             | Developer docs, the graph seed file, and the legacy editor served by GitHub Pages. |
 | `static/`           | Files served as-is at the site root, such as images and `robots.txt`.              |
 | `scripts/`          | A Neo4j backup script and its systemd service and timer.                           |
 | `Dockerfile`        | Builds the client and serves `dist/` with nginx.                                   |
-| `server/Dockerfile` | Builds and runs the gateway.                                                       |
+| `server/Dockerfile` | Builds and runs the backend.                                                       |
 | `compose.yaml`      | Runs the `app`, `gateway` and `neo4j` containers together.                         |
 
 ## Prerequisites
@@ -67,7 +67,7 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
    This loads `docs/wizardGraph.json`. Run it only against a fresh database. See
    [Seeding](docs/data-model.md#seeding).
 
-6. Start the gateway in one terminal:
+6. Start the backend in one terminal:
 
    ```sh
    pnpm dev:server
@@ -81,13 +81,13 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
    pnpm dev
    ```
 
-   It runs on `http://localhost:5173` and forwards `/auth`, `/api` and `/admin` to the gateway.
+   It runs on `http://localhost:5173` and forwards `/auth`, `/api` and `/admin` to the backend.
 
 8. Open <http://localhost:5173>.
 
 9. Make yourself an admin:
    1. Add your Google email to `ADMIN_EMAILS` in `server/.env`.
-   2. Restart the gateway.
+   2. Restart the backend.
    3. Open **Edit Mode** from the user menu, or go to <http://localhost:5173/admin> for the
       graph editor.
    4. Add other admins permanently in the graph editor's **Admins** panel.
@@ -100,13 +100,13 @@ Root `package.json`:
 | ----------------- | ----------------------------------------------------------------- |
 | `pnpm dev`        | Starts the Vite dev server for the wizard and the graph editor.   |
 | `pnpm dev:host`   | Same, but listens on all interfaces. Use it to test from a phone. |
-| `pnpm dev:server` | Runs the gateway's `dev` script.                                  |
+| `pnpm dev:server` | Runs the backend's `dev` script.                                  |
 | `pnpm build`      | Builds the client for production into `dist/`.                    |
 | `pnpm preview`    | Serves the built `dist/` locally.                                 |
 | `pnpm lint`       | Runs `prettier --check .`, then `eslint .`.                       |
 | `pnpm format`     | Runs `prettier --write .`.                                        |
 
-Gateway scripts. Run them with `pnpm --filter @usccf/api-gateway <script>`:
+Backend scripts. Run them with `pnpm --filter @usccf/api-gateway <script>`:
 
 | Script       | Does                                      |
 | ------------ | ----------------------------------------- |
@@ -122,18 +122,18 @@ Run `pnpm lint` before opening a PR.
 ## Conventions
 
 - Use pnpm only.
-- When you add a new top-level route prefix to the gateway, also add it to the `server.proxy`
+- When you add a new top-level route prefix to the backend, also add it to the `server.proxy`
   map in `vite.config.js`. The dev server does not forward unlisted prefixes.
 - The live Neo4j database is the source of truth for wizard content. `docs/wizardGraph.json`
   is seed data only and is usually out of date.
 
 ## Documentation
 
-- [Architecture](docs/architecture.md): how the client, gateway, Neo4j and Google sign-in fit
+- [Architecture](docs/architecture.md): how the client, backend, Neo4j and Google sign-in fit
   together, the request flows, and known gotchas.
 - [Data model](docs/data-model.md): the Neo4j schema, the wizard graph JSON, node and edge
   fields, results resolvers, resources and user progress.
 - [Configuration](docs/configuration.md): every environment variable and hard-coded setting.
 - [Deployment and operations](docs/deployment.md): server setup, deploying updates, backups,
   restores and day-to-day tasks.
-- [Gateway README](server/README.md): a short tour of the `server/` package.
+- [Backend README](server/README.md): a short tour of the `server/` package.

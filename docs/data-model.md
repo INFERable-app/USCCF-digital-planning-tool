@@ -2,15 +2,14 @@
 
 All persistent data lives in one Neo4j database:
 
-- the wizard's content graph
+- the tool's content graph
 - each user's saved progress
 - the admin list
 
 Uploaded PDFs are the only data outside Neo4j. They are files in `UPLOADS_DIR`. See
 [architecture.md](architecture.md#pdf-uploads).
 
-The wizard graph exists in three shapes. Most bugs in this area come from converting between
-them.
+The wizard graph exists in three shapes.
 
 1. **Neo4j storage:** `:WizardNode` nodes joined by `:OPTION` relationships.
 2. **API JSON:** the `WizardGraph` type in `server/src/connectors/graph/types.ts`.
@@ -88,20 +87,19 @@ The mapping code is `nodeToProps` and `edgeToRelProps` in
 - **Re-targeting an edge recreates it.** Neo4j can't move a relationship's end node.
   `updateEdge` deletes the relationship and creates a new one with the same properties and
   `order`.
-- **`startNodeId` is always `"welcome"`.** It isn't stored. `getWizardGraph` hard-codes it.
+- **`startNodeId` is hardcoded as `"welcome"` in `getWizardGraph`.**
 
 ## Wizard graph JSON
 
 ```json
 {
-	"startNodeId": "welcome",
-	"nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
-	"edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
+ "startNodeId": "welcome",
+ "nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
+ "edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
 }
 ```
 
-A **node** is one screen. An **edge** is one option or button on a screen. It points to the
-screen it leads to.
+A **node** maps to one screen. An **edge** is one option or button on a screen that targets another screen.
 
 ### Fields on every node
 
@@ -187,11 +185,11 @@ A `results` node has an ordered `resolvers` array. `src/graph/resolveResult.js` 
 
 ```json
 {
-	"when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
-	"recommendation": "Lead sentence, shown highlighted.",
-	"bodyText": "Supporting text.",
-	"resources": [],
-	"footer": "Closing line."
+ "when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
+ "recommendation": "Lead sentence, shown highlighted.",
+ "bodyText": "Supporting text.",
+ "resources": [],
+ "footer": "Closing line."
 }
 ```
 
@@ -243,9 +241,9 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 
 ```json
 {
-	"currentNodeId": "role",
-	"answers": { "category": "employer" },
-	"history": ["welcome", "category"]
+ "currentNodeId": "role",
+ "answers": { "category": "employer" },
+ "history": ["welcome", "category"]
 }
 ```
 

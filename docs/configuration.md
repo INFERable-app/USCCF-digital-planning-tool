@@ -1,28 +1,26 @@
 # Configuration
 
-All runtime configuration belongs to the gateway. The browser bundle reads no environment
+All runtime configuration belongs to the backend. The browser bundle reads no environment
 variables. The client calls same-origin paths such as `/auth` and `/api` and gets everything
-else from the gateway.
+else from the backend.
 
 ## Where configuration comes from
 
 | Source         | Used when                                   | How it is read                                                                               |
 | -------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `server/.env`  | Running the gateway or its scripts locally. | `dotenv` loads `.env` from the working directory, which is `server/` under `pnpm --filter`.  |
+| `server/.env`  | Running the backend or its scripts locally. | `dotenv` loads `.env` from the working directory, which is `server/` under `pnpm --filter`.  |
 | Root `.env`    | Running `docker compose`.                   | Compose fills the `${VAR}` placeholders in `compose.yaml` and passes them to the containers. |
 | `compose.yaml` | Running `docker compose`.                   | Some values are fixed in the file instead of read from `.env`. They are noted below.         |
 
-Templates: `server/.env.example` for the local gateway, `.env.example` for compose.
+Templates: `server/.env.example` for the local backend, `.env.example` for compose.
 
 `server/src/config.ts` validates `process.env` with zod at startup. **If any variable is
-missing or invalid, the gateway prints the errors and exits.**
+missing or invalid, the backend prints the errors and exits.**
 
 > The seed script loads the same config. It needs a complete, valid `server/.env`, including
 > the Google and session values, even though it only talks to Neo4j.
 
-## Gateway environment variables
-
-"Default" is the value the code uses when the variable is unset.
+## Backend environment variables
 
 | Variable               | Required | Default                               |
 | ---------------------- | -------- | ------------------------------------- |
@@ -42,7 +40,7 @@ missing or invalid, the gateway prints the errors and exits.**
 
 ### `PORT`
 
-The port the gateway listens on. The Vite proxy and `compose.yaml` both expect 3001.
+The port the backend listens on. The Vite proxy and `compose.yaml` both expect 3001.
 
 ### `SESSION_SECRET`
 
@@ -75,7 +73,7 @@ The Neo4j Bolt URL. `compose.yaml` fixes it to `bolt://neo4j:7687`.
 
 ### `NEO4J_USER` and `NEO4J_PASSWORD`
 
-- The Neo4j credentials. Treat the password as required.
+- The Neo4j credentials. Technically a password is not required, but in practice you really should set one.
 - Under compose, they also initialise the database through `NEO4J_AUTH`. Changing them later
   does not change the password of an existing database.
 
@@ -97,12 +95,14 @@ sets `production`.
 
 ### `ADMIN_EMAILS`
 
-- Comma-separated emails that are always admins. Case does not matter.
-- A break-glass list. Day-to-day admins are managed in the graph editor and stored in Neo4j.
+- Comma-separated list of email addresses used by admins. Case does not matter.
+- Should be removed from .env after the initial permanent admins are set up. These emails are
+  never written to Neo4j, so first add each one by hand in the graph editor's **Admins** panel,
+  or that person loses admin access on the next restart.
 
 ### `UPLOADS_DIR`
 
-- The directory for uploaded PDFs. The gateway creates it at startup if it is missing.
+- The directory for uploaded PDFs. The backend creates it at startup if it is missing.
 - Relative paths resolve against the working directory.
 - `compose.yaml` sets `./uploads`. That path is the `uploads_data` volume, mounted at
   `/app/server/uploads`.
@@ -119,7 +119,7 @@ These settings have no environment variable. Change them in the listed file.
 
 | Setting                    | Value                                                                                       | Where                                                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Dev proxy to the gateway   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                               | `vite.config.js`                                                        |
+| Dev proxy to the backend   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                               | `vite.config.js`                                                        |
 | Dev hostnames Vite accepts | The `allowedHosts` list.                                                                    | `vite.config.js`                                                        |
 | Session lifetime           | 7 days.                                                                                     | `server/src/app.ts`                                                     |
 | Session cookie             | `connect.sid`, httpOnly, `sameSite: lax`.                                                   | `server/src/app.ts`                                                     |
@@ -128,7 +128,7 @@ These settings have no environment variable. Change them in the listed file.
 | OIDC scopes                | `openid email profile`.                                                                     | `server/src/connectors/oidc/routes.ts`                                  |
 | Upload limits              | `application/pdf` only, 25 MB.                                                              | `server/src/connectors/resources/routes.ts`                             |
 | Start screen id            | `welcome`.                                                                                  | `neo4jRepository.ts`, `stubRepository.ts`, `connectors/graph/routes.ts` |
-| Published ports            | app on `8080`; gateway on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
+| Published ports            | app on `8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
 | Neo4j memory               | 32 MB page cache, 96 MB heap.                                                               | `compose.yaml`                                                          |
 
 ## Google OAuth client
@@ -139,6 +139,6 @@ These settings have no environment variable. Change them in the listed file.
    environment's `GOOGLE_REDIRECT_URI` exactly:
    - Local: `http://localhost:5173/auth/callback`
    - Deployed: `https://<your-domain>/auth/callback`
-4. Leave **Authorized JavaScript origins** empty. The gateway runs the flow on the server, so
+4. Leave **Authorized JavaScript origins** empty. The backend runs the flow on the server, so
    they are not needed.
 5. Put the client id in `GOOGLE_CLIENT_ID` and the secret in `GOOGLE_CLIENT_SECRET`.
