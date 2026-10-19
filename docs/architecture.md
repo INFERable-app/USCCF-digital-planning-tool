@@ -332,11 +332,6 @@ resource uses them.
 
 ## Peripheral and legacy pieces
 
-- **`docs/index.html`** is the original standalone graph editor, built on Mermaid. GitHub
-  Pages still publishes it from `main:/docs`. It is not connected to Neo4j.
-- **`.github/workflows/update-wizard-graph.yml`** is a manual workflow the legacy editor used
-  to commit a new `docs/wizardGraph.json`. Nothing reads that file at runtime, so the workflow
-  no longer affects the live app.
 - **`.github/workflows/add-to-project.yml`** adds new issues to the INFERable org project
   board.
 - **`server/src/connectors/xapi/`** is a placeholder for a future xAPI learning-analytics
@@ -356,9 +351,6 @@ resource uses them.
   `Missing PKCE session` on `/auth/callback`. Kill the stale process.
 - **The start node is hard-coded.** `neo4jRepository.getWizardGraph` always returns
   `welcome` as `startNodeId`. The per-node delete route refuses to delete it.
-- **Leftover Google client config.** `VITE_GOOGLE_CLIENT_ID` and the `@react-oauth/google`
-  dependency come from the old client-side sign-in. The Dockerfile and `compose.yaml` still
-  pass the variable. Nothing in `src/` uses either.
 - **Some node fields do nothing.** `layout` and `challengeBar` are stored and editable, but
   no component reads them. `checkboxSurvey` ignores `submitLabel`. See
   [data-model.md](data-model.md#quirks).

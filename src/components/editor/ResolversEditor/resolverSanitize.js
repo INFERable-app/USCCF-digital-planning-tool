@@ -1,5 +1,5 @@
-// Ported from the legacy docs/index.html editor verbatim (isCompleteResource,
-// missingResourceFieldLabel, sanitizeNodesForDeploy) — single source of truth for
+// Resource completeness checks (isCompleteResource, missingResourceFieldLabel,
+// sanitizeNodesForDeploy) — single source of truth for
 // "is this resource resolvable," shared by the live in-editor warning and the
 // Save-time filter, so the two never quietly disagree about what counts as complete.
 

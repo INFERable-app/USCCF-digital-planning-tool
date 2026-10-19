@@ -107,29 +107,23 @@ sets `production`.
 - `compose.yaml` sets `./uploads`. That path is the `uploads_data` volume, mounted at
   `/app/server/uploads`.
 
-### Unused build variable: `VITE_GOOGLE_CLIENT_ID`
-
-The `Dockerfile`, `compose.yaml` and `.env.example` still pass `VITE_GOOGLE_CLIENT_ID` as a
-build argument. Nothing in `src/` reads it. It is left over from client-side Google sign-in.
-Leaving it empty is fine.
-
 ## Values fixed in code
 
 These settings have no environment variable. Change them in the listed file.
 
-| Setting                    | Value                                                                                       | Where                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Dev proxy to the backend   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                               | `vite.config.js`                                                        |
-| Dev hostnames Vite accepts | The `allowedHosts` list.                                                                    | `vite.config.js`                                                        |
-| Session lifetime           | 7 days.                                                                                     | `server/src/app.ts`                                                     |
-| Session cookie             | `connect.sid`, httpOnly, `sameSite: lax`.                                                   | `server/src/app.ts`                                                     |
-| Session store              | In memory.                                                                                  | `server/src/app.ts`                                                     |
-| OIDC issuer                | `https://accounts.google.com`.                                                              | `server/src/connectors/oidc/client.ts`                                  |
-| OIDC scopes                | `openid email profile`.                                                                     | `server/src/connectors/oidc/routes.ts`                                  |
-| Upload limits              | `application/pdf` only, 25 MB.                                                              | `server/src/connectors/resources/routes.ts`                             |
-| Start screen id            | `welcome`.                                                                                  | `neo4jRepository.ts`, `stubRepository.ts`, `connectors/graph/routes.ts` |
-| Published ports            | app on `8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
-| Neo4j memory               | 32 MB page cache, 96 MB heap.                                                               | `compose.yaml`                                                          |
+| Setting                    | Value                                                                                                 | Where                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Dev proxy to the backend   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                                         | `vite.config.js`                                                        |
+| Dev hostnames Vite accepts | The `allowedHosts` list.                                                                              | `vite.config.js`                                                        |
+| Session lifetime           | 7 days.                                                                                               | `server/src/app.ts`                                                     |
+| Session cookie             | `connect.sid`, httpOnly, `sameSite: lax`.                                                             | `server/src/app.ts`                                                     |
+| Session store              | In memory.                                                                                            | `server/src/app.ts`                                                     |
+| OIDC issuer                | `https://accounts.google.com`.                                                                        | `server/src/connectors/oidc/client.ts`                                  |
+| OIDC scopes                | `openid email profile`.                                                                               | `server/src/connectors/oidc/routes.ts`                                  |
+| Upload limits              | `application/pdf` only, 25 MB.                                                                        | `server/src/connectors/resources/routes.ts`                             |
+| Start screen id            | `welcome`.                                                                                            | `neo4jRepository.ts`, `stubRepository.ts`, `connectors/graph/routes.ts` |
+| Published ports            | app on `127.0.0.1:8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
+| Neo4j memory               | 32 MB page cache, 96 MB heap.                                                                         | `compose.yaml`                                                          |
 
 ## Google OAuth client
 

@@ -2,13 +2,11 @@ import './SaveModal.css';
 import { useState } from 'react';
 
 export default function SaveModal({ onClose, onConfirm }) {
-	const [description, setDescription] = useState('');
 	const [saving, setSaving] = useState(false);
 	const [message, setMessage] = useState(null);
 
 	async function handleSubmit(e) {
 		e.preventDefault();
-		if (!description.trim()) return;
 		setSaving(true);
 		setMessage(null);
 		try {
@@ -38,16 +36,6 @@ export default function SaveModal({ onClose, onConfirm }) {
 				</div>
 
 				<form onSubmit={handleSubmit}>
-					<label htmlFor="save-modal-description">Change Description *</label>
-					<textarea
-						id="save-modal-description"
-						rows={3}
-						required
-						placeholder="Describe the changes you made to the wizard graph..."
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-					/>
-
 					{message && (
 						<div className={`save-modal__message save-modal__message--${message.type}`}>
 							{message.text}
@@ -58,11 +46,7 @@ export default function SaveModal({ onClose, onConfirm }) {
 						<button type="button" className="save-modal__cancel" onClick={onClose}>
 							Cancel
 						</button>
-						<button
-							type="submit"
-							className="save-modal__submit"
-							disabled={saving || !description.trim()}
-						>
+						<button type="submit" className="save-modal__submit" disabled={saving}>
 							{saving ? 'Saving...' : 'Save to Database'}
 						</button>
 					</div>

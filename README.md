@@ -16,7 +16,7 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
 | `src/`              | The wizard. React 19 and Vite. Entry: `index.html` → `src/main.jsx`.               |
 | `src/admin/`        | The graph editor, built on React Flow. Entry: `admin.html` → `src/admin/main.jsx`. |
 | `server/`           | The backend. Express 4 and TypeScript, package `@usccf/api-gateway`.               |
-| `docs/`             | Developer docs, the graph seed file, and the legacy editor served by GitHub Pages. |
+| `docs/`             | Developer docs and the graph seed file.                                            |
 | `static/`           | Files served as-is at the site root, such as images and `robots.txt`.              |
 | `scripts/`          | A Neo4j backup script and its systemd service and timer.                           |
 | `Dockerfile`        | Builds the client and serves `dist/` with nginx.                                   |
