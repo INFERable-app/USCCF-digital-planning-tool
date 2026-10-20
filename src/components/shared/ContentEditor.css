@@ -1,0 +1,205 @@
+/* Inline editors for the Resources, FAQ and Glossary overlays (Edit Mode only) */
+
+.content-editor__status {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--color-navy-midnight-alpha-85);
+}
+
+.content-editor__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.content-editor__card {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--surface-panel);
+}
+
+.content-editor__handle {
+  flex-shrink: 0;
+  padding-top: 6px;
+  color: var(--color-navy-midnight-alpha-50);
+  cursor: grab;
+}
+
+.content-editor__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.content-editor__fields input,
+.content-editor__fields textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--surface-page);
+  resize: vertical;
+}
+
+.content-editor__field-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-navy-midnight-alpha-85);
+}
+
+.content-editor__remove {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 16px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.content-editor__add {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.content-editor__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.content-editor__category {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: var(--color-navy-midnight-alpha-85);
+  cursor: pointer;
+}
+
+.content-editor__category input {
+  margin: 0;
+}
+
+.content-editor__warning {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: var(--color-orange-burnt);
+}
+
+.content-editor__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 14px;
+  margin-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.content-editor__error {
+  flex-basis: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  color: var(--color-red-crimson);
+}
+
+.content-editor__views {
+  display: flex;
+  border: 1px solid var(--accent-primary);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.content-editor__view {
+  padding: 7px 14px;
+  background: transparent;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.content-editor__view + .content-editor__view {
+  border-left: 1px solid var(--accent-primary);
+}
+
+.content-editor__view[aria-pressed='true'] {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  font-weight: 700;
+}
+
+.content-editor__btn:focus-visible {
+  outline: 2px solid var(--color-blue-electric);
+  outline-offset: 2px;
+}
+
+/* Drawn inside the button, since the group clips anything outside its rounded border */
+.content-editor__view:focus-visible {
+  outline: 2px solid var(--color-blue-electric);
+  outline-offset: -4px;
+}
+
+.content-editor__actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.content-editor__btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.content-editor__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.content-editor__btn--save {
+  font-weight: 700;
+  background: var(--color-green-hunter);
+  color: var(--text-inverse);
+  border-color: var(--color-green-hunter);
+}
+
+.content-editor__btn--save:hover:not(:disabled) {
+  background: var(--color-green-forest);
+}

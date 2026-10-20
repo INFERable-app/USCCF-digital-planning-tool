@@ -8,6 +8,7 @@ import graphRouter from './connectors/graph/routes.js';
 import progressRouter from './connectors/progress/routes.js';
 import resourcesRouter from './connectors/resources/routes.js';
 import adminsRouter from './connectors/admins/routes.js';
+import contentRouter from './connectors/content/routes.js';
 import { isAdminEmail } from './connectors/admins/isAdminEmail.js';
 
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api', graphRouter);
 app.use('/api', progressRouter);
 app.use('/api', resourcesRouter);
 app.use('/api', adminsRouter);
+app.use('/api', contentRouter);
 
 app.get('/admin', async (req, res) => {
   if (!req.session.user) {

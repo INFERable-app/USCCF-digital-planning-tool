@@ -117,6 +117,14 @@
   margin-bottom: 0.5rem;
 }
 
+.resolver-box__resource-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
 .resolver-box__resource-handle {
   flex-shrink: 0;
   display: flex;

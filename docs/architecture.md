@@ -135,6 +135,8 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 | `GET`    | `/api/admins`                 | `requireAdmin` | `{ admins, bootstrap }`: Neo4j admins and the `ADMIN_EMAILS` list.      |
 | `POST`   | `/api/admins`                 | `requireAdmin` | Adds an admin from body `{ email }`.                                    |
 | `DELETE` | `/api/admins/:email`          | `requireAdmin` | Removes an admin. Refuses your own email and the last admin.            |
+| `GET`    | `/api/content/:key`           | `requireAuth`  | `{ items }` for `resources`, `faq` or `glossary`. 404 if missing.       |
+| `PUT`    | `/api/content/:key`           | `requireAdmin` | Replaces a collection from body `{ items }`. Invalid items return 400.  |
 | `GET`    | `/admin`                      | session        | The gate for the graph editor. See below.                               |
 
 ## Sign-in
@@ -257,13 +259,14 @@ nothing.
 
 ### Content outside the graph
 
-The Resource Library, FAQ and Glossary overlays read hard-coded data:
-
-- `src/data/staticResources.js`
-- `src/data/faqData.js`
-- `src/data/glossaryData.js`
-
-Changing them needs a code change and a deploy.
+The Resource Library, FAQ and Glossary overlays load their content from `:Content` nodes
+through `GET /api/content/:key` (`src/hooks/useContent.js`), the first time each overlay
+opens. In edit mode each overlay shows an inline editor with its own Save and Cancel buttons.
+Save sends `PUT /api/content/:key` with the whole list. It is separate from the edit-mode
+bar's Save, which only covers the graph. Admins also get an "Edit mode" switch in each
+panel's header, which turns the global edit mode on or off without closing the panel, and an
+Edit / Preview choice that shows the unsaved draft as visitors will see it. Two admins saving the same collection overwrite
+each other; the last save wins.
 
 ## Editing content
 

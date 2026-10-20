@@ -48,6 +48,31 @@ export function missingResourceFieldLabel(res) {
   return '';
 }
 
+// Drops incomplete resources and keeps only the fields each resource type uses.
+export function sanitizeResources(resources) {
+  return (resources || [])
+    .map((res) => (res.type === 'pdf' ? reconcilePdfPageAnchor(res) : res))
+    .filter(isCompleteResource)
+    .map((res) => {
+      const cleanRes = { type: res.type, label: (res.label || '').trim() };
+      if (res.type === 'pdf') {
+        if (res.wholeDocument) {
+          cleanRes.wholeDocument = true;
+        } else {
+          cleanRes.pageStart = res.pageStart;
+          if (res.pageEnd) cleanRes.pageEnd = res.pageEnd;
+        }
+        if (res.url && res.url.trim()) cleanRes.url = res.url.trim();
+      } else if (res.type === 'link') {
+        cleanRes.url = res.url.trim();
+      } else if (res.type === 'prompt') {
+        cleanRes.text = (res.text || '').trim();
+      }
+      if (res.description && res.description.trim()) cleanRes.description = res.description.trim();
+      return cleanRes;
+    });
+}
+
 // Applied only to the outgoing Save payload — never mutates live editor state, so
 // half-filled resolver rows stay visible/editable in the live editor.
 export function sanitizeResolvers(resolvers) {
@@ -72,28 +97,7 @@ export function sanitizeResolvers(resolvers) {
       clean.cta = { label: r.cta.label, url: r.cta.url };
     }
 
-    const resources = (r.resources || [])
-      .map((res) => (res.type === 'pdf' ? reconcilePdfPageAnchor(res) : res))
-      .filter(isCompleteResource)
-      .map((res) => {
-        const cleanRes = { type: res.type, label: (res.label || '').trim() };
-        if (res.type === 'pdf') {
-          if (res.wholeDocument) {
-            cleanRes.wholeDocument = true;
-          } else {
-            cleanRes.pageStart = res.pageStart;
-            if (res.pageEnd) cleanRes.pageEnd = res.pageEnd;
-          }
-          if (res.url && res.url.trim()) cleanRes.url = res.url.trim();
-        } else if (res.type === 'link') {
-          cleanRes.url = res.url.trim();
-        } else if (res.type === 'prompt') {
-          cleanRes.text = (res.text || '').trim();
-        }
-        if (res.description && res.description.trim())
-          cleanRes.description = res.description.trim();
-        return cleanRes;
-      });
+    const resources = sanitizeResources(r.resources);
     if (resources.length) clean.resources = resources;
 
     return clean;

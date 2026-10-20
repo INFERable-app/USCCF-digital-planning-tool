@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { GripVertical } from 'lucide-react';
 import ResourceRow from '../editor/ResolversEditor/ResourceRow.jsx';
 
-export default function ResourceListEditor({ resources = [], onChange }) {
+export default function ResourceListEditor({ resources = [], onChange, renderRowExtras }) {
   const [dragIndex, setDragIndex] = useState(null);
 
   function updateResourceAt(index, patch) {
@@ -11,6 +11,8 @@ export default function ResourceListEditor({ resources = [], onChange }) {
     if ('type' in patch) {
       const current = resources[index];
       const base = { _key: current._key, type: patch.type, label: current.label || '' };
+      if (current.id) base.id = current.id;
+      if (current.categories) base.categories = current.categories;
       nextResources[index] =
         patch.type === 'prompt'
           ? { ...base, text: current.text || '' }
@@ -64,11 +66,22 @@ export default function ResourceListEditor({ resources = [], onChange }) {
           >
             <GripVertical size={13} />
           </span>
-          <ResourceRow
-            resource={res}
-            onChange={(patch) => updateResourceAt(i, patch)}
-            onRemove={() => removeResourceAt(i)}
-          />
+          {renderRowExtras ? (
+            <div className="resolver-box__resource-body">
+              <ResourceRow
+                resource={res}
+                onChange={(patch) => updateResourceAt(i, patch)}
+                onRemove={() => removeResourceAt(i)}
+              />
+              {renderRowExtras(res, (patch) => updateResourceAt(i, patch))}
+            </div>
+          ) : (
+            <ResourceRow
+              resource={res}
+              onChange={(patch) => updateResourceAt(i, patch)}
+              onRemove={() => removeResourceAt(i)}
+            />
+          )}
         </div>
       ))}
       <button type="button" className="resolver-box__add-link" onClick={addResource}>

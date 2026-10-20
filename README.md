@@ -107,12 +107,12 @@ Root `package.json`:
 
 Backend scripts. Run them with `pnpm --filter @usccf/api-gateway <script>`:
 
-| Script         | Does                                                             |
-| -------------- | ---------------------------------------------------------------- |
-| `dev`          | Runs `tsx watch src/server.ts`.                                  |
-| `build`        | Compiles with `tsc` into `server/dist/`.                         |
-| `start`        | Runs `node dist/server.js`.                                      |
-| `bootstrap:db` | Creates the Neo4j constraints and the welcome screen if missing. |
+| Script         | Does                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| `dev`          | Runs `tsx watch src/server.ts`.                                                    |
+| `build`        | Compiles with `tsc` into `server/dist/`.                                           |
+| `start`        | Runs `node dist/server.js`.                                                        |
+| `bootstrap:db` | Creates the Neo4j constraints, the welcome screen and the help content if missing. |
 
 ## Checks
 

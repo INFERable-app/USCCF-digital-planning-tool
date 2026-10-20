@@ -14,7 +14,7 @@
 - Dev (server): `pnpm dev:server` (Express gateway, `tsx watch`)
 - Build: `pnpm build` (client), `pnpm --filter @usccf/api-gateway build` (server, `tsc`)
 - Lint: `pnpm lint` (`prettier --check . && eslint .`), format: `pnpm format`
-- Bootstrap an empty Neo4j (constraints + welcome screen, run manually): `pnpm --filter @usccf/api-gateway bootstrap:db`
+- Bootstrap an empty Neo4j (constraints + welcome screen + help content, run manually): `pnpm --filter @usccf/api-gateway bootstrap:db`
 - No root test script exists. Playwright is configured (`playwright.config.js`, `testMatch: '**/*.e2e.{ts,js}'`) but no `.e2e.*` test files exist yet — there is currently no automated test suite to run before considering a task complete; rely on `pnpm lint` plus manual verification of the running app instead.
 
 ## Anti-Regression & Surgical Style Rules

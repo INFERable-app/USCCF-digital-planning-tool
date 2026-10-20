@@ -28,9 +28,10 @@ flowchart LR
     WN1 -- ":OPTION<br/>id, label, order,<br/>storeKey, value, disabled" --> WN2
     U[":User<br/>sub, progress, updatedAt"]
     A[":Admin<br/>email, addedBy, addedAt"]
+    C[":Content<br/>key, itemsJson, updatedAt"]
 ```
 
-`:User` and `:Admin` nodes stand alone. They have no relationships.
+`:User`, `:Admin` and `:Content` nodes stand alone. They have no relationships.
 
 **`:WizardNode`**
 
@@ -61,10 +62,18 @@ flowchart LR
 - `addedBy` is the email of the admin who added it.
 - `addedAt` is a datetime.
 
-The bootstrap script creates two uniqueness constraints with `IF NOT EXISTS`:
+**`:Content`**
+
+- Written by `connectors/content/neo4jContentRepository.ts`.
+- `key` is `resources`, `faq` or `glossary`. There is one node per key.
+- `itemsJson` is the whole list as a JSON string. A save replaces it.
+- `updatedAt` is a datetime.
+
+The bootstrap script creates three uniqueness constraints with `IF NOT EXISTS`:
 
 - `:WizardNode(id)`
 - `:Admin(email)`
+- `:Content(key)`
 
 `:User.sub` has no constraint. Progress writes use `MERGE` on it.
 
@@ -259,6 +268,24 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 - Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
 - The API refuses to remove the caller's own email or the last stored admin.
 
+## Help content
+
+The Resource Library, FAQ and Glossary are `:Content` nodes. `PUT /api/content/:key`
+validates each list with zod and strips unknown fields, so the editors' `_key` is never
+stored. Item shapes:
+
+- **resources:** `{ id, type, label, description?, url?, text?, pageStart?, pageEnd?,
+wholeDocument?, categories }`. `type` is `link`, `pdf`, `reference` or `prompt`, as for
+  resolver resources. `categories` is a non-empty list drawn from `start`, `demand`, `skills`,
+  `providers`, `tracking` and `templates`; these six are fixed in `ResourceLibraryOverlay.jsx`.
+- **faq:** `{ id, question, intro, bullets?, outro? }`. `**bold**` in `intro` and `outro`
+  renders as bold.
+- **glossary:** `{ term, definition }`, shown in list order.
+
+The resource editor reuses `ResourceListEditor` and cleans each resource with
+`sanitizeResources`, the same function `sanitizeResolvers` uses. Incomplete resources, and
+resources without a category, are dropped on save.
+
 ## Starting from an empty database
 
 A new environment starts empty. The admin setting it up runs the bootstrap script once by
@@ -270,13 +297,15 @@ pnpm --filter @usccf/api-gateway bootstrap:db
 
 In production: `docker compose exec gateway node dist/seed/bootstrap.js`.
 
-`server/src/seed/bootstrap.ts` does two things:
+`server/src/seed/bootstrap.ts` does three things:
 
-1. Creates the two uniqueness constraints.
+1. Creates the three uniqueness constraints.
 2. Creates a `welcome` node with placeholder text if none exists. It has no buttons.
+3. Creates the `resources`, `faq` and `glossary` `:Content` nodes from
+   `server/src/content/defaults.ts` if they don't exist.
 
-It never changes existing nodes or edges, so running it again, or against a database with real
-content, is safe. Admins then build the rest of the wizard in `/admin`.
+It never changes existing nodes, edges or content, so running it again, or against a database
+with real content, is safe. Admins then build the rest of the wizard in `/admin`.
 
 `PUT /api/graph` rejects a graph that has no `welcome` node, so the start screen cannot be
 removed through a whole-graph save.

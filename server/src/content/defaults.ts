@@ -182,3 +182,113 @@ export const staticResources = [
     categories: ['templates']
   }
 ];
+
+export const faqItems = [
+  {
+    id: 'what-is-the-tool',
+    question: 'What is the Digital Transformation Planning Tool?',
+    intro:
+      'The Digital Transformation Planning Tool is a decision-support application for workforce intermediaries. It helps you quickly identify the next best actions for aligning employers, training providers, and workforce partners around shared skill and talent needs. The tool provides actionable recommendations based on your current workforce challenge.'
+  },
+  {
+    id: 'what-recommendations',
+    question: 'What kinds of recommendations will I receive?',
+    intro: 'The tool provides guidance such as:',
+    bullets: [
+      'How to translate employer needs into skill requirements',
+      'How to prioritize critical skills across employer collaboratives',
+      'How to align training programs with workforce demand'
+    ],
+    outro: 'Each recommendation is designed to move your initiative forward.'
+  },
+  {
+    id: 'templates-and-resources',
+    question: 'Does the tool provide templates and resources?',
+    intro:
+      'Yes. Along with recommendations, the tool gives you **direct access to supporting resources**, including:',
+    bullets: [
+      'Templates for skills mapping and job description alignment',
+      'Employer engagement and convening guides',
+      'Training provider mapping tools',
+      'Sample frameworks and checklists'
+    ],
+    outro: 'These resources are meant to help you take action without starting from scratch.'
+  },
+  {
+    id: 'multiple-initiatives',
+    question: 'Can I use this tool for multiple workforce initiatives?',
+    intro: 'Yes. The tool is designed to support a range of activities, including:',
+    bullets: [
+      'Aligning training with industry needs',
+      'Aggregating employer skill requirements',
+      'Building talent pipelines',
+      'Sharing demand signals with partners',
+      'Identifying training gaps and opportunities'
+    ],
+    outro: 'You can return at any time and select a different activity.'
+  },
+  {
+    id: 'technical-users',
+    question: 'Is the tool only for technical users?',
+    intro:
+      'No. The tool is designed for **workforce practitioners, intermediaries, and partners with varying levels of technical expertise**. Guidance is written in plain language.'
+  }
+];
+
+export const glossaryTerms = [
+  {
+    term: 'Workforce Intermediary',
+    definition:
+      'An organization that connects employers, education providers, and workforce programs to align training with job demand and help build talent pipelines.'
+  },
+  {
+    term: 'Employer Collaborative',
+    definition:
+      'A group of employers in the same industry or region that work together to identify shared workforce needs and coordinate solutions.'
+  },
+  {
+    term: 'Skills-Based Hiring',
+    definition:
+      'A hiring approach that focuses on the skills a person can demonstrate rather than only degrees, job titles, or years of experience.'
+  },
+  {
+    term: 'Skills Taxonomy',
+    definition:
+      'A structured system that organizes and defines skills in a consistent way so employers, educators, and workforce partners use the same language.'
+  },
+  {
+    term: 'Competency Framework',
+    definition:
+      'A structured description of what someone needs to know and be able to do in a job or role.'
+  },
+  {
+    term: 'Career Pathway',
+    definition:
+      'A sequence of education, training, and jobs that lead to advancement in a specific occupation or industry.'
+  },
+  {
+    term: 'Talent Pipeline',
+    definition:
+      'A system for developing and tracking individuals as they move through training and into employment.'
+  },
+  {
+    term: 'Training Alignment',
+    definition:
+      'The process of matching education and training programs to the skills employers need.'
+  },
+  {
+    term: 'Labor Market Demand Signal',
+    definition:
+      'Information from employers that shows what jobs, skills, and qualifications are currently needed.'
+  },
+  {
+    term: 'Occupational Framework',
+    definition:
+      'A standardized way of grouping and describing jobs based on similar skills and responsibilities (e.g., O*NET).'
+  },
+  {
+    term: 'Labor Market Information (LMI)',
+    definition:
+      'Data about jobs, wages, industries, and employment trends used to understand workforce demand.'
+  }
+];

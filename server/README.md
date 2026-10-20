@@ -37,12 +37,12 @@ root:
 Run these with `pnpm --filter @usccf/api-gateway <script>` from the root, or `pnpm <script>`
 from inside `server/`.
 
-| Script         | Does                                                             |
-| -------------- | ---------------------------------------------------------------- |
-| `dev`          | Runs `src/server.ts` with `tsx watch`.                           |
-| `build`        | Compiles to `dist/` with `tsc`.                                  |
-| `start`        | Runs the compiled `dist/server.js`.                              |
-| `bootstrap:db` | Creates the Neo4j constraints and the welcome screen if missing. |
+| Script         | Does                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| `dev`          | Runs `src/server.ts` with `tsx watch`.                                             |
+| `build`        | Compiles to `dist/` with `tsc`.                                                    |
+| `start`        | Runs the compiled `dist/server.js`.                                                |
+| `bootstrap:db` | Creates the Neo4j constraints, the welcome screen and the help content if missing. |
 
 ## Source layout
 
@@ -59,9 +59,11 @@ src/
 │  ├─ progress/           /api/progress
 │  ├─ resources/          /api/resources/upload, /api/resources/files
 │  ├─ admins/             /api/admins, isAdminEmail()
+│  ├─ content/            /api/content (Resource Library, FAQ, Glossary)
 │  ├─ neo4j/driver.ts     shared Neo4j driver
 │  └─ xapi/               placeholder for a future integration; README only
-├─ seed/bootstrap.ts      manual bootstrap: constraints and welcome screen
+├─ content/defaults.ts    initial help content, used only by the bootstrap
+├─ seed/bootstrap.ts      manual bootstrap: constraints, welcome screen, help content
 └─ types/session.d.ts     express-session typings: user, pkce, returnTo
 ```
 
