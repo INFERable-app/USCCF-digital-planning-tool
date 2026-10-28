@@ -1,5 +1,5 @@
 import './PreviousAnswerHeading.css';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
@@ -24,16 +24,6 @@ export default function PreviousAnswerHeading({ label }) {
     [editMode, edgeId, nodes, edges, startNodeId]
   );
 
-  // Remounts the field when the label changes elsewhere (e.g. the sidebar), not on its own typing
-  const lastCommitted = useRef(label);
-  const [fieldKey, setFieldKey] = useState(0);
-  useEffect(() => {
-    if (label !== lastCommitted.current) {
-      lastCommitted.current = label;
-      setFieldKey((k) => k + 1);
-    }
-  }, [label]);
-
   if (!label) return null;
 
   if (!editMode || !edgeId) {
@@ -43,14 +33,10 @@ export default function PreviousAnswerHeading({ label }) {
   return (
     <div className="previous-answer-heading previous-answer-heading--editing">
       <EditableText
-        key={fieldKey}
         as="span"
         value={label}
         multiline={false}
-        onCommit={(value) => {
-          lastCommitted.current = value;
-          setEdgeField(edgeId, 'label', value);
-        }}
+        onCommit={(value) => setEdgeField(edgeId, 'label', value)}
       />
       <p className="previous-answer-heading__hint">
         {inSidebar

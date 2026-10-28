@@ -23,17 +23,30 @@ function RowLabel({ row, onJump, onNavigate, leaf }) {
   const [renaming, setRenaming] = useState(false);
   const [text, setText] = useState(row.label);
   const cancelledRef = useRef(false);
+  const originalRef = useRef(row.label);
 
   function startRename() {
     cancelledRef.current = false;
+    originalRef.current = row.label;
     setText(row.label);
     setRenaming(true);
   }
 
+  // Writes every non-blank keystroke to the draft so the screen updates live
+  function handleChange(value) {
+    setText(value);
+    const trimmed = value.trim();
+    if (trimmed && trimmed !== row.label) setEdgeField(row.id, 'label', trimmed);
+  }
+
+  // Puts the label back as it was when the rename started
+  function restoreOriginal() {
+    if (row.label !== originalRef.current) setEdgeField(row.id, 'label', originalRef.current);
+  }
+
   function commit() {
     if (cancelledRef.current) return;
-    const trimmed = text.trim();
-    if (trimmed && trimmed !== row.label) setEdgeField(row.id, 'label', trimmed);
+    if (!text.trim()) restoreOriginal();
     setRenaming(false);
   }
 
@@ -49,12 +62,13 @@ function RowLabel({ row, onJump, onNavigate, leaf }) {
           aria-label={`Rename "${row.label}"`}
           autoFocus
           onFocus={(e) => e.target.select()}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
           onBlur={commit}
           onKeyDown={(e) => {
             if (e.key === 'Enter') e.currentTarget.blur();
             if (e.key === 'Escape') {
               cancelledRef.current = true;
+              restoreOriginal();
               setRenaming(false);
             }
           }}
