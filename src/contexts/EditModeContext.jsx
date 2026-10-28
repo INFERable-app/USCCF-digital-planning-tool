@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useAuth } from './AuthContext.jsx';
 import { diffGraph } from '../graph/diffGraph.js';
 import { applyGraphOps } from '../graph/applyGraphOps.js';
@@ -75,6 +75,11 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
     if (baselineRef.current) setGraph(baselineRef.current);
     exit();
   }, [setGraph, exit]);
+
+  // Leaves edit mode and drops the draft once the user is signed out
+  useEffect(() => {
+    if (!user && editMode) exitDiscarding();
+  }, [user, editMode, exitDiscarding]);
 
   // ── draft mutators ────────────────────────────────────────────────────
   // Both take the updater form so rapid per-keystroke commits always build on
