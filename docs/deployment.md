@@ -43,7 +43,14 @@ Apache on the host:
 
 ## First-time server setup
 
-1. Install Docker with the compose plugin, Apache and certbot.
+1. Install Docker with the compose plugin, Apache and certbot. Make sure Docker and Apache
+   start at boot, so the containers come back after a reboot:
+
+   ```sh
+   sudo systemctl is-enabled docker apache2
+   ```
+
+   Run `sudo systemctl enable <name>` for any that is not `enabled`.
 
 2. Clone the repo into the home directory:
 
@@ -132,11 +139,11 @@ Apache on the host:
 13. Seed the empty database:
 
     ```sh
-    docker compose exec gateway node dist/seed/graphSeed.js
+    docker compose exec gateway node dist/seed/bootstrap.js
     ```
 
-    Run this only once, on an empty database. See
-    [Seeding](data-model.md#seeding).
+    This creates the constraints and a placeholder welcome screen. It never changes existing
+    content. See [Starting from an empty database](data-model.md#starting-from-an-empty-database).
 
 14. Open `https://<domain>` and sign in with an email from `ADMIN_EMAILS`.
 
@@ -428,14 +435,7 @@ sudo certbot renew --dry-run
 
 Observed on staging. Each one is a candidate for a fix.
 
-- **Nothing restarts after a reboot.** No container has a restart policy. After the server
-  reboots, the site stays down until someone runs `docker compose up -d`.
-- **Port 8080 is public.** `compose.yaml` publishes the app container on all interfaces. The
-  static site answers on `http://<domain>:8080` over plain HTTP and bypasses Apache. Sign-in
-  does not work there, because `/auth` and `/api` are not reachable on that port.
 - **Backups stay on the same server.** Losing the server's disk loses the database and every
   backup.
 - **Uploaded PDFs are not backed up.**
-- **The backend does not wait for Neo4j.** `depends_on` only orders container start-up. If
-  Neo4j is slow to start, the first requests fail.
 - **Restarts sign everyone out.** Sessions live in the backend's memory.

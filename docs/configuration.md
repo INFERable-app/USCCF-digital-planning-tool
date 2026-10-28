@@ -17,7 +17,7 @@ Templates: `server/.env.example` for the local backend, `.env.example` for compo
 `server/src/config.ts` validates `process.env` with zod at startup. **If any variable is
 missing or invalid, the backend prints the errors and exits.**
 
-> The seed script loads the same config. It needs a complete, valid `server/.env`, including
+> The bootstrap script loads the same config. It needs a complete, valid `server/.env`, including
 > the Google and session values, even though it only talks to Neo4j.
 
 ## Backend environment variables
@@ -32,11 +32,13 @@ missing or invalid, the backend prints the errors and exits.**
 | `NEO4J_URI`            |          | `bolt://localhost:7687`               |
 | `NEO4J_USER`           |          | `neo4j`                               |
 | `NEO4J_PASSWORD`       |          | empty                                 |
-| `GRAPH_BACKEND`        |          | `neo4j`                               |
 | `WEB_ORIGIN`           |          | `http://localhost:5173`               |
 | `NODE_ENV`             |          | `development`                         |
 | `ADMIN_EMAILS`         |          | empty                                 |
 | `UPLOADS_DIR`          | yes      | none                                  |
+| `USER_ID_KEYS`         | yes      | none                                  |
+| `ADMIN_INDEX_KEYS`     | yes      | none                                  |
+| `ADMIN_ENC_KEYS`       | yes      | none                                  |
 
 ### `PORT`
 
@@ -77,13 +79,6 @@ The Neo4j Bolt URL. `compose.yaml` fixes it to `bolt://neo4j:7687`.
 - Under compose, they also initialise the database through `NEO4J_AUTH`. Changing them later
   does not change the password of an existing database.
 
-### `GRAPH_BACKEND`
-
-- `neo4j` reads and writes the graph in Neo4j.
-- `stub` serves `docs/wizardGraph.json` from memory.
-- `server/.env.example` sets `stub`. Change it to `neo4j` for real work.
-- Progress and admins always use Neo4j, whatever this is set to.
-
 ### `WEB_ORIGIN`
 
 The one origin CORS allows, with credentials. In production it is the site's public origin.
@@ -107,29 +102,60 @@ sets `production`.
 - `compose.yaml` sets `./uploads`. That path is the `uploads_data` volume, mounted at
   `/app/server/uploads`.
 
-### Unused build variable: `VITE_GOOGLE_CLIENT_ID`
+### `USER_ID_KEYS`, `ADMIN_INDEX_KEYS` and `ADMIN_ENC_KEYS`
 
-The `Dockerfile`, `compose.yaml` and `.env.example` still pass `VITE_GOOGLE_CLIENT_ID` as a
-build argument. Nothing in `src/` reads it. It is left over from client-side Google sign-in.
-Leaving it empty is fine.
+These keys keep identities out of Neo4j. See [data-model.md](data-model.md#identities).
+
+| Variable           | Algorithm   | Used for                              | Key length        |
+| ------------------ | ----------- | ------------------------------------- | ----------------- |
+| `USER_ID_KEYS`     | HMAC-SHA256 | `:User.idHash`, from the Google `sub` | at least 32 bytes |
+| `ADMIN_INDEX_KEYS` | HMAC-SHA256 | `:Admin.emailIndex`, the blind index  | at least 32 bytes |
+| `ADMIN_ENC_KEYS`   | AES-256-GCM | `:Admin.emailEnc` and `addedByEnc`    | exactly 32 bytes  |
+
+- Each one is a key ring, `id:base64key[,id:base64key…]`. The **first** entry is the current
+  key, and the others are older keys that are still accepted. Ids are letters, digits, `_` or `-`.
+- Generate a key with:
+
+  ```sh
+  node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+  ```
+
+  Example: `USER_ID_KEYS=k1:3q2+7w…=`.
+
+#### Key management
+
+- Keep the keys outside Neo4j and outside its backups. Back them up separately, for example in
+  a password manager. A dump stored together with its keys protects nothing.
+- **Rotation:** prepend a new entry to the ring and restart.
+  - Admins are re-keyed at boot, so an old admin key can be removed after one restart.
+  - Users are re-keyed the next time they sign in. Remove an old `USER_ID_KEYS` entry only
+    once losing the progress of anyone who hasn't come back since is acceptable.
+- **Loss:**
+  - `USER_ID_KEYS`: every user's saved progress is orphaned.
+  - `ADMIN_INDEX_KEYS`: stored admins can no longer sign in as admin. Recover through
+    `ADMIN_EMAILS`, then remove and re-add them.
+  - `ADMIN_ENC_KEYS`: admin rows show as "Unreadable admin" in the Admins modal. Recover
+    through `ADMIN_EMAILS`, then remove those rows and re-add the admins.
+- **Old backups:** dumps made before the identity migration still contain raw `sub`s and
+  emails until they age out under `RETENTION_DAYS` (`scripts/backup-neo4j.sh`).
 
 ## Values fixed in code
 
 These settings have no environment variable. Change them in the listed file.
 
-| Setting                    | Value                                                                                       | Where                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Dev proxy to the backend   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                               | `vite.config.js`                                                        |
-| Dev hostnames Vite accepts | The `allowedHosts` list.                                                                    | `vite.config.js`                                                        |
-| Session lifetime           | 7 days.                                                                                     | `server/src/app.ts`                                                     |
-| Session cookie             | `connect.sid`, httpOnly, `sameSite: lax`.                                                   | `server/src/app.ts`                                                     |
-| Session store              | In memory.                                                                                  | `server/src/app.ts`                                                     |
-| OIDC issuer                | `https://accounts.google.com`.                                                              | `server/src/connectors/oidc/client.ts`                                  |
-| OIDC scopes                | `openid email profile`.                                                                     | `server/src/connectors/oidc/routes.ts`                                  |
-| Upload limits              | `application/pdf` only, 25 MB.                                                              | `server/src/connectors/resources/routes.ts`                             |
-| Start screen id            | `welcome`.                                                                                  | `neo4jRepository.ts`, `stubRepository.ts`, `connectors/graph/routes.ts` |
-| Published ports            | app on `8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
-| Neo4j memory               | 32 MB page cache, 96 MB heap.                                                               | `compose.yaml`                                                          |
+| Setting                    | Value                                                                                                 | Where                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Dev proxy to the backend   | `/auth`, `/api` and `^/admin$` go to `http://localhost:3001`.                                         | `vite.config.js`                                                        |
+| Dev hostnames Vite accepts | The `allowedHosts` list.                                                                              | `vite.config.js`                                                        |
+| Session lifetime           | 7 days.                                                                                               | `server/src/app.ts`                                                     |
+| Session cookie             | `connect.sid`, httpOnly, `sameSite: lax`.                                                             | `server/src/app.ts`                                                     |
+| Session store              | In memory.                                                                                            | `server/src/app.ts`                                                     |
+| OIDC issuer                | `https://accounts.google.com`.                                                                        | `server/src/connectors/oidc/client.ts`                                  |
+| OIDC scopes                | `openid email profile`.                                                                               | `server/src/connectors/oidc/routes.ts`                                  |
+| Upload limits              | `application/pdf` only, 25 MB.                                                                        | `server/src/connectors/resources/routes.ts`                             |
+| Start screen id            | `welcome`.                                                                                            | `neo4jRepository.ts`, `connectors/graph/routes.ts`, `seed/bootstrap.ts` |
+| Published ports            | app on `127.0.0.1:8080`; backend on `127.0.0.1:3001`; Neo4j on `127.0.0.1:7687` and `127.0.0.1:7474`. | `compose.yaml`                                                          |
+| Neo4j memory               | 32 MB page cache, 96 MB heap.                                                                         | `compose.yaml`                                                          |
 
 ## Google OAuth client
 

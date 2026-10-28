@@ -9,17 +9,20 @@ const MARGIN = 8;
 // the popover to static positioning inside a flex-centered backdrop instead, so
 // these values end up unused there — see the max-width: 767px block.
 export function useClampedPopoverPosition(x, y) {
-	const ref = useRef(null);
-	const [style, setStyle] = useState({ left: x, top: y, visibility: 'hidden' });
+  const ref = useRef(null);
+  const [style, setStyle] = useState({ left: x, top: y, visibility: 'hidden' });
 
-	useLayoutEffect(() => {
-		const el = ref.current;
-		if (!el) return;
-		const rect = el.getBoundingClientRect();
-		const clampedLeft = Math.min(Math.max(x - rect.width / 2, MARGIN), window.innerWidth - rect.width - MARGIN);
-		const clampedTop = Math.min(Math.max(y, MARGIN), window.innerHeight - rect.height - MARGIN);
-		setStyle({ left: clampedLeft, top: clampedTop, visibility: 'visible' });
-	}, [x, y]);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const clampedLeft = Math.min(
+      Math.max(x - rect.width / 2, MARGIN),
+      window.innerWidth - rect.width - MARGIN
+    );
+    const clampedTop = Math.min(Math.max(y, MARGIN), window.innerHeight - rect.height - MARGIN);
+    setStyle({ left: clampedLeft, top: clampedTop, visibility: 'visible' });
+  }, [x, y]);
 
-	return { ref, style };
+  return { ref, style };
 }

@@ -12,11 +12,11 @@
 const ANSWERED_NODE_TYPES = new Set(['multiChoice', 'radioSurvey']);
 
 export function getPreviousAnswerLabel(nodes, edges, path) {
-	if (path.length < 2) return null;
+  if (path.length < 2) return null;
 
-	const previousNode = nodes[path[path.length - 2].nodeId];
-	if (!previousNode || !ANSWERED_NODE_TYPES.has(previousNode.type)) return null;
+  const previousNode = nodes[path[path.length - 2].nodeId];
+  if (!previousNode || !ANSWERED_NODE_TYPES.has(previousNode.type)) return null;
 
-	const edgeId = path[path.length - 1].edgeId;
-	return edges[edgeId]?.label ?? null;
+  const edgeId = path[path.length - 1].edgeId;
+  return edges[edgeId]?.label ?? null;
 }

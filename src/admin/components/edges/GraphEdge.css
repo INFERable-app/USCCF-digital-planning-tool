@@ -1,22 +1,22 @@
 .graph-edge-label {
-	position: absolute;
-	max-width: 220px;
-	padding: 3px 8px;
-	background: var(--surface-page);
-	border: 1px solid var(--border-subtle);
-	border-radius: 6px;
-	box-shadow: 0 1px 2px var(--color-navy-midnight-alpha-10);
-	font-size: 11px;
-	line-height: 1.35;
-	color: var(--text-primary);
-	white-space: normal;
-	overflow-wrap: break-word;
-	text-align: center;
-	pointer-events: all;
+  position: absolute;
+  max-width: 220px;
+  padding: 3px 8px;
+  background: var(--surface-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px var(--color-navy-midnight-alpha-10);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text-primary);
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-align: center;
+  pointer-events: all;
 }
 
 .graph-edge-label--selected {
-	border-color: var(--color-blue-electric);
-	color: var(--color-navy-deep);
-	box-shadow: 0 0 0 1px var(--color-blue-electric);
+  border-color: var(--color-blue-electric);
+  color: var(--color-navy-deep);
+  box-shadow: 0 0 0 1px var(--color-blue-electric);
 }

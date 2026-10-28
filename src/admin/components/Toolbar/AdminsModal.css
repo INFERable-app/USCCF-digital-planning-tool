@@ -1,238 +1,238 @@
 .admins-modal-backdrop {
-	position: fixed;
-	inset: 0;
-	background: var(--color-navy-midnight-alpha-50);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 50;
-	padding: 1rem;
+  position: fixed;
+  inset: 0;
+  background: var(--color-navy-midnight-alpha-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
 }
 
 .admins-modal {
-	background: var(--surface-page);
-	border-radius: 10px;
-	box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
-	max-width: 30rem;
-	width: 100%;
-	padding: 1.5rem;
+  background: var(--surface-page);
+  border-radius: 10px;
+  box-shadow: 0 20px 40px var(--color-navy-midnight-alpha-20);
+  max-width: 30rem;
+  width: 100%;
+  padding: 1.5rem;
 }
 
 .admins-modal__header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 .admins-modal__header h2 {
-	font-size: 1.25rem;
-	font-weight: 700;
-	color: var(--text-primary);
-	margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
 
 .admins-modal__close {
-	display: flex;
-	background: none;
-	border: none;
-	line-height: 1;
-	color: var(--color-navy-midnight-alpha-50);
-	cursor: pointer;
-	padding: 0;
+  display: flex;
+  background: none;
+  border: none;
+  line-height: 1;
+  color: var(--color-navy-midnight-alpha-50);
+  cursor: pointer;
+  padding: 0;
 }
 
 .admins-modal__close:hover {
-	color: var(--color-navy-midnight-alpha-85);
+  color: var(--color-navy-midnight-alpha-85);
 }
 
 .admins-modal__note {
-	background: var(--color-blue-ice);
-	border: 1px solid var(--color-cyan-sky);
-	border-radius: 6px;
-	padding: 0.85rem 1rem;
-	font-size: 0.85rem;
-	margin-bottom: 1rem;
+  background: var(--color-blue-ice);
+  border: 1px solid var(--color-cyan-sky);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 .admins-modal__note strong {
-	color: var(--color-navy-midnight);
+  color: var(--color-navy-midnight);
 }
 
 .admins-modal__note p {
-	margin: 0.25rem 0 0;
-	color: var(--color-navy-deep);
+  margin: 0.25rem 0 0;
+  color: var(--color-navy-deep);
 }
 
 .admins-modal__list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.4rem;
-	margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
 }
 
 .admins-modal__empty {
-	font-size: 0.85rem;
-	color: var(--color-navy-midnight-alpha-85);
-	margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--color-navy-midnight-alpha-85);
+  margin: 0 0 1rem;
 }
 
 .admins-modal__row {
-	display: flex;
-	align-items: center;
-	gap: 0.6rem;
-	padding: 0.55rem 0.7rem;
-	background: var(--surface-page);
-	border: 1px solid var(--border-subtle);
-	border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--surface-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
 }
 
 .admins-modal__row--bootstrap {
-	background: var(--surface-panel);
-	opacity: 0.75;
+  background: var(--surface-panel);
+  opacity: 0.75;
 }
 
 .admins-modal__email {
-	font-size: 0.85rem;
-	color: var(--text-primary);
-	flex: 1;
-	min-width: 0;
-	overflow-wrap: anywhere;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .admins-modal__meta {
-	font-size: 0.7rem;
-	color: var(--color-navy-midnight-alpha-85);
-	white-space: nowrap;
+  font-size: 0.7rem;
+  color: var(--color-navy-midnight-alpha-85);
+  white-space: nowrap;
 }
 
 .admins-modal__tag {
-	font-size: 0.7rem;
-	font-weight: 600;
-	padding: 0.15rem 0.4rem;
-	border-radius: 4px;
-	white-space: nowrap;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .admins-modal__tag--you {
-	color: var(--color-navy-deep);
-	background: var(--color-blue-ice);
+  color: var(--color-navy-deep);
+  background: var(--color-blue-ice);
 }
 
 .admins-modal__tag--env {
-	color: var(--color-brown-mahogany);
-	background: var(--color-yellow-cream);
+  color: var(--color-brown-mahogany);
+  background: var(--color-yellow-cream);
 }
 
 .admins-modal__remove {
-	background: none;
-	border: none;
-	font-size: 1rem;
-	line-height: 1;
-	color: var(--color-navy-midnight-alpha-50);
-	cursor: pointer;
-	padding: 0 0.2rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-navy-midnight-alpha-50);
+  cursor: pointer;
+  padding: 0 0.2rem;
 }
 
 .admins-modal__remove:hover:not(:disabled) {
-	color: var(--color-red-scarlet);
+  color: var(--color-red-scarlet);
 }
 
 .admins-modal__remove:disabled {
-	cursor: not-allowed;
-	opacity: 0.5;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .admins-modal label {
-	display: block;
-	font-size: 0.8rem;
-	font-weight: 600;
-	color: var(--text-primary);
-	margin-bottom: 0.5rem;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
 }
 
 .admins-modal__add {
-	display: flex;
-	gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .admins-modal__add input {
-	flex: 1;
-	min-width: 0;
-	background: var(--surface-panel);
-	border: 1px solid var(--color-navy-midnight-alpha-20);
-	border-radius: 6px;
-	padding: 0.5rem 0.65rem;
-	font-size: 0.85rem;
-	font-family: inherit;
-	box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-panel);
+  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .admins-modal__add input:focus {
-	outline: none;
-	border-color: var(--color-blue-electric);
-	box-shadow: 0 0 0 1px var(--color-blue-electric);
+  outline: none;
+  border-color: var(--color-blue-electric);
+  box-shadow: 0 0 0 1px var(--color-blue-electric);
 }
 
 .admins-modal__add button {
-	padding: 0.5rem 1rem;
-	border-radius: 6px;
-	font-size: 0.85rem;
-	font-weight: 500;
-	cursor: pointer;
-	border: 1px solid transparent;
-	background: var(--color-green-hunter);
-	color: var(--text-inverse);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: var(--color-green-hunter);
+  color: var(--text-inverse);
 }
 
 .admins-modal__add button:hover:not(:disabled) {
-	background: var(--color-green-forest);
+  background: var(--color-green-forest);
 }
 
 .admins-modal__add button:disabled {
-	background: var(--color-navy-midnight-alpha-40);
-	cursor: not-allowed;
+  background: var(--color-navy-midnight-alpha-40);
+  cursor: not-allowed;
 }
 
 .admins-modal__message {
-	margin-top: 0.75rem;
-	padding: 0.6rem 0.75rem;
-	border-radius: 6px;
-	font-size: 0.8rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
 }
 
 .admins-modal__message--success {
-	background: var(--color-green-mint);
-	color: var(--color-green-forest);
-	border: 1px solid var(--color-green-hunter);
+  background: var(--color-green-mint);
+  color: var(--color-green-forest);
+  border: 1px solid var(--color-green-hunter);
 }
 
 .admins-modal__message--error {
-	background: var(--color-pink-blush);
-	color: var(--color-red-oxblood);
-	border: 1px solid var(--color-pink-salmon);
+  background: var(--color-pink-blush);
+  color: var(--color-red-oxblood);
+  border: 1px solid var(--color-pink-salmon);
 }
 
 .admins-modal__footer {
-	display: flex;
-	justify-content: flex-end;
-	gap: 0.6rem;
-	padding-top: 1rem;
-	margin-top: 1rem;
-	border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .admins-modal__done {
-	padding: 0.5rem 1rem;
-	border-radius: 6px;
-	font-size: 0.85rem;
-	font-weight: 500;
-	cursor: pointer;
-	border: 1px solid transparent;
-	background: var(--surface-panel);
-	color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: var(--surface-panel);
+  color: var(--text-primary);
 }
 
 .admins-modal__done:hover {
-	background: var(--color-blue-ice);
+  background: var(--color-blue-ice);
 }

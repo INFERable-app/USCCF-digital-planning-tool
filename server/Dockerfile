@@ -23,7 +23,6 @@ COPY server/package.json server/package.json
 RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/server/dist server/dist
-COPY docs docs
 
 WORKDIR /app/server
 

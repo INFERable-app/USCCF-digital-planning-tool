@@ -1,131 +1,131 @@
 /* ── Compact header (survey / results screens) ────────────────────────────── */
 .screen-compact .compact-header {
-	position: relative;
-	height: 200px;
-	flex-shrink: 0;
-	background: var(--surface-app);
+  position: relative;
+  height: 200px;
+  flex-shrink: 0;
+  background: var(--surface-app);
 }
 
 .screen-compact .compact-header .header-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 72px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 12px 16px 0;
-	background: var(--surface-app);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 0;
+  background: var(--surface-app);
 }
 
 .screen-compact .compact-header .app-title {
-	position: absolute;
-	top: 82px;
-	left: 0;
-	right: 0;
-	text-align: center;
-	font-size: 18px;
-	font-weight: 400;
-	color: var(--accent-primary);
-	white-space: nowrap;
+  position: absolute;
+  top: 82px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--accent-primary);
+  white-space: nowrap;
 }
 
 .screen-compact .compact-header .breadcrumb {
-	position: absolute;
-	top: 110px;
-	left: 16px;
-	right: 16px;
+  position: absolute;
+  top: 110px;
+  left: 16px;
+  right: 16px;
 }
 
 /* Hidden on mobile, becomes left column on desktop */
 .compact-hero-wrap {
-	display: none;
+  display: none;
 }
 
 /* ── Desktop layout ───────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
-	.screen-compact .compact-header {
-		display: contents;
-	}
+  .screen-compact .compact-header {
+    display: contents;
+  }
 
-	/* Header bar: full-width top row */
-	.screen-compact .compact-header .header-bar {
-		grid-column: 1 / -1;
-		grid-row: 1;
-		position: static;
-		height: auto;
-		padding: 16px 24px;
-		border-bottom: 1px solid var(--border-subtle);
-	}
+  /* Header bar: full-width top row */
+  .screen-compact .compact-header .header-bar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: static;
+    height: auto;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
 
-	/* App title hidden on desktop */
-	.screen-compact .compact-header .app-title {
-		display: none;
-	}
+  /* App title hidden on desktop */
+  .screen-compact .compact-header .app-title {
+    display: none;
+  }
 
-	/* Hero image: hidden on desktop — sidebar takes its place */
-	.compact-hero-wrap {
-		display: none;
-	}
+  /* Hero image: hidden on desktop — sidebar takes its place */
+  .compact-hero-wrap {
+    display: none;
+  }
 
-	/* Progress tracker: own row at the top of the content column */
-	.screen-compact .compact-header .breadcrumb {
-		grid-column: 2;
-		grid-row: 2;
-		position: static;
-		padding: 24px 16px 0;
-	}
+  /* Progress tracker: own row at the top of the content column */
+  .screen-compact .compact-header .breadcrumb {
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    padding: 24px 16px 0;
+  }
 
-	/* Track: occupies the grid column, clips the sliding sidebar */
-	.screen-compact .compact-header .usecase-nav-track {
-		display: flex;
-		grid-column: 1;
-		grid-row: 2 / -1;
-		min-height: 0;
-		overflow: hidden;
-		border-right: 1px solid var(--border-subtle);
-	}
+  /* Track: occupies the grid column, clips the sliding sidebar */
+  .screen-compact .compact-header .usecase-nav-track {
+    display: flex;
+    grid-column: 1;
+    grid-row: 2 / -1;
+    min-height: 0;
+    overflow: hidden;
+    border-right: 1px solid var(--border-subtle);
+  }
 
-	/* Sidebar: fixed width so content never reflows; slides via transform.
+  /* Sidebar: fixed width so content never reflows; slides via transform.
 	   Height comes from flex-stretch against the track so the tree can
 	   scroll internally while the footer link stays pinned in view. */
-	.screen-compact .compact-header .usecase-nav {
-		display: flex;
-		width: 40vw;
-		box-sizing: border-box;
-		flex-shrink: 0;
-		transform: translateX(0);
-		transition: transform 0.35s ease;
-	}
+  .screen-compact .compact-header .usecase-nav {
+    display: flex;
+    width: 40vw;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    transform: translateX(0);
+    transition: transform 0.35s ease;
+  }
 
-	/* Right-column elements — dynamic horizontal padding keeps content
+  /* Right-column elements — dynamic horizontal padding keeps content
 	   centered as the grid column animates open/closed. */
-	.screen-compact .survey-content {
-		grid-column: 2;
-		grid-row: 3;
-		padding: 64px max(64px, calc((100% - 772px) / 2));
-		align-self: center;
-		max-height: 100%;
-	}
-	.cta-back {
-		display: flex;
-	}
+  .screen-compact .survey-content {
+    grid-column: 2;
+    grid-row: 3;
+    padding: 64px max(64px, calc((100% - 772px) / 2));
+    align-self: center;
+    max-height: 100%;
+  }
+  .cta-back {
+    display: flex;
+  }
 
-	.screen-compact .compact-header .btn-back {
-		display: none;
-	}
+  .screen-compact .compact-header .btn-back {
+    display: none;
+  }
 
-	.screen-compact .bottom-cta {
-		grid-column: 2;
-		grid-row: 4;
-		padding: 12px max(64px, calc((100% - 772px) / 2)) 24px;
-		display: flex;
-		justify-content: flex-start;
-		gap: 16px;
-	}
+  .screen-compact .bottom-cta {
+    grid-column: 2;
+    grid-row: 4;
+    padding: 12px max(64px, calc((100% - 772px) / 2)) 24px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+  }
 
-	.screen-compact .bottom-cta .btn-primary {
-		margin-left: auto;
-	}
+  .screen-compact .bottom-cta .btn-primary {
+    margin-left: auto;
+  }
 }

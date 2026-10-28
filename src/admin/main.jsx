@@ -5,9 +5,9 @@ import '../theme.css';
 import AdminApp from './AdminApp.jsx';
 
 createRoot(document.getElementById('admin-root')).render(
-	<StrictMode>
-		<AuthProvider>
-			<AdminApp />
-		</AuthProvider>
-	</StrictMode>
+  <StrictMode>
+    <AuthProvider>
+      <AdminApp />
+    </AuthProvider>
+  </StrictMode>
 );

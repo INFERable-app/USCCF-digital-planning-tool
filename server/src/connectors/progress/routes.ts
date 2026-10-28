@@ -7,7 +7,7 @@ const repo = createProgressRepository();
 
 router.get('/progress', requireAuth, async (req, res) => {
   try {
-    const progress = await repo.getProgress(req.session.user!.sub);
+    const progress = await repo.getProgress(req.session.user!.idHash);
     res.json(progress);
   } catch (err) {
     console.error('GET /api/progress error:', err);
@@ -22,7 +22,7 @@ router.put('/progress', requireAuth, async (req, res) => {
     return;
   }
   try {
-    await repo.saveProgress(req.session.user!.sub, { currentNodeId, answers, history });
+    await repo.saveProgress(req.session.user!.idHash, { currentNodeId, answers, history });
     res.json({ ok: true });
   } catch (err) {
     console.error('PUT /api/progress error:', err);
@@ -32,7 +32,7 @@ router.put('/progress', requireAuth, async (req, res) => {
 
 router.delete('/progress', requireAuth, async (req, res) => {
   try {
-    await repo.clearProgress(req.session.user!.sub);
+    await repo.clearProgress(req.session.user!.idHash);
     res.json({ ok: true });
   } catch (err) {
     console.error('DELETE /api/progress error:', err);

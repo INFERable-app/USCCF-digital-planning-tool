@@ -3,48 +3,48 @@
    shared between both bundles. */
 
 .inspector-field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .inspector-field label {
-	font-size: 0.7rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.03em;
-	color: var(--color-navy-midnight-alpha-85);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-navy-midnight-alpha-85);
 }
 
 .inspector-field input[type='text'],
 .inspector-field input[type='url'],
 .inspector-field select,
 .inspector-field textarea {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 0.45rem 0.6rem;
-	border: 1px solid var(--color-navy-midnight-alpha-20);
-	border-radius: 6px;
-	font-size: 0.82rem;
-	font-family: inherit;
-	background: var(--surface-panel);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  background: var(--surface-panel);
 }
 
 .inspector-field input:focus,
 .inspector-field select:focus,
 .inspector-field textarea:focus {
-	outline: none;
-	border-color: var(--color-blue-electric);
-	box-shadow: 0 0 0 1px var(--color-blue-electric);
-	background: var(--surface-page);
+  outline: none;
+  border-color: var(--color-blue-electric);
+  box-shadow: 0 0 0 1px var(--color-blue-electric);
+  background: var(--surface-page);
 }
 
 .inspector-field--checkbox {
-	flex-direction: row;
-	align-items: center;
-	gap: 0.5rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .inspector-field--mono input {
-	font-family: ui-monospace, 'SF Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', monospace;
 }

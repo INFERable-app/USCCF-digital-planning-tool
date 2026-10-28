@@ -8,8 +8,8 @@ router.get('/', (_req, res) => {
     status: 'ok',
     connectors: {
       oidc: config.GOOGLE_CLIENT_ID ? 'configured' : 'missing',
-      graph: config.GRAPH_BACKEND,
-    },
+      graph: 'neo4j'
+    }
   });
 });
 

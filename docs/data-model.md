@@ -17,8 +17,7 @@ The wizard graph exists in three shapes.
 3. **Graph editor state:** React Flow node and edge arrays. Only `/admin` uses this shape. The
    conversion lives in `src/admin/state/graphFlowAdapter.js`.
 
-> The live database is the source of truth. `docs/wizardGraph.json` is seed data only and is
-> usually out of date.
+> The live database is the only source of wizard content. No content file is checked in.
 
 ## Neo4j schema
 
@@ -27,22 +26,24 @@ flowchart LR
     WN1[":WizardNode<br/>id, type, question, …<br/>resolversJson, positionX/Y"]
     WN2[":WizardNode"]
     WN1 -- ":OPTION<br/>id, label, order,<br/>storeKey, value, disabled" --> WN2
-    U[":User<br/>sub, progress, updatedAt"]
-    A[":Admin<br/>email, addedBy, addedAt"]
+    U[":User<br/>idHash, keyId, progress, updatedAt"]
+    A[":Admin<br/>emailIndex, indexKeyId,<br/>emailEnc, addedByEnc, addedAt"]
+    C[":Content<br/>key, itemsJson, updatedAt"]
 ```
 
-`:User` and `:Admin` nodes stand alone. They have no relationships.
+`:User`, `:Admin` and `:Content` nodes stand alone. They have no relationships.
 
 **`:WizardNode`**
 
-- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Written by `connectors/graph/neo4jRepository.ts`. The bootstrap script creates the
+  `welcome` node.
 - Holds `id` plus every node field listed below.
 - `resolvers` is stored as a JSON string in `resolversJson`.
 - `edgeIds` is not stored.
 
 **`:OPTION`**
 
-- Written by `connectors/graph/neo4jRepository.ts` and the seed script.
+- Written by `connectors/graph/neo4jRepository.ts`.
 - Always has `id`, `label` and `order`. `order` is the zero-based position among the source
   node's options.
 - May have `storeKey`, `value` and `disabled`.
@@ -50,23 +51,33 @@ flowchart LR
 **`:User`**
 
 - Written by `connectors/progress/neo4jProgressRepository.ts`.
-- `sub` is the Google subject id.
+- `idHash` is the HMAC of the Google subject id under `USER_ID_KEYS`. `keyId` names the key.
 - `progress` is a JSON string.
 - `updatedAt` is a datetime.
 
 **`:Admin`**
 
 - Written by `connectors/admins/neo4jAdminRepository.ts`.
-- `email` is trimmed and lowercased.
-- `addedBy` is the email of the admin who added it.
+- `emailIndex` is the HMAC of the trimmed, lowercased email under `ADMIN_INDEX_KEYS`.
+  `indexKeyId` names the key.
+- `emailEnc` and `addedByEnc` are the email and the adding admin's email, encrypted with
+  `ADMIN_ENC_KEYS`.
 - `addedAt` is a datetime.
 
-The seed script creates two uniqueness constraints with `IF NOT EXISTS`:
+**`:Content`**
+
+- Written by `connectors/content/neo4jContentRepository.ts`.
+- `key` is `resources`, `faq` or `glossary`. There is one node per key.
+- `itemsJson` is the whole list as a JSON string. A save replaces it.
+- `updatedAt` is a datetime.
+
+The bootstrap script creates four uniqueness constraints with `IF NOT EXISTS`, and drops the
+old `:Admin(email)` constraint if it is still there:
 
 - `:WizardNode(id)`
-- `:Admin(email)`
-
-`:User.sub` has no constraint. Progress writes use `MERGE` on it.
+- `:User(idHash)`
+- `:Admin(emailIndex)`
+- `:Content(key)`
 
 ### How storage maps to the API
 
@@ -93,9 +104,9 @@ The mapping code is `nodeToProps` and `edgeToRelProps` in
 
 ```json
 {
- "startNodeId": "welcome",
- "nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
- "edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
+  "startNodeId": "welcome",
+  "nodes": { "<nodeId>": { "id": "<nodeId>", "type": "multiChoice", "edgeIds": ["<edgeId>"] } },
+  "edges": { "<edgeId>": { "id": "<edgeId>", "label": "Employer", "targetNodeId": "<nodeId>" } }
 }
 ```
 
@@ -185,11 +196,11 @@ A `results` node has an ordered `resolvers` array. `src/graph/resolveResult.js` 
 
 ```json
 {
- "when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
- "recommendation": "Lead sentence, shown highlighted.",
- "bodyText": "Supporting text.",
- "resources": [],
- "footer": "Closing line."
+  "when": { "challenge": ["ced-01", "ced-02"], "role": ["employer"] },
+  "recommendation": "Lead sentence, shown highlighted.",
+  "bodyText": "Supporting text.",
+  "resources": [],
+  "footer": "Closing line."
 }
 ```
 
@@ -241,9 +252,9 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 
 ```json
 {
- "currentNodeId": "role",
- "answers": { "category": "employer" },
- "history": ["welcome", "category"]
+  "currentNodeId": "role",
+  "answers": { "category": "employer" },
+  "history": ["welcome", "category"]
 }
 ```
 
@@ -259,20 +270,62 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 - Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
 - The API refuses to remove the caller's own email or the last stored admin.
 
-## Seeding
+## Identities
 
-`pnpm --filter @usccf/api-gateway seed:graph` runs `server/src/seed/graphSeed.ts`. It does
-three things:
+No plain-text email address or Google `sub` is written to Neo4j. Keys and rotation are covered
+in [configuration.md](configuration.md#user_id_keys-admin_index_keys-and-admin_enc_keys).
 
-1. Creates the two uniqueness constraints.
-2. For every node in `docs/wizardGraph.json`, runs `MERGE` by `id` and **replaces** all the
-   node's properties.
-3. **Deletes every `OPTION` relationship in the database**, then recreates the edges from the
-   JSON.
+- **Users:** `/auth/callback` hashes the `sub` and drops it. The session holds only the hash.
+  If the user's node is on an older key, it is moved to the current one.
+- **Admins:** lookups match `emailIndex` against the email's hash under every index key. The
+  Admins modal shows decrypted emails. A row that can't be decrypted is listed as unreadable
+  and removed through `DELETE /api/admins/by-index/:id`.
+- **Boot migration:** before listening, `server/src/startup/migrateIdentities.ts` hashes any
+  `:User` that still has a `sub`, encrypts any `:Admin` that still has an `email`, and moves
+  every admin onto the current keys. It runs on every boot and does nothing once the data is
+  current. If Neo4j is unreachable, the backend exits and the compose restart policy retries.
 
-> **Never run the seed against a database with real content.** Nodes that exist only in Neo4j
-> keep their properties but lose every outgoing edge. Nodes that are also in the JSON are
-> reset to the JSON version. The seed is for empty databases only.
+## Help content
+
+The Resource Library, FAQ and Glossary are `:Content` nodes. `PUT /api/content/:key`
+validates each list with zod and strips unknown fields, so the editors' `_key` is never
+stored. Item shapes:
+
+- **resources:** `{ id, type, label, description?, url?, text?, pageStart?, pageEnd?,
+wholeDocument?, categories }`. `type` is `link`, `pdf`, `reference` or `prompt`, as for
+  resolver resources. `categories` is a non-empty list drawn from `start`, `demand`, `skills`,
+  `providers`, `tracking` and `templates`; these six are fixed in `ResourceLibraryOverlay.jsx`.
+- **faq:** `{ id, question, intro, bullets?, outro? }`. `**bold**` in `intro` and `outro`
+  renders as bold.
+- **glossary:** `{ term, definition }`, shown in list order.
+
+The resource editor reuses `ResourceListEditor` and cleans each resource with
+`sanitizeResources`, the same function `sanitizeResolvers` uses. Incomplete resources, and
+resources without a category, are dropped on save.
+
+## Starting from an empty database
+
+A new environment starts empty. The admin setting it up runs the bootstrap script once by
+hand. The backend never runs it automatically.
+
+```sh
+pnpm --filter @usccf/api-gateway bootstrap:db
+```
+
+In production: `docker compose exec gateway node dist/seed/bootstrap.js`.
+
+`server/src/seed/bootstrap.ts` does three things:
+
+1. Creates the uniqueness constraints.
+2. Creates a `welcome` node with placeholder text if none exists. It has no buttons.
+3. Creates the `resources`, `faq` and `glossary` `:Content` nodes from
+   `server/src/content/defaults.ts` if they don't exist.
+
+It never changes existing nodes, edges or content, so running it again, or against a database
+with real content, is safe. Admins then build the rest of the wizard in `/admin`.
+
+`PUT /api/graph` rejects a graph that has no `welcome` node, so the start screen cannot be
+removed through a whole-graph save.
 
 ## Inspecting the data
 
@@ -294,7 +347,7 @@ MATCH (n:WizardNode) WHERE NOT ()-[:OPTION]->(n) AND n.id <> 'welcome' RETURN n.
 MATCH ()-[r:OPTION {storeKey: 'challenge'}]->(t:WizardNode) RETURN r.value, t.id;
 
 // Admins
-MATCH (a:Admin) RETURN a.email, a.addedBy, a.addedAt;
+MATCH (a:Admin) RETURN a.emailIndex, a.indexKeyId, a.addedAt;
 ```
 
 ## Quirks

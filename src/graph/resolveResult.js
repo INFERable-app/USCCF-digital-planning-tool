@@ -10,11 +10,11 @@
 //   when: { challenge: ['translating', 'training'], tpm: ['yes'] }
 //   matches if answers.challenge is 'translating' or 'training' AND answers.tpm is 'yes'
 export function resolveResult(resolvers, answers) {
-	for (const resolver of resolvers) {
-		const matches = Object.entries(resolver.when).every(([key, allowed]) =>
-			allowed.includes(answers[key])
-		);
-		if (matches) return resolver;
-	}
-	return resolvers[resolvers.length - 1];
+  for (const resolver of resolvers) {
+    const matches = Object.entries(resolver.when).every(([key, allowed]) =>
+      allowed.includes(answers[key])
+    );
+    if (matches) return resolver;
+  }
+  return resolvers[resolvers.length - 1];
 }

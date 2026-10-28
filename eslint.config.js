@@ -8,13 +8,13 @@ import globals from 'globals';
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
 export default defineConfig([
-	includeIgnoreFile(gitignorePath),
-	js.configs.recommended,
-	prettier,
-	{
-		languageOptions: { globals: { ...globals.browser, ...globals.node } }
-	},
-	{
-		rules: {}
-	}
+  includeIgnoreFile(gitignorePath),
+  js.configs.recommended,
+  prettier,
+  {
+    languageOptions: { globals: { ...globals.browser, ...globals.node } }
+  },
+  {
+    rules: {}
+  }
 ]);

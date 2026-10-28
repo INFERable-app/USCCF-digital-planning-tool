@@ -2,56 +2,69 @@ import './PromptBlock.css';
 import { useId, useState } from 'react';
 
 function fallbackCopy(text, onSuccess) {
-	const el = document.createElement('textarea');
-	el.value = text;
-	el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
-	document.body.appendChild(el);
-	el.focus();
-	el.select();
-	try { document.execCommand('copy'); onSuccess(); } catch (_) {}
-	document.body.removeChild(el);
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  try {
+    document.execCommand('copy');
+    onSuccess();
+  } catch (_) {}
+  document.body.removeChild(el);
 }
 
 export default function PromptBlock({ label, text }) {
-	const [value, setValue] = useState(text);
-	const [copied, setCopied] = useState(false);
-	const labelId = useId();
-	const hintId = useId();
+  const [value, setValue] = useState(text);
+  const [copied, setCopied] = useState(false);
+  const labelId = useId();
+  const hintId = useId();
 
-	function handleCopy() {
-		const succeed = () => { setCopied(true); setTimeout(() => setCopied(false), 2000); };
-		if (navigator.clipboard?.writeText) {
-			navigator.clipboard.writeText(value).then(succeed).catch(() => fallbackCopy(value, succeed));
-		} else {
-			fallbackCopy(value, succeed);
-		}
-	}
+  function handleCopy() {
+    const succeed = () => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(value)
+        .then(succeed)
+        .catch(() => fallbackCopy(value, succeed));
+    } else {
+      fallbackCopy(value, succeed);
+    }
+  }
 
-	return (
-		<>
-			<div className="prompt-block">
-				<div className="prompt-block-bar">
-					<span className="prompt-block-label" id={labelId}>
-						<span aria-hidden="true">✏</span> {label}
-					</span>
-					<button className="prompt-block-copy" onClick={handleCopy}>
-						{copied ? 'Copied ✓' : 'Copy'}
-					</button>
-				</div>
-				<textarea
-					className="prompt-block-body"
-					value={value}
-					onChange={e => setValue(e.target.value)}
-					spellCheck={false}
-					aria-labelledby={labelId}
-					aria-describedby={hintId}
-				/>
-				<div className="prompt-block-hint" id={hintId}>click to edit</div>
-			</div>
-			<div className="prompt-warning">
-				<span className="prompt-warning-title">⚠ Caution</span>
-				Do not include personally identifiable information, confidential employer information, proprietary data, or other sensitive information. Review and verify AI-generated results before outreach or decision-making.
-			</div>
-		</>
-	);
+  return (
+    <>
+      <div className="prompt-block">
+        <div className="prompt-block-bar">
+          <span className="prompt-block-label" id={labelId}>
+            <span aria-hidden="true">✏</span> {label}
+          </span>
+          <button className="prompt-block-copy" onClick={handleCopy}>
+            {copied ? 'Copied ✓' : 'Copy'}
+          </button>
+        </div>
+        <textarea
+          className="prompt-block-body"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          spellCheck={false}
+          aria-labelledby={labelId}
+          aria-describedby={hintId}
+        />
+        <div className="prompt-block-hint" id={hintId}>
+          click to edit
+        </div>
+      </div>
+      <div className="prompt-warning">
+        <span className="prompt-warning-title">⚠ Caution</span>
+        Do not include personally identifiable information, confidential employer information,
+        proprietary data, or other sensitive information. Review and verify AI-generated results
+        before outreach or decision-making.
+      </div>
+    </>
+  );
 }

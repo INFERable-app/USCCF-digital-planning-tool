@@ -16,7 +16,7 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
 | `src/`              | The wizard. React 19 and Vite. Entry: `index.html` → `src/main.jsx`.               |
 | `src/admin/`        | The graph editor, built on React Flow. Entry: `admin.html` → `src/admin/main.jsx`. |
 | `server/`           | The backend. Express 4 and TypeScript, package `@usccf/api-gateway`.               |
-| `docs/`             | Developer docs, the graph seed file, and the legacy editor served by GitHub Pages. |
+| `docs/`             | Developer docs.                                                                    |
 | `static/`           | Files served as-is at the site root, such as images and `robots.txt`.              |
 | `scripts/`          | A Neo4j backup script and its systemd service and timer.                           |
 | `Dockerfile`        | Builds the client and serves `dist/` with nginx.                                   |
@@ -52,20 +52,19 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
 
 4. Copy `server/.env.example` to `server/.env` and fill it in:
    - Use the same Neo4j credentials as step 2.
-   - Set `GRAPH_BACKEND=neo4j`.
    - Set `GOOGLE_REDIRECT_URI=http://localhost:5173/auth/callback`, so sign-in returns
      through the Vite dev server.
 
    [docs/configuration.md](docs/configuration.md) describes every variable.
 
-5. Seed the empty database:
+5. Bootstrap the empty database:
 
    ```sh
-   pnpm --filter @usccf/api-gateway seed:graph
+   pnpm --filter @usccf/api-gateway bootstrap:db
    ```
 
-   This loads `docs/wizardGraph.json`. Run it only against a fresh database. See
-   [Seeding](docs/data-model.md#seeding).
+   This creates the constraints and a placeholder welcome screen. It never changes existing
+   content. See [Starting from an empty database](docs/data-model.md#starting-from-an-empty-database).
 
 6. Start the backend in one terminal:
 
@@ -108,12 +107,12 @@ Root `package.json`:
 
 Backend scripts. Run them with `pnpm --filter @usccf/api-gateway <script>`:
 
-| Script       | Does                                      |
-| ------------ | ----------------------------------------- |
-| `dev`        | Runs `tsx watch src/server.ts`.           |
-| `build`      | Compiles with `tsc` into `server/dist/`.  |
-| `start`      | Runs `node dist/server.js`.               |
-| `seed:graph` | Loads `docs/wizardGraph.json` into Neo4j. |
+| Script         | Does                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| `dev`          | Runs `tsx watch src/server.ts`.                                                    |
+| `build`        | Compiles with `tsc` into `server/dist/`.                                           |
+| `start`        | Runs `node dist/server.js`.                                                        |
+| `bootstrap:db` | Creates the Neo4j constraints, the welcome screen and the help content if missing. |
 
 ## Checks
 
@@ -124,8 +123,7 @@ Run `pnpm lint` before opening a PR.
 - Use pnpm only.
 - When you add a new top-level route prefix to the backend, also add it to the `server.proxy`
   map in `vite.config.js`. The dev server does not forward unlisted prefixes.
-- The live Neo4j database is the source of truth for wizard content. `docs/wizardGraph.json`
-  is seed data only and is usually out of date.
+- The live Neo4j database is the only source of wizard content. Admins edit it in `/admin`.
 
 ## Documentation
 

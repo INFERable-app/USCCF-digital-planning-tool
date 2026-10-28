@@ -10,7 +10,7 @@ export async function getOidcClient(): Promise<Client> {
     client_id: config.GOOGLE_CLIENT_ID,
     client_secret: config.GOOGLE_CLIENT_SECRET,
     redirect_uris: [config.GOOGLE_REDIRECT_URI],
-    response_types: ['code'],
+    response_types: ['code']
   });
   return _client;
 }

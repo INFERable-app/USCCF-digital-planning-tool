@@ -10,36 +10,36 @@ const FONT = '11px Inter, system-ui, sans-serif';
 
 let ctx;
 function getContext() {
-	if (!ctx) {
-		ctx = document.createElement('canvas').getContext('2d');
-		ctx.font = FONT;
-	}
-	return ctx;
+  if (!ctx) {
+    ctx = document.createElement('canvas').getContext('2d');
+    ctx.font = FONT;
+  }
+  return ctx;
 }
 
 export function measureLabel(text) {
-	if (!text) return { width: 0, height: 0 };
-	const context = getContext();
-	const words = text.split(' ');
+  if (!text) return { width: 0, height: 0 };
+  const context = getContext();
+  const words = text.split(' ');
 
-	let lineWidth = 0;
-	let maxLineWidth = 0;
-	let lines = 1;
+  let lineWidth = 0;
+  let maxLineWidth = 0;
+  let lines = 1;
 
-	words.forEach((word, i) => {
-		const wordWidth = context.measureText(i === 0 ? word : ` ${word}`).width;
-		if (lineWidth + wordWidth > MAX_CONTENT_WIDTH && lineWidth > 0) {
-			maxLineWidth = Math.max(maxLineWidth, lineWidth);
-			lineWidth = context.measureText(word).width;
-			lines += 1;
-		} else {
-			lineWidth += wordWidth;
-		}
-	});
-	maxLineWidth = Math.max(maxLineWidth, lineWidth);
+  words.forEach((word, i) => {
+    const wordWidth = context.measureText(i === 0 ? word : ` ${word}`).width;
+    if (lineWidth + wordWidth > MAX_CONTENT_WIDTH && lineWidth > 0) {
+      maxLineWidth = Math.max(maxLineWidth, lineWidth);
+      lineWidth = context.measureText(word).width;
+      lines += 1;
+    } else {
+      lineWidth += wordWidth;
+    }
+  });
+  maxLineWidth = Math.max(maxLineWidth, lineWidth);
 
-	return {
-		width: Math.min(maxLineWidth, MAX_CONTENT_WIDTH) + HORIZONTAL_PADDING,
-		height: lines * LINE_HEIGHT + VERTICAL_PADDING
-	};
+  return {
+    width: Math.min(maxLineWidth, MAX_CONTENT_WIDTH) + HORIZONTAL_PADDING,
+    height: lines * LINE_HEIGHT + VERTICAL_PADDING
+  };
 }

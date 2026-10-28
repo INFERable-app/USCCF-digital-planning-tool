@@ -1,71 +1,71 @@
 /* Inherits every type property from the class it is given so a field looks
    identical whether it is being edited or not. */
 .editable-text {
-	display: block;
-	width: 100%;
-	font: inherit;
-	color: inherit;
-	line-height: inherit;
-	letter-spacing: inherit;
-	text-align: inherit;
-	background: transparent;
-	border: 1px dashed var(--color-navy-midnight-alpha-20);
-	border-radius: 4px;
-	padding: 6px 10px;
-	margin: -6px -10px;
-	resize: none;
-	field-sizing: content;
-	overflow-y: auto;
-	/* These fields are items in scrolling flex columns, and a textarea is a
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  background: transparent;
+  border: 1px dashed var(--color-navy-midnight-alpha-20);
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  resize: none;
+  field-sizing: content;
+  overflow-y: auto;
+  /* These fields are items in scrolling flex columns, and a textarea is a
 	   scroll container, so its automatic minimum size is zero — without this it
 	   gets squashed to nothing when the column overflows. */
-	flex-shrink: 0;
-	cursor: text;
+  flex-shrink: 0;
+  cursor: text;
 }
 
 /* Browsers without field-sizing keep a readable, scrollable box. */
 @supports not (field-sizing: content) {
-	textarea.editable-text {
-		min-height: 6em;
-	}
+  textarea.editable-text {
+    min-height: 6em;
+  }
 }
 
 .editable-text::placeholder {
-	color: var(--color-navy-midnight-alpha-50);
-	font-style: italic;
+  color: var(--color-navy-midnight-alpha-50);
+  font-style: italic;
 }
 
 .editable-text:hover {
-	border-color: var(--color-navy-midnight-alpha-50);
-	background: var(--surface-page);
+  border-color: var(--color-navy-midnight-alpha-50);
+  background: var(--surface-page);
 }
 
 .editable-text:focus {
-	outline: none;
-	border-style: solid;
-	border-color: var(--color-blue-electric);
-	box-shadow: 0 0 0 1px var(--color-blue-electric);
-	background: var(--surface-page);
+  outline: none;
+  border-style: solid;
+  border-color: var(--color-blue-electric);
+  box-shadow: 0 0 0 1px var(--color-blue-electric);
+  background: var(--surface-page);
 }
 
 /* Inside a filled choice button the dashed hairline needs to read on a dark
    fill rather than a white one. */
 .btn-choice .editable-text,
 .btn-primary .editable-text {
-	border-color: color-mix(in srgb, var(--color-white) 45%, transparent);
-	margin: 0;
-	padding: 0;
+  border-color: color-mix(in srgb, var(--color-white) 45%, transparent);
+  margin: 0;
+  padding: 0;
 }
 
 .btn-choice .editable-text:hover,
 .btn-primary .editable-text:hover {
-	background: color-mix(in srgb, var(--color-white) 10%, transparent);
-	border-color: color-mix(in srgb, var(--color-white) 70%, transparent);
+  background: color-mix(in srgb, var(--color-white) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-white) 70%, transparent);
 }
 
 .btn-choice .editable-text:focus,
 .btn-primary .editable-text:focus {
-	background: color-mix(in srgb, var(--color-white) 14%, transparent);
-	border-color: var(--color-blue-ice);
-	box-shadow: 0 0 0 2px var(--color-cyan-sky);
+  background: color-mix(in srgb, var(--color-white) 14%, transparent);
+  border-color: var(--color-blue-ice);
+  box-shadow: 0 0 0 2px var(--color-cyan-sky);
 }

@@ -2,17 +2,17 @@ services:
   app:
     build:
       context: .
-      args:
-        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
     container_name: usccf-planning-tool
+    restart: unless-stopped
     ports:
-      - "8080:80"
+      - '127.0.0.1:8080:80'
 
   gateway:
     build:
       context: .
       dockerfile: server/Dockerfile
     container_name: usccf-gateway
+    restart: unless-stopped
     environment:
       PORT: 3001
       SESSION_SECRET: ${SESSION_SECRET}
@@ -22,31 +22,41 @@ services:
       NEO4J_URI: bolt://neo4j:7687
       NEO4J_USER: ${NEO4J_USER}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-      GRAPH_BACKEND: neo4j
       WEB_ORIGIN: ${WEB_ORIGIN}
       NODE_ENV: production
       ADMIN_EMAILS: ${ADMIN_EMAILS}
+      USER_ID_KEYS: ${USER_ID_KEYS}
+      ADMIN_INDEX_KEYS: ${ADMIN_INDEX_KEYS}
+      ADMIN_ENC_KEYS: ${ADMIN_ENC_KEYS}
       UPLOADS_DIR: ./uploads
     ports:
-      - "127.0.0.1:3001:3001"
+      - '127.0.0.1:3001:3001'
     volumes:
       - uploads_data:/app/server/uploads
     depends_on:
-      - neo4j
+      neo4j:
+        condition: service_healthy
 
   neo4j:
     image: neo4j:5
     container_name: usccf-neo4j
+    restart: unless-stopped
     environment:
       NEO4J_AUTH: ${NEO4J_USER}/${NEO4J_PASSWORD}
       NEO4J_server_memory_pagecache_size: 32m
       NEO4J_server_memory_heap_initial__size: 96m
       NEO4J_server_memory_heap_max__size: 96m
     ports:
-      - "127.0.0.1:7687:7687"
-      - "127.0.0.1:7474:7474"
+      - '127.0.0.1:7687:7687'
+      - '127.0.0.1:7474:7474'
     volumes:
       - neo4j_data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO /dev/null http://localhost:7474 || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
 volumes:
   neo4j_data:

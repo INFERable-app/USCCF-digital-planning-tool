@@ -1,507 +1,530 @@
-*, *::before, *::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	background: var(--surface-app);
-	color: var(--text-primary);
-	font-family: 'Roboto', sans-serif;
+  background: var(--surface-app);
+  color: var(--text-primary);
+  font-family: 'Roboto', sans-serif;
 }
 
 :focus-visible {
-	outline: 3px solid var(--color-blue-electric);
-	outline-offset: 2px;
+  outline: 3px solid var(--color-blue-electric);
+  outline-offset: 2px;
 }
 
 /* ── Shell ────────────────────────────────────────────────────────────────── */
 .app-shell {
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	min-height: 100dvh;
-	padding: 40px 16px 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100dvh;
+  padding: 40px 16px 60px;
 }
 
 /* ── iPhone 17 bezel ──────────────────────────────────────────────────────── */
 .phone-chrome {
-	position: relative;
-	background: linear-gradient(160deg, var(--color-navy-deep) 0%, var(--color-navy-midnight) 100%);
-	border-radius: 56px;
-	padding: 14px;
-	box-shadow:
-		inset 0 0 0 1px var(--color-navy-midnight-alpha-20),
-		0 32px 90px var(--color-navy-midnight-alpha-50),
-		0 8px 24px var(--color-navy-midnight-alpha-40);
-	flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(160deg, var(--color-navy-deep) 0%, var(--color-navy-midnight) 100%);
+  border-radius: 56px;
+  padding: 14px;
+  box-shadow:
+    inset 0 0 0 1px var(--color-navy-midnight-alpha-20),
+    0 32px 90px var(--color-navy-midnight-alpha-50),
+    0 8px 24px var(--color-navy-midnight-alpha-40);
+  flex-shrink: 0;
 }
 
 /* Left side: action button + volume up + volume down */
 .phone-chrome::before {
-	content: '';
-	position: absolute;
-	left: -4px;
-	top: 108px;
-	width: 4px;
-	height: 30px;
-	background: var(--color-navy-deep);
-	border-radius: 2px 0 0 2px;
-	box-shadow: 0 54px 0 var(--color-navy-deep), 0 98px 0 var(--color-navy-deep);
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 108px;
+  width: 4px;
+  height: 30px;
+  background: var(--color-navy-deep);
+  border-radius: 2px 0 0 2px;
+  box-shadow:
+    0 54px 0 var(--color-navy-deep),
+    0 98px 0 var(--color-navy-deep);
 }
 
 /* Right side: power button */
 .phone-chrome::after {
-	content: '';
-	position: absolute;
-	right: -4px;
-	top: 168px;
-	width: 4px;
-	height: 62px;
-	background: var(--color-navy-deep);
-	border-radius: 0 2px 2px 0;
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 168px;
+  width: 4px;
+  height: 62px;
+  background: var(--color-navy-deep);
+  border-radius: 0 2px 2px 0;
 }
 
 /* ── Phone frame (screen glass) ───────────────────────────────────────────── */
 .app-screen {
-	position: relative;
-	width: 402px;
-	height: 874px;
-	background: var(--surface-app);
-	border-radius: 44px;
-	overflow: hidden;
+  position: relative;
+  width: 402px;
+  height: 874px;
+  background: var(--surface-app);
+  border-radius: 44px;
+  overflow: hidden;
 }
 
 /* Dynamic Island */
 .dynamic-island {
-	position: absolute;
-	top: 11px;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 126px;
-	height: 37px;
-	background: var(--color-black);
-	border-radius: 20px;
-	z-index: 50;
-	pointer-events: none;
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 37px;
+  background: var(--color-black);
+  border-radius: 20px;
+  z-index: 50;
+  pointer-events: none;
 }
 
 /* Home indicator */
 .home-indicator {
-	position: absolute;
-	bottom: 10px;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 130px;
-	height: 5px;
-	background: var(--color-navy-midnight-alpha-20);
-	border-radius: 3px;
-	z-index: 50;
-	pointer-events: none;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 5px;
+  background: var(--color-navy-midnight-alpha-20);
+  border-radius: 3px;
+  z-index: 50;
+  pointer-events: none;
 }
 
 /* ── Status bar (back button lives here) ──────────────────────────────────── */
 .status-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 59px;
-	display: flex;
-	align-items: center;
-	padding: 0 20px;
-	z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 59px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 10;
 }
 
 /* ── Shared screen wrapper ────────────────────────────────────────────────── */
 .screen {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* ── Narrow viewports: revert to full-screen ──────────────────────────────── */
 @media (max-width: 767px) {
-	.app-shell {
-		padding: 0;
-		align-items: stretch;
-	}
-	.phone-chrome {
-		width: 100%;
-		border-radius: 0;
-		padding: 0;
-		background: var(--surface-app);
-		box-shadow: none;
-	}
-	.phone-chrome::before,
-	.phone-chrome::after {
-		display: none;
-	}
-	.app-screen {
-		width: 100%;
-		height: auto;
-		min-height: 100dvh;
-		border-radius: 0;
-	}
-	.dynamic-island,
-	.home-indicator {
-		display: none;
-	}
-	.screen {
-		height: auto;
-		min-height: 100dvh;
-	}
-	.btn-choice {
-		width: auto;
-	}
+  .app-shell {
+    padding: 0;
+    align-items: stretch;
+  }
+  .phone-chrome {
+    width: 100%;
+    border-radius: 0;
+    padding: 0;
+    background: var(--surface-app);
+    box-shadow: none;
+  }
+  .phone-chrome::before,
+  .phone-chrome::after {
+    display: none;
+  }
+  .app-screen {
+    width: 100%;
+    height: auto;
+    min-height: 100dvh;
+    border-radius: 0;
+  }
+  .dynamic-island,
+  .home-indicator {
+    display: none;
+  }
+  .screen {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .btn-choice {
+    width: auto;
+  }
 }
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
 .btn-primary {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	padding: 10px 32px;
-	background: var(--accent-primary);
-	color: var(--text-inverse);
-	font-family: 'Roboto', sans-serif;
-	font-size: 19px;
-	font-weight: 700;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	text-align: center;
-	text-decoration: none;
-	letter-spacing: 0.02em;
-	box-shadow: 0 2px 0 var(--color-navy-midnight), 0 2px 10px var(--color-navy-midnight-alpha-20);
-	transition: background 0.15s ease, box-shadow 0.1s ease, transform 0.1s ease;
-	line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 32px;
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  font-family: 'Roboto', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 2px 0 var(--color-navy-midnight),
+    0 2px 10px var(--color-navy-midnight-alpha-20);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.1s ease,
+    transform 0.1s ease;
+  line-height: 1.1;
 }
 
 .btn-primary:hover {
-	background: var(--color-navy-deep);
+  background: var(--color-navy-deep);
 }
 
 .btn-primary:active {
-	box-shadow: 0 0px 0 var(--color-navy-midnight), 0 1px 4px var(--color-navy-midnight-alpha-20);
-	transform: translateY(2px);
+  box-shadow:
+    0 0px 0 var(--color-navy-midnight),
+    0 1px 4px var(--color-navy-midnight-alpha-20);
+  transform: translateY(2px);
 }
 
 .btn-primary:disabled {
-	background: var(--color-navy-midnight-alpha-40);
-	box-shadow: none;
-	cursor: not-allowed;
+  background: var(--color-navy-midnight-alpha-40);
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	padding: 10px 32px;
-	background: var(--surface-page);
-	color: var(--accent-primary);
-	font-family: 'Roboto', sans-serif;
-	font-size: 17px;
-	font-weight: 400;
-	border: 2px solid var(--accent-primary);
-	border-radius: 6px;
-	cursor: pointer;
-	text-align: center;
-	letter-spacing: 0.02em;
-	box-shadow: 0 2px 6px var(--color-navy-midnight-alpha-10);
-	transition: background 0.15s ease, box-shadow 0.1s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 32px;
+  background: var(--surface-page);
+  color: var(--accent-primary);
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  border: 2px solid var(--accent-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px var(--color-navy-midnight-alpha-10);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.1s ease,
+    transform 0.1s ease;
 }
 
 .btn-secondary:hover {
-	background: var(--color-blue-ice);
+  background: var(--color-blue-ice);
 }
 
 .btn-secondary:active {
-	box-shadow: 0 1px 2px var(--color-navy-midnight-alpha-10);
-	transform: translateY(1px);
+  box-shadow: 0 1px 2px var(--color-navy-midnight-alpha-10);
+  transform: translateY(1px);
 }
 
 .btn-choice {
-	display: flex;
-	align-items: center;
-	width: 100%;
-	padding: 10px 16px;
-	background: var(--accent-primary);
-	color: var(--text-inverse);
-	font-family: 'Roboto', sans-serif;
-	font-size: 20px;
-	font-weight: 700;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	text-align: left;
-	letter-spacing: 0.02em;
-	line-height: 1.2;
-	box-shadow: 0 2px 0 var(--color-navy-midnight), 0 2px 10px var(--color-navy-midnight-alpha-20);
-	transition: background 0.15s ease, box-shadow 0.1s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  box-shadow:
+    0 2px 0 var(--color-navy-midnight),
+    0 2px 10px var(--color-navy-midnight-alpha-20);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.1s ease,
+    transform 0.1s ease;
 }
 
 .btn-choice:hover:not(:disabled) {
-	background: var(--color-navy-deep);
+  background: var(--color-navy-deep);
 }
 
 .btn-choice:active:not(:disabled) {
-	box-shadow: 0 0px 0 var(--color-navy-midnight), 0 1px 4px var(--color-navy-midnight-alpha-20);
-	transform: translateY(2px);
+  box-shadow:
+    0 0px 0 var(--color-navy-midnight),
+    0 1px 4px var(--color-navy-midnight-alpha-20);
+  transform: translateY(2px);
 }
 
 .btn-choice:disabled {
-	background: var(--color-navy-midnight-alpha-40);
-	box-shadow: none;
-	color: var(--surface-panel);
-	cursor: not-allowed;
+  background: var(--color-navy-midnight-alpha-40);
+  box-shadow: none;
+  color: var(--surface-panel);
+  cursor: not-allowed;
 }
 
 .btn-back {
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-family: 'Roboto', sans-serif;
-	font-size: 14px;
-	color: var(--accent-primary);
-	padding: 0;
-	line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--accent-primary);
+  padding: 0;
+  line-height: 1;
 }
 
 .btn-back:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
 .sidebar-open-btn {
-	display: none;
+  display: none;
 }
 
 /* Close button lives in the sidebar heading row, right side */
 .sidebar-close-btn {
-	display: flex;
-	background: none;
-	border: none;
-	border-radius: 6px;
-	padding: 4px;
-	cursor: pointer;
-	color: var(--accent-primary);
-	transition: background 0.15s ease;
+  display: flex;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--accent-primary);
+  transition: background 0.15s ease;
 }
 
 .sidebar-close-btn:hover {
-	background: var(--surface-page);
+  background: var(--surface-page);
 }
 
 /* Logo doubles as the Home button */
 .logo-home-btn {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	background: none;
-	border: none;
-	padding: 0;
-	color: var(--accent-primary);
-	cursor: pointer;
-	transition: color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent-primary);
+  cursor: pointer;
+  transition: color 0.15s ease;
 }
 
 /* Hover deepens the mark and wordmark together */
 .logo-home-btn:hover {
-	color: var(--color-navy-midnight);
+  color: var(--color-navy-midnight);
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.logo-home-btn {
-		transition: none;
-	}
+  .logo-home-btn {
+    transition: none;
+  }
 }
 
 /* Mobile-only nav button in the header bar */
 .mobile-nav-btn {
-	display: flex;
-	background: none;
-	border: none;
-	border-radius: 6px;
-	padding: 4px;
-	cursor: pointer;
-	color: var(--accent-primary);
+  display: flex;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--accent-primary);
 }
 
 /* ── Fixed bottom CTA ─────────────────────────────────────────────────────── */
 .bottom-cta {
-	flex-shrink: 0;
-	padding: 12px 17px 90px;
+  flex-shrink: 0;
+  padding: 12px 17px 90px;
 }
 
 .cta-back {
-	display: none;
+  display: none;
 }
 
 /* Hide hero-screen CTA row on mobile (back button already in header) */
 .screen:not(.screen-compact) .bottom-cta {
-	display: none;
+  display: none;
 }
 
 /* ── Desktop layout (≥ 768px) ─────────────────────────────────────────────── */
 @media (min-width: 768px) {
-	/* Dissolve phone chrome */
-	.app-shell {
-		padding: 0;
-		align-items: stretch;
-	}
-	.phone-chrome {
-		width: 100%;
-		border-radius: 0;
-		padding: 0;
-		background: var(--surface-app);
-		box-shadow: none;
-	}
-	.phone-chrome::before,
-	.phone-chrome::after {
-		display: none;
-	}
-	.app-screen {
-		width: 100%;
-		height: 100dvh;
-		border-radius: 0;
-		overflow: unset;
-		display: flex;
-		flex-direction: column;
-	}
-	.dynamic-island,
-	.home-indicator {
-		display: none;
-	}
+  /* Dissolve phone chrome */
+  .app-shell {
+    padding: 0;
+    align-items: stretch;
+  }
+  .phone-chrome {
+    width: 100%;
+    border-radius: 0;
+    padding: 0;
+    background: var(--surface-app);
+    box-shadow: none;
+  }
+  .phone-chrome::before,
+  .phone-chrome::after {
+    display: none;
+  }
+  .app-screen {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    overflow: unset;
+    display: flex;
+    flex-direction: column;
+  }
+  .dynamic-island,
+  .home-indicator {
+    display: none;
+  }
 
-	/* Screen grid: header row | content row | CTA row, two columns */
-	.screen {
-		display: grid;
-		grid-template-columns: 40% 60%;
-		grid-template-rows: auto auto 1fr auto;
-		flex: 1;
-		min-height: 0;
-		height: auto;
-	}
+  /* Screen grid: header row | content row | CTA row, two columns */
+  .screen {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: auto auto 1fr auto;
+    flex: 1;
+    min-height: 0;
+    height: auto;
+  }
 
-	/* CTA row buttons only — scoped so content-area buttons stay full-width */
-	.bottom-cta .btn-primary,
-	.bottom-cta .btn-secondary {
-		width: fit-content;
-		font-size: 20px;
-		padding: 14px 56px;
-	}
+  /* CTA row buttons only — scoped so content-area buttons stay full-width */
+  .bottom-cta .btn-primary,
+  .bottom-cta .btn-secondary {
+    width: fit-content;
+    font-size: 20px;
+    padding: 14px 56px;
+  }
 
-	.btn-choice {
-		font-size: 20px;
-		padding: 18px 24px;
-	}
+  .btn-choice {
+    font-size: 20px;
+    padding: 18px 24px;
+  }
 
-	/* ── Grid transition ─────────────────────────────────────────────────────── */
-	.screen {
-		transition: grid-template-columns 0.35s ease;
-	}
+  /* ── Grid transition ─────────────────────────────────────────────────────── */
+  .screen {
+    transition: grid-template-columns 0.35s ease;
+  }
 
-	/* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
-	.mobile-nav-btn {
-		display: none;
-	}
+  /* ── Sidebar toggle buttons ──────────────────────────────────────────────── */
+  .mobile-nav-btn {
+    display: none;
+  }
 
-	/* Open button lives in the content column — shown only when sidebar is closed */
-	.sidebar-open-btn {
-		display: none;
-	}
+  /* Open button lives in the content column — shown only when sidebar is closed */
+  .sidebar-open-btn {
+    display: none;
+  }
 
-	.top-hero .sidebar-open-btn,
-	.compact-header .sidebar-open-btn {
-		grid-column: 2;
-		grid-row: 2;
-		align-self: start;
-		justify-self: start;
-		z-index: 5;
-		background: none;
-		border: none;
-		border-radius: 6px;
-		padding: 4px;
-		cursor: pointer;
-		color: var(--accent-primary);
-		transition: background 0.15s ease;
-	}
+  .top-hero .sidebar-open-btn,
+  .compact-header .sidebar-open-btn {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    justify-self: start;
+    z-index: 5;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--accent-primary);
+    transition: background 0.15s ease;
+  }
 
-	.top-hero .sidebar-open-btn {
-		margin-top: 20px;
-		margin-left: 20px;
-	}
+  .top-hero .sidebar-open-btn {
+    margin-top: 20px;
+    margin-left: 20px;
+  }
 
-	.compact-header .sidebar-open-btn {
-		margin-top: 24px;
-		margin-left: 20px;
-	}
+  .compact-header .sidebar-open-btn {
+    margin-top: 24px;
+    margin-left: 20px;
+  }
 
-	.top-hero .sidebar-open-btn:hover,
-	.compact-header .sidebar-open-btn:hover {
-		background: var(--surface-page);
-	}
+  .top-hero .sidebar-open-btn:hover,
+  .compact-header .sidebar-open-btn:hover {
+    background: var(--surface-page);
+  }
 
-	.drawer-closed .top-hero .sidebar-open-btn,
-	.drawer-closed .compact-header .sidebar-open-btn {
-		display: flex;
-	}
+  .drawer-closed .top-hero .sidebar-open-btn,
+  .drawer-closed .compact-header .sidebar-open-btn {
+    display: flex;
+  }
 
-	/* ── Drawer-closed layout ─────────────────────────────────────────────────── */
-	.drawer-closed .screen {
-		grid-template-columns: 0% 100%;
-	}
+  /* ── Drawer-closed layout ─────────────────────────────────────────────────── */
+  .drawer-closed .screen {
+    grid-template-columns: 0% 100%;
+  }
 
-	.drawer-closed .top-hero .usecase-nav,
-	.drawer-closed .compact-header .usecase-nav {
-		transform: translateX(-100%);
-	}
+  .drawer-closed .top-hero .usecase-nav,
+  .drawer-closed .compact-header .usecase-nav {
+    transform: translateX(-100%);
+  }
 }
 
 /* ── Edit mode ────────────────────────────────────────────────────────────── */
 /* The bar is a sibling above .phone-chrome, so the shell stacks instead of
    centering its single child. */
 .app-shell:has(.edit-bar) {
-	flex-direction: column;
-	align-items: stretch;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* Choice buttons stop behaving like buttons while editing — the label is the
    edit target and the arrow chip does the navigating. */
 .edit-mode .btn-choice,
 .edit-mode .btn-primary {
-	cursor: default;
+  cursor: default;
 }
 
 .edit-mode .btn-choice:active,
 .edit-mode .btn-primary:active {
-	transform: none;
-	box-shadow: 0 2px 0 var(--color-navy-midnight), 0 2px 10px var(--color-navy-midnight-alpha-20);
+  transform: none;
+  box-shadow:
+    0 2px 0 var(--color-navy-midnight),
+    0 2px 10px var(--color-navy-midnight-alpha-20);
 }
 
 /* Disabled options stay visible and editable rather than greyed out of reach. */
 .edit-mode .btn-choice:disabled {
-	background: var(--color-navy-midnight-alpha-40);
-	color: var(--surface-panel);
+  background: var(--color-navy-midnight-alpha-40);
+  color: var(--surface-panel);
 }
 
 /* Hero screens hide their CTA row on mobile; edit mode needs it back so the
    submit-label field is reachable. */
 .edit-mode .screen:not(.screen-compact) .bottom-cta {
-	display: block;
+  display: block;
 }
 
 .video-edit-fields {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .video-edit-field {
-	font-size: 14px;
-	font-family: ui-monospace, 'SF Mono', monospace;
-	color: var(--text-primary);
+  font-size: 14px;
+  font-family: ui-monospace, 'SF Mono', monospace;
+  color: var(--text-primary);
 }

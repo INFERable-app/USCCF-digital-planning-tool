@@ -92,26 +92,22 @@ The connectors:
 | `neo4j`     | `driver.ts` creates one shared Neo4j driver on first use. |
 | `xapi`      | A README describing a future integration. No code.        |
 
-The graph connector has a second implementation, `stubRepository.ts`:
-
-- It serves `docs/wizardGraph.json` from memory when `GRAPH_BACKEND=stub`.
-- Writes to it are lost on restart.
-- Progress and admins always use Neo4j, so the stub only helps rough front-end work.
-
 ### Authorization
 
 `server/src/middleware.ts` has two guards:
 
 - `requireAuth` requires a signed-in user on the session. Otherwise it returns 401.
-- `requireAdmin` requires a signed-in user whose email passes `isAdminEmail`. Otherwise it
-  returns 401 or 403.
+- `requireAdmin` requires a signed-in user whose `adminIndex` passes `isAdminIndex`. Otherwise
+  it returns 401 or 403.
 
-`isAdminEmail` lives in `connectors/admins/isAdminEmail.ts`. It lowercases the email and
-returns true in either of two cases:
+At sign-in, the session stores `adminIndex`: the HMAC of the lowercased email under the current
+`ADMIN_INDEX_KEYS` key. `isAdminIndex` lives in `connectors/admins/isAdminEmail.ts` and returns
+true in either of two cases:
 
-- The email is in the `ADMIN_EMAILS` env var. This is a break-glass list, so a fresh or
-  unreachable database still has an admin.
-- The email matches an `(:Admin)` node in Neo4j.
+- The index matches an email in the `ADMIN_EMAILS` env var, hashed once at startup. This is a
+  break-glass list, so a fresh or unreachable database still has an admin.
+- The index matches an `(:Admin)` node's `emailIndex`. The boot migration keeps every admin on
+  the current key, so one comparison is enough.
 
 If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 
@@ -123,7 +119,7 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 | `GET`    | `/auth/login`                 | none           | Starts Google sign-in with PKCE and redirects to Google.                |
 | `GET`    | `/auth/callback`              | none           | Google's redirect target. Creates the session.                          |
 | `POST`   | `/auth/logout`                | none           | Destroys the session and clears the cookie.                             |
-| `GET`    | `/auth/me`                    | session        | The current user: `{ sub, email, name, picture, isAdmin }`. Or 401.     |
+| `GET`    | `/auth/me`                    | session        | The current user: `{ id, email, name, picture, isAdmin }`. Or 401.      |
 | `GET`    | `/api/graph`                  | `requireAuth`  | The whole wizard graph: `{ startNodeId, nodes, edges }`.                |
 | `PUT`    | `/api/graph`                  | `requireAdmin` | Replaces the whole graph. Used by the graph editor.                     |
 | `GET`    | `/api/graph/nodes/:id`        | `requireAuth`  | One node.                                                               |
@@ -140,7 +136,10 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 | `GET`    | `/api/resources/files/<name>` | `requireAuth`  | Serves an uploaded PDF from `UPLOADS_DIR`.                              |
 | `GET`    | `/api/admins`                 | `requireAdmin` | `{ admins, bootstrap }`: Neo4j admins and the `ADMIN_EMAILS` list.      |
 | `POST`   | `/api/admins`                 | `requireAdmin` | Adds an admin from body `{ email }`.                                    |
+| `DELETE` | `/api/admins/by-index/:id`    | `requireAdmin` | Removes an admin by `emailIndex`. Used for unreadable rows.             |
 | `DELETE` | `/api/admins/:email`          | `requireAdmin` | Removes an admin. Refuses your own email and the last admin.            |
+| `GET`    | `/api/content/:key`           | `requireAuth`  | `{ items }` for `resources`, `faq` or `glossary`. 404 if missing.       |
+| `PUT`    | `/api/content/:key`           | `requireAdmin` | Replaces a collection from body `{ items }`. Invalid items return 400.  |
 | `GET`    | `/admin`                      | session        | The gate for the graph editor. See below.                               |
 
 ## Sign-in
@@ -158,6 +157,11 @@ Setup: create a Google OAuth client and set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_S
   also decides where users land.
 - The backend discovers the OIDC client from `https://accounts.google.com` on first use and
   caches it.
+- `/auth/callback` regenerates the session id, hashes the Google `sub` and stores
+  `{ idHash, adminIndex, email, name, picture }` in the session. The raw `sub` is not kept.
+  `email`, `name` and `picture` are display-only and are never written to Neo4j. See
+  [Identities](data-model.md#identities).
+- `/auth/me` returns the hash as `id`, and never `adminIndex`.
 - Nothing records sign-ins. A `(:User)` node appears only when a user's progress is first
   saved.
 
@@ -263,13 +267,14 @@ nothing.
 
 ### Content outside the graph
 
-The Resource Library, FAQ and Glossary overlays read hard-coded data:
-
-- `src/data/staticResources.js`
-- `src/data/faqData.js`
-- `src/data/glossaryData.js`
-
-Changing them needs a code change and a deploy.
+The Resource Library, FAQ and Glossary overlays load their content from `:Content` nodes
+through `GET /api/content/:key` (`src/hooks/useContent.js`), the first time each overlay
+opens. In edit mode each overlay shows an inline editor with its own Save and Cancel buttons.
+Save sends `PUT /api/content/:key` with the whole list. It is separate from the edit-mode
+bar's Save, which only covers the graph. Admins also get an "Edit mode" switch in each
+panel's header, which turns the global edit mode on or off without closing the panel, and an
+Edit / Preview choice that shows the unsaved draft as visitors will see it. Two admins saving the same collection overwrite
+each other; the last save wins.
 
 ## Editing content
 
@@ -332,11 +337,6 @@ resource uses them.
 
 ## Peripheral and legacy pieces
 
-- **`docs/index.html`** is the original standalone graph editor, built on Mermaid. GitHub
-  Pages still publishes it from `main:/docs`. It is not connected to Neo4j.
-- **`.github/workflows/update-wizard-graph.yml`** is a manual workflow the legacy editor used
-  to commit a new `docs/wizardGraph.json`. Nothing reads that file at runtime, so the workflow
-  no longer affects the live app.
 - **`.github/workflows/add-to-project.yml`** adds new issues to the INFERable org project
   board.
 - **`server/src/connectors/xapi/`** is a placeholder for a future xAPI learning-analytics
@@ -356,9 +356,6 @@ resource uses them.
   `Missing PKCE session` on `/auth/callback`. Kill the stale process.
 - **The start node is hard-coded.** `neo4jRepository.getWizardGraph` always returns
   `welcome` as `startNodeId`. The per-node delete route refuses to delete it.
-- **Leftover Google client config.** `VITE_GOOGLE_CLIENT_ID` and the `@react-oauth/google`
-  dependency come from the old client-side sign-in. The Dockerfile and `compose.yaml` still
-  pass the variable. Nothing in `src/` uses either.
 - **Some node fields do nothing.** `layout` and `challengeBar` are stored and editable, but
   no component reads them. `checkboxSurvey` ignores `submitLabel`. See
   [data-model.md](data-model.md#quirks).

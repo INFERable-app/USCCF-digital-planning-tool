@@ -1,15 +1,14 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { requireAuth, requireAdmin } from '../../middleware.js';
-import { stubRepository } from './stubRepository.js';
 import { createNeo4jRepository } from './neo4jRepository.js';
-import { config } from '../../config.js';
 import type { GraphRepository, WizardGraph, GraphNode, GraphEdge } from './types.js';
 
-const repo: GraphRepository =
-  config.GRAPH_BACKEND === 'neo4j'
-    ? createNeo4jRepository()
-    : stubRepository;
+const repo: GraphRepository = createNeo4jRepository();
+
+// The start node id is fixed server-side (see neo4jRepository.getWizardGraph),
+// so deleting it would leave the wizard with no entry point.
+const START_NODE_ID = 'welcome';
 
 const router = Router();
 
@@ -46,6 +45,12 @@ router.put('/graph', requireAdmin, async (req, res) => {
     res.status(400).json({ error: 'Invalid graph: nodes and edges are required' });
     return;
   }
+  if (!body.nodes[START_NODE_ID]) {
+    res
+      .status(400)
+      .json({ error: `Invalid graph: the start screen "${START_NODE_ID}" is missing` });
+    return;
+  }
   try {
     await repo.replaceGraph(body);
     res.json({ ok: true });
@@ -61,7 +66,7 @@ const nodeSchema = z
     type: z.string().min(1),
     layout: z.enum(['hero', 'compact']),
     challengeBar: z.boolean(),
-    edgeIds: z.array(z.string()),
+    edgeIds: z.array(z.string())
   })
   .passthrough();
 
@@ -69,15 +74,11 @@ const edgeSchema = z
   .object({
     id: z.string().min(1),
     label: z.string(),
-    targetNodeId: z.string().min(1),
+    targetNodeId: z.string().min(1)
   })
   .passthrough();
 
 const createEdgeSchema = z.object({ sourceId: z.string().min(1), edge: edgeSchema });
-
-// The start node id is fixed server-side (see neo4jRepository.getWizardGraph),
-// so deleting it would leave the wizard with no entry point.
-const START_NODE_ID = 'welcome';
 
 router.post('/graph/nodes', requireAdmin, async (req, res) => {
   const parsed = nodeSchema.safeParse(req.body?.node);

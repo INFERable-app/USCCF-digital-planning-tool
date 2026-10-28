@@ -6,38 +6,38 @@ import VideoInfoNode from './nodes/VideoInfoNode.jsx';
 import ResultsNode from './nodes/ResultsNode.jsx';
 
 const NODE_COMPONENTS = {
-	welcome: WelcomeNode,
-	multiChoice: MultiChoiceNode,
-	radioSurvey: RadioSurveyNode,
-	checkboxSurvey: CheckboxSurveyNode,
-	videoInfo: VideoInfoNode,
-	results: ResultsNode
+  welcome: WelcomeNode,
+  multiChoice: MultiChoiceNode,
+  radioSurvey: RadioSurveyNode,
+  checkboxSurvey: CheckboxSurveyNode,
+  videoInfo: VideoInfoNode,
+  results: ResultsNode
 };
 
 export default function NodeRenderer({
-	node,
-	nodes,
-	edges,
-	answers,
-	advance,
-	onBack,
-	previousAnswerLabel,
-	isStartNode
+  node,
+  nodes,
+  edges,
+  answers,
+  advance,
+  onBack,
+  previousAnswerLabel,
+  isStartNode
 }) {
-	const NodeComponent = NODE_COMPONENTS[node.type];
-	const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
+  const NodeComponent = NODE_COMPONENTS[node.type];
+  const nodeEdges = node.edgeIds.map((id) => edges[id]).filter(Boolean);
 
-	return (
-		<NodeComponent
-			node={node}
-			nodes={nodes}
-			edges={edges}
-			nodeEdges={nodeEdges}
-			answers={answers}
-			advance={advance}
-			onBack={onBack}
-			previousAnswerLabel={previousAnswerLabel}
-			isStartNode={isStartNode}
-		/>
-	);
+  return (
+    <NodeComponent
+      node={node}
+      nodes={nodes}
+      edges={edges}
+      nodeEdges={nodeEdges}
+      answers={answers}
+      advance={advance}
+      onBack={onBack}
+      previousAnswerLabel={previousAnswerLabel}
+      isStartNode={isStartNode}
+    />
+  );
 }
