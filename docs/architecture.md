@@ -97,15 +97,17 @@ The connectors:
 `server/src/middleware.ts` has two guards:
 
 - `requireAuth` requires a signed-in user on the session. Otherwise it returns 401.
-- `requireAdmin` requires a signed-in user whose email passes `isAdminEmail`. Otherwise it
-  returns 401 or 403.
+- `requireAdmin` requires a signed-in user whose `adminIndex` passes `isAdminIndex`. Otherwise
+  it returns 401 or 403.
 
-`isAdminEmail` lives in `connectors/admins/isAdminEmail.ts`. It lowercases the email and
-returns true in either of two cases:
+At sign-in, the session stores `adminIndex`: the HMAC of the lowercased email under the current
+`ADMIN_INDEX_KEYS` key. `isAdminIndex` lives in `connectors/admins/isAdminEmail.ts` and returns
+true in either of two cases:
 
-- The email is in the `ADMIN_EMAILS` env var. This is a break-glass list, so a fresh or
-  unreachable database still has an admin.
-- The email matches an `(:Admin)` node in Neo4j.
+- The index matches an email in the `ADMIN_EMAILS` env var, hashed once at startup. This is a
+  break-glass list, so a fresh or unreachable database still has an admin.
+- The index matches an `(:Admin)` node's `emailIndex`. The boot migration keeps every admin on
+  the current key, so one comparison is enough.
 
 If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 
@@ -117,7 +119,7 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 | `GET`    | `/auth/login`                 | none           | Starts Google sign-in with PKCE and redirects to Google.                |
 | `GET`    | `/auth/callback`              | none           | Google's redirect target. Creates the session.                          |
 | `POST`   | `/auth/logout`                | none           | Destroys the session and clears the cookie.                             |
-| `GET`    | `/auth/me`                    | session        | The current user: `{ sub, email, name, picture, isAdmin }`. Or 401.     |
+| `GET`    | `/auth/me`                    | session        | The current user: `{ id, email, name, picture, isAdmin }`. Or 401.      |
 | `GET`    | `/api/graph`                  | `requireAuth`  | The whole wizard graph: `{ startNodeId, nodes, edges }`.                |
 | `PUT`    | `/api/graph`                  | `requireAdmin` | Replaces the whole graph. Used by the graph editor.                     |
 | `GET`    | `/api/graph/nodes/:id`        | `requireAuth`  | One node.                                                               |
@@ -134,6 +136,7 @@ If the Neo4j lookup throws, only `ADMIN_EMAILS` counts.
 | `GET`    | `/api/resources/files/<name>` | `requireAuth`  | Serves an uploaded PDF from `UPLOADS_DIR`.                              |
 | `GET`    | `/api/admins`                 | `requireAdmin` | `{ admins, bootstrap }`: Neo4j admins and the `ADMIN_EMAILS` list.      |
 | `POST`   | `/api/admins`                 | `requireAdmin` | Adds an admin from body `{ email }`.                                    |
+| `DELETE` | `/api/admins/by-index/:id`    | `requireAdmin` | Removes an admin by `emailIndex`. Used for unreadable rows.             |
 | `DELETE` | `/api/admins/:email`          | `requireAdmin` | Removes an admin. Refuses your own email and the last admin.            |
 | `GET`    | `/api/content/:key`           | `requireAuth`  | `{ items }` for `resources`, `faq` or `glossary`. 404 if missing.       |
 | `PUT`    | `/api/content/:key`           | `requireAdmin` | Replaces a collection from body `{ items }`. Invalid items return 400.  |
@@ -154,6 +157,11 @@ Setup: create a Google OAuth client and set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_S
   also decides where users land.
 - The backend discovers the OIDC client from `https://accounts.google.com` on first use and
   caches it.
+- `/auth/callback` regenerates the session id, hashes the Google `sub` and stores
+  `{ idHash, adminIndex, email, name, picture }` in the session. The raw `sub` is not kept.
+  `email`, `name` and `picture` are display-only and are never written to Neo4j. See
+  [Identities](data-model.md#identities).
+- `/auth/me` returns the hash as `id`, and never `adminIndex`.
 - Nothing records sign-ins. A `(:User)` node appears only when a user's progress is first
   saved.
 

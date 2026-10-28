@@ -58,7 +58,7 @@ src/
 │  ├─ graph/              /api/graph routes; Neo4j repository
 │  ├─ progress/           /api/progress
 │  ├─ resources/          /api/resources/upload, /api/resources/files
-│  ├─ admins/             /api/admins, isAdminEmail()
+│  ├─ admins/             /api/admins, isAdminIndex()
 │  ├─ content/            /api/content (Resource Library, FAQ, Glossary)
 │  ├─ neo4j/driver.ts     shared Neo4j driver
 │  └─ xapi/               placeholder for a future integration; README only

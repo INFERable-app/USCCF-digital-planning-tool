@@ -26,7 +26,21 @@ async function bootstrap() {
   try {
     await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (n:WizardNode) REQUIRE n.id IS UNIQUE');
 
-    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (a:Admin) REQUIRE a.email IS UNIQUE');
+    // Drops the old plain-text :Admin(email) constraint, which has a generated name
+    const oldAdminConstraints = await session.run(
+      `SHOW CONSTRAINTS YIELD name, labelsOrTypes, properties
+       WHERE labelsOrTypes = ['Admin'] AND properties = ['email']
+       RETURN name`
+    );
+    for (const record of oldAdminConstraints.records) {
+      await session.run(`DROP CONSTRAINT \`${record.get('name') as string}\` IF EXISTS`);
+    }
+
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (u:User) REQUIRE u.idHash IS UNIQUE');
+
+    await session.run(
+      'CREATE CONSTRAINT IF NOT EXISTS FOR (a:Admin) REQUIRE a.emailIndex IS UNIQUE'
+    );
 
     await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (c:Content) REQUIRE c.key IS UNIQUE');
 

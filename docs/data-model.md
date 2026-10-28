@@ -26,8 +26,8 @@ flowchart LR
     WN1[":WizardNode<br/>id, type, question, …<br/>resolversJson, positionX/Y"]
     WN2[":WizardNode"]
     WN1 -- ":OPTION<br/>id, label, order,<br/>storeKey, value, disabled" --> WN2
-    U[":User<br/>sub, progress, updatedAt"]
-    A[":Admin<br/>email, addedBy, addedAt"]
+    U[":User<br/>idHash, keyId, progress, updatedAt"]
+    A[":Admin<br/>emailIndex, indexKeyId,<br/>emailEnc, addedByEnc, addedAt"]
     C[":Content<br/>key, itemsJson, updatedAt"]
 ```
 
@@ -51,15 +51,17 @@ flowchart LR
 **`:User`**
 
 - Written by `connectors/progress/neo4jProgressRepository.ts`.
-- `sub` is the Google subject id.
+- `idHash` is the HMAC of the Google subject id under `USER_ID_KEYS`. `keyId` names the key.
 - `progress` is a JSON string.
 - `updatedAt` is a datetime.
 
 **`:Admin`**
 
 - Written by `connectors/admins/neo4jAdminRepository.ts`.
-- `email` is trimmed and lowercased.
-- `addedBy` is the email of the admin who added it.
+- `emailIndex` is the HMAC of the trimmed, lowercased email under `ADMIN_INDEX_KEYS`.
+  `indexKeyId` names the key.
+- `emailEnc` and `addedByEnc` are the email and the adding admin's email, encrypted with
+  `ADMIN_ENC_KEYS`.
 - `addedAt` is a datetime.
 
 **`:Content`**
@@ -69,13 +71,13 @@ flowchart LR
 - `itemsJson` is the whole list as a JSON string. A save replaces it.
 - `updatedAt` is a datetime.
 
-The bootstrap script creates three uniqueness constraints with `IF NOT EXISTS`:
+The bootstrap script creates four uniqueness constraints with `IF NOT EXISTS`, and drops the
+old `:Admin(email)` constraint if it is still there:
 
 - `:WizardNode(id)`
-- `:Admin(email)`
+- `:User(idHash)`
+- `:Admin(emailIndex)`
 - `:Content(key)`
-
-`:User.sub` has no constraint. Progress writes use `MERGE` on it.
 
 ### How storage maps to the API
 
@@ -268,6 +270,21 @@ Progress is stored on the `:User` node as a JSON string in `progress`. Its shape
 - Emails in the `ADMIN_EMAILS` env var also count as admins. They are not stored in Neo4j.
 - The API refuses to remove the caller's own email or the last stored admin.
 
+## Identities
+
+No plain-text email address or Google `sub` is written to Neo4j. Keys and rotation are covered
+in [configuration.md](configuration.md#user_id_keys-admin_index_keys-and-admin_enc_keys).
+
+- **Users:** `/auth/callback` hashes the `sub` and drops it. The session holds only the hash.
+  If the user's node is on an older key, it is moved to the current one.
+- **Admins:** lookups match `emailIndex` against the email's hash under every index key. The
+  Admins modal shows decrypted emails. A row that can't be decrypted is listed as unreadable
+  and removed through `DELETE /api/admins/by-index/:id`.
+- **Boot migration:** before listening, `server/src/startup/migrateIdentities.ts` hashes any
+  `:User` that still has a `sub`, encrypts any `:Admin` that still has an `email`, and moves
+  every admin onto the current keys. It runs on every boot and does nothing once the data is
+  current. If Neo4j is unreachable, the backend exits and the compose restart policy retries.
+
 ## Help content
 
 The Resource Library, FAQ and Glossary are `:Content` nodes. `PUT /api/content/:key`
@@ -299,7 +316,7 @@ In production: `docker compose exec gateway node dist/seed/bootstrap.js`.
 
 `server/src/seed/bootstrap.ts` does three things:
 
-1. Creates the three uniqueness constraints.
+1. Creates the uniqueness constraints.
 2. Creates a `welcome` node with placeholder text if none exists. It has no buttons.
 3. Creates the `resources`, `faq` and `glossary` `:Content` nodes from
    `server/src/content/defaults.ts` if they don't exist.
@@ -330,7 +347,7 @@ MATCH (n:WizardNode) WHERE NOT ()-[:OPTION]->(n) AND n.id <> 'welcome' RETURN n.
 MATCH ()-[r:OPTION {storeKey: 'challenge'}]->(t:WizardNode) RETURN r.value, t.id;
 
 // Admins
-MATCH (a:Admin) RETURN a.email, a.addedBy, a.addedAt;
+MATCH (a:Admin) RETURN a.emailIndex, a.indexKeyId, a.addedAt;
 ```
 
 ## Quirks

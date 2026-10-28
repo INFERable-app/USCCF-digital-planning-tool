@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { isAdminEmail } from './connectors/admins/isAdminEmail.js';
+import { isAdminIndex } from './connectors/admins/isAdminEmail.js';
 
 export function requireAuth(req: Request, res: Response, next: NextFunction): void {
   if (!req.session.user) {
@@ -16,7 +16,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  isAdminEmail(req.session.user.email)
+  isAdminIndex(req.session.user.adminIndex)
     .then((allowed) => {
       if (!allowed) {
         res.status(403).json({ error: 'Forbidden' });

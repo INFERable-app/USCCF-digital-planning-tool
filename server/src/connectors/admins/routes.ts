@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { requireAdmin } from '../../middleware.js';
-import { normalizeEmail } from './neo4jAdminRepository.js';
+import { currentAdminIndex, normalizeEmail } from './neo4jAdminRepository.js';
 import { adminRepo, bootstrapAdmins } from './isAdminEmail.js';
 
 const router = Router();
@@ -33,9 +33,32 @@ router.post('/admins', requireAdmin, async (req, res) => {
   }
 });
 
+router.delete('/admins/by-index/:id', requireAdmin, async (req, res) => {
+  const index = req.params.id;
+  if (index === req.session.user!.adminIndex) {
+    res.status(400).json({ error: 'You cannot remove yourself.' });
+    return;
+  }
+  try {
+    if (!(await adminRepo.hasIndex(index))) {
+      res.status(404).json({ error: 'Admin not found' });
+      return;
+    }
+    if ((await adminRepo.count()) <= 1) {
+      res.status(400).json({ error: 'Cannot remove the last admin.' });
+      return;
+    }
+    await adminRepo.removeByIndex(index);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('DELETE /api/admins/by-index/:id error:', err);
+    res.status(500).json({ error: 'Failed to remove admin' });
+  }
+});
+
 router.delete('/admins/:email', requireAdmin, async (req, res) => {
   const email = normalizeEmail(req.params.email);
-  if (email === normalizeEmail(req.session.user!.email)) {
+  if (currentAdminIndex(email) === req.session.user!.adminIndex) {
     res.status(400).json({ error: 'You cannot remove yourself.' });
     return;
   }

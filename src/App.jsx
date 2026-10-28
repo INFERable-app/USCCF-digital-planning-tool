@@ -47,14 +47,14 @@ function AppContent({ engine }) {
       .then((data) => {
         setSavedProgress(data);
         if (data) {
-          const isRefresh = sessionStorage.getItem('session-user') === user.sub;
+          const isRefresh = sessionStorage.getItem('session-user') === user.id;
           if (isRefresh) {
             restore(data);
           } else {
             setShowResume(true);
           }
         }
-        sessionStorage.setItem('session-user', user.sub);
+        sessionStorage.setItem('session-user', user.id);
       })
       .catch(() => setSavedProgress(null));
   }, [user]);

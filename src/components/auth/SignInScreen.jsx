@@ -172,17 +172,16 @@ export default function SignInScreen() {
               <div className="signin-privacy-row">
                 <LockIcon />
                 <p>
-                  <strong>Account Verification:</strong> When you log in via OpenID Single Sign-On
-                  (SSO), we immediately convert your email address into a secure cryptographic hash.
-                  We do not store your actual email address, name, or direct personally identifiable
-                  information (PII).
+                  <strong>Account Verification:</strong> Your Google account ID is never stored by
+                  this app. When you sign in, it is converted into a one-way keyed hash, and only
+                  that hash is saved with your progress.
                 </p>
               </div>
               <div className="signin-privacy-row">
                 <ActivityIcon />
                 <p>
-                  <strong>Usage &amp; Choice Logging:</strong> We record actions you take,
-                  preferences you select, and usage activity within the tool.
+                  <strong>Your Progress:</strong> We save your answers and where you are in the
+                  tool, so you can pick up where you left off.
                 </p>
               </div>
 
@@ -190,28 +189,27 @@ export default function SignInScreen() {
               <div className="signin-privacy-row">
                 <SlidersIcon />
                 <p>
-                  <strong>To Personalize Your Experience:</strong> We use your choices and activity
-                  logs to deliver custom features, save your settings, and tailor the app to your
-                  needs.
+                  <strong>To Resume Your Plan:</strong> Your saved answers are used only to restore
+                  your progress and show the guidance that matches your choices.
                 </p>
               </div>
               <div className="signin-privacy-row">
                 <GearIcon />
                 <p>
-                  <strong>To Ensure App Functionality:</strong> Logging this activity is essential
-                  to the core operation of the web tool; without it, the app cannot maintain your
-                  preferences or function correctly.
+                  <strong>While You Are Signed In:</strong> Your name, email address and profile
+                  picture are used only during your session, to show who is signed in. They are
+                  never written to the database.
                 </p>
               </div>
 
               <h3>Data Storage &amp; Security</h3>
               <p>
-                Because your email is hashed, your activity logs cannot be directly traced back to
-                your real-world identity from the logged data.
+                The key used to make the hash is held separately from the database, so your saved
+                progress cannot be traced back to your Google account from the stored data.
               </p>
               <p>
-                We implement strict security measures to protect log data and maintain the integrity
-                of our systems.
+                If you are an administrator of this tool, your email address is stored encrypted so
+                that admin access can be managed.
               </p>
 
               <p className="signin-privacy-beta">
@@ -220,9 +218,8 @@ export default function SignInScreen() {
 
               <h3>Acknowledgement</h3>
               <p>
-                By clicking "I Agree", you acknowledge that you understand how this tool processes
-                your hashed login credentials and essential activity logs to deliver a personalized
-                experience.
+                By clicking "I Agree", you acknowledge that you understand how this tool uses a
+                hashed account ID and your saved progress to let you resume your plan.
               </p>
             </div>
 

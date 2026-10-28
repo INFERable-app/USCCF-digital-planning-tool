@@ -25,6 +25,9 @@ services:
       WEB_ORIGIN: ${WEB_ORIGIN}
       NODE_ENV: production
       ADMIN_EMAILS: ${ADMIN_EMAILS}
+      USER_ID_KEYS: ${USER_ID_KEYS}
+      ADMIN_INDEX_KEYS: ${ADMIN_INDEX_KEYS}
+      ADMIN_ENC_KEYS: ${ADMIN_ENC_KEYS}
       UPLOADS_DIR: ./uploads
     ports:
       - '127.0.0.1:3001:3001'

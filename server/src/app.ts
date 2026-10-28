@@ -9,7 +9,7 @@ import progressRouter from './connectors/progress/routes.js';
 import resourcesRouter from './connectors/resources/routes.js';
 import adminsRouter from './connectors/admins/routes.js';
 import contentRouter from './connectors/content/routes.js';
-import { isAdminEmail } from './connectors/admins/isAdminEmail.js';
+import { isAdminIndex } from './connectors/admins/isAdminEmail.js';
 
 const app = express();
 
@@ -49,7 +49,7 @@ app.get('/admin', async (req, res) => {
     return;
   }
   try {
-    if (!(await isAdminEmail(req.session.user.email))) {
+    if (!(await isAdminIndex(req.session.user.adminIndex))) {
       res.status(403).send('<h1>403 Forbidden</h1><p>You do not have admin access.</p>');
       return;
     }

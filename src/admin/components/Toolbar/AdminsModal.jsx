@@ -67,11 +67,11 @@ export default function AdminsModal({ onClose }) {
     }
   }
 
-  async function handleRemove(target) {
+  async function handleRemove(path) {
     setPending(true);
     setMessage(null);
     try {
-      const res = await fetch(`/api/admins/${encodeURIComponent(target)}`, {
+      const res = await fetch(`/api/admins/${path}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -111,29 +111,47 @@ export default function AdminsModal({ onClose }) {
             {admins.length === 0 && bootstrap.length === 0 && (
               <p className="admins-modal__empty">No admins yet.</p>
             )}
-            {admins.map((admin) => (
-              <div key={admin.email} className="admins-modal__row">
-                <span className="admins-modal__email">{admin.email}</span>
-                {admin.email === currentEmail ? (
-                  <span className="admins-modal__tag admins-modal__tag--you">you</span>
-                ) : (
-                  <>
-                    {admin.addedBy && (
-                      <span className="admins-modal__meta">added by {admin.addedBy}</span>
-                    )}
-                    <button
-                      type="button"
-                      className="admins-modal__remove"
-                      onClick={() => handleRemove(admin.email)}
-                      disabled={pending}
-                      aria-label={`Remove ${admin.email}`}
-                    >
-                      &times;
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
+            {admins
+              .filter((admin) => admin.unreadable)
+              .map((admin) => (
+                <div key={admin.id} className="admins-modal__row">
+                  <span className="admins-modal__email">Unreadable admin (key lost)</span>
+                  <button
+                    type="button"
+                    className="admins-modal__remove"
+                    onClick={() => handleRemove(`by-index/${encodeURIComponent(admin.id)}`)}
+                    disabled={pending}
+                    aria-label="Remove unreadable admin"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            {admins
+              .filter((admin) => !admin.unreadable)
+              .map((admin) => (
+                <div key={admin.id} className="admins-modal__row">
+                  <span className="admins-modal__email">{admin.email}</span>
+                  {admin.email === currentEmail ? (
+                    <span className="admins-modal__tag admins-modal__tag--you">you</span>
+                  ) : (
+                    <>
+                      {admin.addedBy && (
+                        <span className="admins-modal__meta">added by {admin.addedBy}</span>
+                      )}
+                      <button
+                        type="button"
+                        className="admins-modal__remove"
+                        onClick={() => handleRemove(encodeURIComponent(admin.email))}
+                        disabled={pending}
+                        aria-label={`Remove ${admin.email}`}
+                      >
+                        &times;
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
             {bootstrap
               .filter((entry) => !admins.some((admin) => admin.email === entry))
               .map((entry) => (
@@ -154,7 +172,6 @@ export default function AdminsModal({ onClose }) {
             <input
               id="admins-modal-email"
               type="email"
-              placeholder="name@usccf.org"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

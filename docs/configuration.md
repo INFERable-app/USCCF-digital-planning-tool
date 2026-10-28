@@ -36,6 +36,9 @@ missing or invalid, the backend prints the errors and exits.**
 | `NODE_ENV`             |          | `development`                         |
 | `ADMIN_EMAILS`         |          | empty                                 |
 | `UPLOADS_DIR`          | yes      | none                                  |
+| `USER_ID_KEYS`         | yes      | none                                  |
+| `ADMIN_INDEX_KEYS`     | yes      | none                                  |
+| `ADMIN_ENC_KEYS`       | yes      | none                                  |
 
 ### `PORT`
 
@@ -98,6 +101,43 @@ sets `production`.
 - Relative paths resolve against the working directory.
 - `compose.yaml` sets `./uploads`. That path is the `uploads_data` volume, mounted at
   `/app/server/uploads`.
+
+### `USER_ID_KEYS`, `ADMIN_INDEX_KEYS` and `ADMIN_ENC_KEYS`
+
+These keys keep identities out of Neo4j. See [data-model.md](data-model.md#identities).
+
+| Variable           | Algorithm   | Used for                              | Key length        |
+| ------------------ | ----------- | ------------------------------------- | ----------------- |
+| `USER_ID_KEYS`     | HMAC-SHA256 | `:User.idHash`, from the Google `sub` | at least 32 bytes |
+| `ADMIN_INDEX_KEYS` | HMAC-SHA256 | `:Admin.emailIndex`, the blind index  | at least 32 bytes |
+| `ADMIN_ENC_KEYS`   | AES-256-GCM | `:Admin.emailEnc` and `addedByEnc`    | exactly 32 bytes  |
+
+- Each one is a key ring, `id:base64key[,id:base64key…]`. The **first** entry is the current
+  key, and the others are older keys that are still accepted. Ids are letters, digits, `_` or `-`.
+- Generate a key with:
+
+  ```sh
+  node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+  ```
+
+  Example: `USER_ID_KEYS=k1:3q2+7w…=`.
+
+#### Key management
+
+- Keep the keys outside Neo4j and outside its backups. Back them up separately, for example in
+  a password manager. A dump stored together with its keys protects nothing.
+- **Rotation:** prepend a new entry to the ring and restart.
+  - Admins are re-keyed at boot, so an old admin key can be removed after one restart.
+  - Users are re-keyed the next time they sign in. Remove an old `USER_ID_KEYS` entry only
+    once losing the progress of anyone who hasn't come back since is acceptable.
+- **Loss:**
+  - `USER_ID_KEYS`: every user's saved progress is orphaned.
+  - `ADMIN_INDEX_KEYS`: stored admins can no longer sign in as admin. Recover through
+    `ADMIN_EMAILS`, then remove and re-add them.
+  - `ADMIN_ENC_KEYS`: admin rows show as "Unreadable admin" in the Admins modal. Recover
+    through `ADMIN_EMAILS`, then remove those rows and re-add the admins.
+- **Old backups:** dumps made before the identity migration still contain raw `sub`s and
+  emails until they age out under `RETENTION_DAYS` (`scripts/backup-neo4j.sh`).
 
 ## Values fixed in code
 
