@@ -1,10 +1,97 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
-import { ChevronLeft, ChevronRight, Library, HelpCircle, BookOpen, RotateCcw } from 'lucide-react';
+import { useEditMode } from '../../contexts/EditModeContext.jsx';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Library,
+  HelpCircle,
+  BookOpen,
+  RotateCcw,
+  Pencil
+} from 'lucide-react';
 import ConfirmPopover from './ConfirmPopover.jsx';
 import './UseCaseNav.css';
+
+export const USE_CASE_NAV_TITLE = 'Your Goals';
+
+// The row's label: a navigation button, or a rename input while renaming in edit mode
+function RowLabel({ row, onJump, onNavigate, leaf }) {
+  const { editMode, setEdgeField } = useEditMode();
+  const [renaming, setRenaming] = useState(false);
+  const [text, setText] = useState(row.label);
+  const cancelledRef = useRef(false);
+
+  function startRename() {
+    cancelledRef.current = false;
+    setText(row.label);
+    setRenaming(true);
+  }
+
+  function commit() {
+    if (cancelledRef.current) return;
+    const trimmed = text.trim();
+    if (trimmed && trimmed !== row.label) setEdgeField(row.id, 'label', trimmed);
+    setRenaming(false);
+  }
+
+  if (renaming) {
+    return (
+      <span className="usecase-nav__rename-wrap">
+        {leaf && <span className="usecase-nav__caret-spacer" aria-hidden="true" />}
+        <span className="usecase-nav__dot" aria-hidden="true" />
+        <input
+          type="text"
+          className="usecase-nav__rename"
+          value={text}
+          aria-label={`Rename "${row.label}"`}
+          autoFocus
+          onFocus={(e) => e.target.select()}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.currentTarget.blur();
+            if (e.key === 'Escape') {
+              cancelledRef.current = true;
+              setRenaming(false);
+            }
+          }}
+        />
+      </span>
+    );
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className="usecase-nav__label-btn"
+        disabled={row.disabled || !row.targetNodeId}
+        onClick={() => {
+          onJump(row.edgePath);
+          onNavigate();
+        }}
+      >
+        {leaf && <span className="usecase-nav__caret-spacer" aria-hidden="true" />}
+        <span className="usecase-nav__dot" aria-hidden="true" />
+        <span className="usecase-nav__label">{row.label}</span>
+      </button>
+      {editMode && (
+        <button
+          type="button"
+          className="usecase-nav__rename-btn"
+          aria-label={`Rename "${row.label}"`}
+          title="Rename"
+          onClick={startRename}
+        >
+          <Pencil size={13} />
+        </button>
+      )}
+    </>
+  );
+}
 
 function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
   const [collapsed, setCollapsed] = useState(true);
@@ -29,18 +116,7 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
               style={{ transform: collapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
             />
           </button>
-          <button
-            type="button"
-            className="usecase-nav__label-btn"
-            disabled={row.disabled || !row.targetNodeId}
-            onClick={() => {
-              onJump(row.edgePath);
-              onNavigate();
-            }}
-          >
-            <span className="usecase-nav__dot" aria-hidden="true" />
-            <span className="usecase-nav__label">{row.label}</span>
-          </button>
+          <RowLabel row={row} onJump={onJump} onNavigate={onNavigate} />
         </div>
         {!collapsed && row.children.length > 0 && (
           <ul className="usecase-nav__group" role="group">
@@ -62,19 +138,11 @@ function TreeRow({ row, depth, onJump, onNavigate, isActive }) {
 
   return (
     <li className="usecase-nav__item">
-      <button
-        type="button"
+      <div
         className={`usecase-nav__row usecase-nav__row--leaf${active ? ' usecase-nav__row--active' : ''}`}
-        disabled={row.disabled || !row.targetNodeId}
-        onClick={() => {
-          onJump(row.edgePath);
-          onNavigate();
-        }}
       >
-        <span className="usecase-nav__caret-spacer" aria-hidden="true" />
-        <span className="usecase-nav__dot" aria-hidden="true" />
-        <span className="usecase-nav__label">{row.label}</span>
-      </button>
+        <RowLabel row={row} onJump={onJump} onNavigate={onNavigate} leaf />
+      </div>
     </li>
   );
 }
@@ -116,7 +184,7 @@ export default function UseCaseNav() {
       {isOpen && <div className="usecase-nav-backdrop" onClick={close} aria-hidden="true" />}
       <aside className="usecase-nav" aria-label="Use case navigation">
         <div className="usecase-nav__heading-row">
-          <h2 className="usecase-nav__title">Your Goals</h2>
+          <h2 className="usecase-nav__title">{USE_CASE_NAV_TITLE}</h2>
           <button
             className="sidebar-close-btn"
             onClick={toggle}
