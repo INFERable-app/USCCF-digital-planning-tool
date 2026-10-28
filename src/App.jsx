@@ -18,7 +18,7 @@ import ResumeScreen from './components/auth/ResumeScreen.jsx';
 function AppContent({ engine }) {
   const { user, loading } = useAuth();
   const { isOpen } = useDrawer();
-  const { editMode } = useEditMode();
+  const { editMode, revision } = useEditMode();
   const {
     node,
     nodes,
@@ -118,6 +118,7 @@ function AppContent({ engine }) {
               <ResumeScreen user={user} onResume={handleResume} />
             ) : (
               <NodeRenderer
+                key={revision}
                 node={node}
                 nodes={nodes}
                 edges={edges}

@@ -15,6 +15,8 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  // Bumped on cancel so screens with uncontrolled fields remount with the restored values
+  const [revision, setRevision] = useState(0);
   const baselineRef = useRef(null);
 
   const apply = useCallback(
@@ -39,6 +41,7 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
     setGraph(baselineRef.current);
     setDirty(false);
     setError(null);
+    setRevision((r) => r + 1);
   }, [setGraph]);
 
   const save = useCallback(async () => {
@@ -150,6 +153,7 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
         dirty,
         saving,
         error,
+        revision,
         canEdit: !!user?.isAdmin,
         enter,
         cancel,
