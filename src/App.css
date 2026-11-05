@@ -392,6 +392,16 @@ body {
     display: flex;
     flex-direction: column;
   }
+  .app-shell:has(.edit-bar) {
+    height: 100dvh;
+  }
+  .app-shell:has(.edit-bar) .phone-chrome {
+    flex: 1;
+    min-height: 0;
+  }
+  .app-shell:has(.edit-bar) .app-screen {
+    height: 100%;
+  }
   .dynamic-island,
   .home-indicator {
     display: none;
