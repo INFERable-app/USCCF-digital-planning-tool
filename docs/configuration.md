@@ -75,7 +75,9 @@ The Neo4j Bolt URL. `compose.yaml` fixes it to `bolt://neo4j:7687`.
 
 ### `NEO4J_USER` and `NEO4J_PASSWORD`
 
-- The Neo4j credentials. Technically a password is not required, but in practice you really should set one.
+- The Neo4j credentials. Set the same values in `server/.env` and the root `.env`.
+- The `neo4j:5` image requires the user `neo4j` and a password of at least 8 characters that
+  is not `neo4j`.
 - Under compose, they also initialise the database through `NEO4J_AUTH`. Changing them later
   does not change the password of an existing database.
 
@@ -159,12 +161,14 @@ These settings have no environment variable. Change them in the listed file.
 
 ## Google OAuth client
 
-1. In Google Cloud Console, open **APIs & Services → Credentials**.
-2. Create an **OAuth 2.0 Client ID** of type **Web application**.
-3. Under **Authorized redirect URIs**, add one entry per environment. Each must equal that
+1. Configure the **OAuth consent screen** (APIs & Services → OAuth consent screen). Google
+   requires it before you can create a client.
+2. In Google Cloud Console, open **APIs & Services → Credentials**.
+3. Create an **OAuth 2.0 Client ID** of type **Web application**.
+4. Under **Authorized redirect URIs**, add one entry per environment. Each must equal that
    environment's `GOOGLE_REDIRECT_URI` exactly:
    - Local: `http://localhost:5173/auth/callback`
    - Deployed: `https://<your-domain>/auth/callback`
-4. Leave **Authorized JavaScript origins** empty. The backend runs the flow on the server, so
+5. Leave **Authorized JavaScript origins** empty. The backend runs the flow on the server, so
    they are not needed.
-5. Put the client id in `GOOGLE_CLIENT_ID` and the secret in `GOOGLE_CLIENT_SECRET`.
+6. Put the client id in `GOOGLE_CLIENT_ID` and the secret in `GOOGLE_CLIENT_SECRET`.

@@ -29,8 +29,9 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
 - pnpm 10.33.4. Run `corepack enable` to get the version pinned in `package.json`. A
   `preinstall` check blocks npm and yarn.
 - Docker, to run Neo4j locally.
-- A Google OAuth 2.0 client of type web application. See
-  [docs/configuration.md](docs/configuration.md#google-oauth-client).
+- A Google OAuth 2.0 client of type web application. Configure the OAuth consent screen
+  first, because Google won't create the client without it. See the _Google OAuth client_
+  section of [docs/configuration.md](docs/configuration.md).
 
 ## Local setup
 
@@ -40,7 +41,12 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
    pnpm install
    ```
 
-2. Create a root `.env` from `.env.example`. Set at least `NEO4J_USER` and `NEO4J_PASSWORD`.
+2. Create a root `.env` from `.env.example`. Set at least `NEO4J_USER` and `NEO4J_PASSWORD`:
+   - `NEO4J_USER` must be `neo4j`.
+   - `NEO4J_PASSWORD` must be at least 8 characters and must not be `neo4j`.
+   - Neo4j stores these on its first start. To change them later, stop Neo4j and remove its
+     `neo4j_data` volume (listed by `docker volume ls` with the project prefix), then start
+     it again.
 
 3. Start Neo4j on its own:
 
@@ -51,9 +57,13 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
    Bolt listens on `localhost:7687`. The Neo4j Browser is at `localhost:7474`.
 
 4. Copy `server/.env.example` to `server/.env` and fill it in:
-   - Use the same Neo4j credentials as step 2.
+   - Set `NEO4J_USER` and `NEO4J_PASSWORD` to the same values as the root `.env` (step 2).
+   - Before creating the Google client, configure its OAuth consent screen (see
+     Prerequisites).
    - Set `GOOGLE_REDIRECT_URI=http://localhost:5173/auth/callback`, so sign-in returns
-     through the Vite dev server.
+     through the Vite dev server. The Google client can list both this and your deployed
+     URI. Add one authorized redirect URI per environment, and set each environment's
+     `GOOGLE_REDIRECT_URI` to its own.
 
    [docs/configuration.md](docs/configuration.md) describes every variable.
 
@@ -64,7 +74,8 @@ inside the tool using Edit Mode or in a visual graph editor at `/admin`. Content
    ```
 
    This creates the constraints and a placeholder welcome screen. It never changes existing
-   content. See [Starting from an empty database](docs/data-model.md#starting-from-an-empty-database).
+   content. See the _Starting from an empty database_ section of
+   [docs/data-model.md](docs/data-model.md).
 
 6. Start the backend in one terminal:
 
