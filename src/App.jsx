@@ -151,6 +151,7 @@ function AppWithEngine() {
       setGraph={engine.setGraph}
       currentNodeId={engine.currentNodeId}
       goToNode={engine.goToNode}
+      leaveMissingNode={engine.leaveMissingNode}
     >
       <AppContent engine={engine} />
     </EditModeProvider>
