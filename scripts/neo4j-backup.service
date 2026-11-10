@@ -7,4 +7,4 @@ Requires=docker.service
 
 [Service]
 Type=oneshot
-ExecStart=/home/natou/USCCF-digital-planning-tool/scripts/backup-neo4j.sh
+ExecStart=/usr/local/bin/backup-neo4j.sh

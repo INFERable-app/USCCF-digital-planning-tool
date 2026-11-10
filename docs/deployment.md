@@ -58,7 +58,8 @@ Apache on the host:
    git clone git@github.com:INFERable-app/USCCF-digital-planning-tool.git ~/USCCF-digital-planning-tool
    ```
 
-   Keep this path. `scripts/neo4j-backup.service` and the backup script expect it.
+   Keep the folder name. Compose derives the Neo4j volume name from it, and the backup script
+   expects that volume name.
 
 3. Create the env file:
 
@@ -185,6 +186,12 @@ Apache on the host:
 
 6. Open `https://<domain>` and sign in.
 
+7. If the update changed `scripts/backup-neo4j.sh`, install it again:
+
+   ```sh
+   sudo install -m 755 scripts/backup-neo4j.sh /usr/local/bin/backup-neo4j.sh
+   ```
+
 Restarting the backend signs every user out, because sessions live in memory. Saved progress
 is kept.
 
@@ -236,27 +243,33 @@ The script hard-codes four values. Edit the script if any of them change:
 - the backup directory, `/var/backups/usccf-neo4j`
 - the retention, 30 days
 
-`scripts/neo4j-backup.service` also hard-codes the repo path,
-`/home/natou/USCCF-digital-planning-tool`.
+`scripts/neo4j-backup.service` runs the installed copy at `/usr/local/bin/backup-neo4j.sh`,
+not the one in the repo.
 
 **The script does not back up uploaded PDFs.** See [Uploaded PDFs](#uploaded-pdfs).
 
 ### Installing the timer
 
-1. Copy the units into systemd:
+1. Install the script:
+
+   ```sh
+   sudo install -m 755 scripts/backup-neo4j.sh /usr/local/bin/backup-neo4j.sh
+   ```
+
+2. Copy the units into systemd:
 
    ```sh
    sudo cp scripts/neo4j-backup.service scripts/neo4j-backup.timer /etc/systemd/system/
    ```
 
-2. Load and start the timer:
+3. Load and start the timer:
 
    ```sh
    sudo systemctl daemon-reload
    sudo systemctl enable --now neo4j-backup.timer
    ```
 
-3. Confirm the next run time:
+4. Confirm the next run time:
 
    ```sh
    systemctl list-timers neo4j-backup.timer
