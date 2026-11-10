@@ -9,7 +9,14 @@ const EditModeContext = createContext(null);
 // Edit mode drives the wizard's own graph state, so every screen renders the
 // draft exactly as a visitor would see it. `baseline` is the graph as last
 // loaded or saved — Save diffs against it, Cancel restores it.
-export function EditModeProvider({ children, graph, setGraph, currentNodeId, goToNode }) {
+export function EditModeProvider({
+  children,
+  graph,
+  setGraph,
+  currentNodeId,
+  goToNode,
+  leaveMissingNode
+}) {
   const { user } = useAuth();
   const [editMode, setEditMode] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -39,10 +46,11 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
   const cancel = useCallback(() => {
     if (!baselineRef.current) return;
     setGraph(baselineRef.current);
+    leaveMissingNode(baselineRef.current.nodes, baselineRef.current.startNodeId);
     setDirty(false);
     setError(null);
     setRevision((r) => r + 1);
-  }, [setGraph]);
+  }, [setGraph, leaveMissingNode]);
 
   const save = useCallback(async () => {
     if (!baselineRef.current || !graph) return false;
@@ -75,9 +83,12 @@ export function EditModeProvider({ children, graph, setGraph, currentNodeId, goT
   }, []);
 
   const exitDiscarding = useCallback(() => {
-    if (baselineRef.current) setGraph(baselineRef.current);
+    if (baselineRef.current) {
+      setGraph(baselineRef.current);
+      leaveMissingNode(baselineRef.current.nodes, baselineRef.current.startNodeId);
+    }
     exit();
-  }, [setGraph, exit]);
+  }, [setGraph, leaveMissingNode, exit]);
 
   // Leaves edit mode and drops the draft once the user is signed out
   useEffect(() => {
