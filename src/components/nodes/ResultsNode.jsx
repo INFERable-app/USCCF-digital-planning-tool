@@ -11,13 +11,16 @@ import { useEditMode } from '../../contexts/EditModeContext.jsx';
 
 export default function ResultsNode({ node, answers, onBack, previousAnswerLabel, isStartNode }) {
   const { editMode, setNodeField } = useEditMode();
-  const result = resolveResult(node.resolvers, answers);
-  const matchedIndex = (node.resolvers ?? []).indexOf(result);
+  const resolvers = node.resolvers ?? [];
+  const result = resolveResult(resolvers, answers) ?? {};
+  const matchedIndex = resolvers.indexOf(result);
 
   function commitResolverField(field, value) {
-    const next = (node.resolvers ?? []).map((r, i) =>
-      i === matchedIndex ? { ...r, [field]: value } : r
-    );
+    if (resolvers.length === 0) {
+      setNodeField(node.id, 'resolvers', [{ when: {}, [field]: value }]);
+      return;
+    }
+    const next = resolvers.map((r, i) => (i === matchedIndex ? { ...r, [field]: value } : r));
     setNodeField(node.id, 'resolvers', next);
   }
 
