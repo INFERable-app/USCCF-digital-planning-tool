@@ -88,6 +88,17 @@ export function useGraphEngine() {
     window.scrollTo(0, 0);
   }
 
+  // When a restored graph no longer contains the current screen, step back to
+  // the most recent screen in history that still exists.
+  function leaveMissingNode(validNodes, fallbackNodeId) {
+    if (validNodes[currentNodeId]) return;
+    let index = history.length - 1;
+    while (index >= 0 && !validNodes[history[index]]) index--;
+    setCurrentNodeId(index >= 0 ? history[index] : fallbackNodeId);
+    setHistory(index >= 0 ? history.slice(0, index) : []);
+    window.scrollTo(0, 0);
+  }
+
   function restore(progress) {
     setCurrentNodeId(progress.currentNodeId);
     setAnswers(progress.answers);
@@ -122,6 +133,7 @@ export function useGraphEngine() {
     back,
     jumpAlongPath,
     goToNode,
+    leaveMissingNode,
     restore,
     resetToStart,
     graph,
