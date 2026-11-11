@@ -207,6 +207,45 @@ export default function UseCaseNav() {
     }
   }
 
+  // The control that represents a row: its label, or its caret when the label is disabled
+  function rowTarget(row) {
+    return (
+      row.querySelector('.usecase-nav__label-btn:not(:disabled)') ??
+      row.querySelector('.usecase-nav__caret-btn')
+    );
+  }
+
+  // Arrow keys move between visible rows; Right/Left expand, collapse or step in and out of a group
+  function handleTreeKeyDown(e) {
+    const rows = Array.from(e.currentTarget.querySelectorAll('.usecase-nav__row')).filter(
+      rowTarget
+    );
+    const row = e.target.closest('.usecase-nav__row');
+    const index = rows.indexOf(row);
+    if (index === -1) return;
+    const caret = row.querySelector('.usecase-nav__caret-btn');
+    const expanded = caret?.getAttribute('aria-expanded') === 'true';
+    let next = null;
+
+    if (e.key === 'ArrowDown') next = rows[index + 1];
+    else if (e.key === 'ArrowUp') next = rows[index - 1];
+    else if (e.key === 'Home') next = rows[0];
+    else if (e.key === 'End') next = rows[rows.length - 1];
+    else if (e.key === 'ArrowRight' && caret) {
+      if (expanded) next = rows[index + 1];
+      else caret.click();
+    } else if (e.key === 'ArrowLeft') {
+      if (expanded) caret.click();
+      else {
+        const parentItem = row.closest('.usecase-nav__group[role="group"]')?.closest('li');
+        next = parentItem?.querySelector('.usecase-nav__row');
+      }
+    } else return;
+
+    e.preventDefault();
+    if (next) rowTarget(next)?.focus();
+  }
+
   const tree = useMemo(
     () => buildUseCaseTree(nodes, edges, startNodeId),
     [nodes, edges, startNodeId]
@@ -245,7 +284,11 @@ export default function UseCaseNav() {
         </div>
 
         <nav className="usecase-nav__rail">
-          <ul className="usecase-nav__group usecase-nav__group--root" role="tree">
+          <ul
+            className="usecase-nav__group usecase-nav__group--root"
+            role="tree"
+            onKeyDown={handleTreeKeyDown}
+          >
             {tree.map((row) => (
               <TreeRow
                 key={row.id}

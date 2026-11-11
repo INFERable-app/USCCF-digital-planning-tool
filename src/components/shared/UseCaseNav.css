@@ -233,6 +233,13 @@
   cursor: not-allowed;
 }
 
+/* Focus ring drawn inside the control so the scrolling tree can't clip it */
+.usecase-nav__label-btn:focus-visible,
+.usecase-nav__caret-btn:focus-visible {
+  outline-offset: -3px;
+  border-radius: 6px;
+}
+
 .usecase-nav__caret-spacer {
   display: flex;
   align-items: center;
