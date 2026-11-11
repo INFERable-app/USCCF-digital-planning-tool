@@ -24,12 +24,17 @@
     visibility: hidden;
     transition:
       transform 0.3s ease,
-      visibility 0.3s;
+      visibility 0s 0.3s;
   }
 
+  /* Visible at once on open so focus can move into the drawer; hidden only
+     after the slide-out finishes on close */
   .app-screen:not(.drawer-closed) .usecase-nav {
     transform: translateX(0);
     visibility: visible;
+    transition:
+      transform 0.3s ease,
+      visibility 0s;
   }
 
   .usecase-nav-backdrop {
