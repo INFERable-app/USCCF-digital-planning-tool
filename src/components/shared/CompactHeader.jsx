@@ -26,7 +26,7 @@ export default function CompactHeader({ onBack }) {
           </button>
           {onBack && (
             <button className="btn-back" onClick={onBack}>
-              ‹ Back
+              <span aria-hidden="true">‹</span> Back
             </button>
           )}
           <button

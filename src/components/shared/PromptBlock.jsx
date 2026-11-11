@@ -44,8 +44,17 @@ export default function PromptBlock({ label, text }) {
             <span aria-hidden="true">✏</span> {label}
           </span>
           <button className="prompt-block-copy" onClick={handleCopy}>
-            {copied ? 'Copied ✓' : 'Copy'}
+            {copied ? (
+              <>
+                Copied <span aria-hidden="true">✓</span>
+              </>
+            ) : (
+              'Copy'
+            )}
           </button>
+          <span className="sr-only" role="status">
+            {copied ? `${label} prompt copied` : ''}
+          </span>
         </div>
         <textarea
           className="prompt-block-body"
@@ -60,7 +69,9 @@ export default function PromptBlock({ label, text }) {
         </div>
       </div>
       <div className="prompt-warning">
-        <span className="prompt-warning-title">⚠ Caution</span>
+        <span className="prompt-warning-title">
+          <span aria-hidden="true">⚠</span> Caution
+        </span>
         Do not include personally identifiable information, confidential employer information,
         proprietary data, or other sensitive information. Review and verify AI-generated results
         before outreach or decision-making.

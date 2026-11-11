@@ -4,7 +4,11 @@ const IMG_VIDEO_THUMB = '/images/video-thumbnail.jpg';
 export default function VideoCard({ url, alt }) {
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="video-card">
-      <img src={IMG_VIDEO_THUMB} alt={alt} className="video-thumb" />
+      <img
+        src={IMG_VIDEO_THUMB}
+        alt={`${alt || 'Watch video'} (opens in new tab)`}
+        className="video-thumb"
+      />
       <div className="play-overlay">
         <svg viewBox="0 0 48 48" className="play-icon" aria-hidden="true">
           <circle cx="24" cy="24" r="24" fill="#FF0000" />

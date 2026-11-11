@@ -44,7 +44,7 @@ export default function MultiChoiceNode({
       <div className="bottom-cta">
         {onBack && (
           <button className="btn-secondary cta-back" onClick={onBack}>
-            ‹ Back
+            <span aria-hidden="true">‹</span> Back
           </button>
         )}
       </div>
