@@ -36,16 +36,20 @@
 }
 
 .user-dropdown {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
+  position: fixed;
   background-color: var(--surface-page);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   box-shadow: 0 4px 16px var(--color-navy-midnight-alpha-20);
   min-width: 220px;
-  overflow: hidden;
+  overflow-y: auto;
   z-index: 100;
+}
+
+/* Focus ring drawn inside the item so the scrolling menu can't clip it */
+.user-dropdown-item:focus-visible,
+.user-dropdown-signout:focus-visible {
+  outline-offset: -3px;
 }
 
 .user-dropdown-info {
