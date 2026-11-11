@@ -7,6 +7,7 @@ import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { useContent } from '../../hooks/useContent.js';
 import { useContentDraft } from '../../hooks/useContentDraft.js';
+import { useModalFocus } from '../../hooks/useModalFocus.js';
 import { GripVertical, X } from 'lucide-react';
 import './FaqOverlay.css';
 import './ContentEditor.css';
@@ -145,6 +146,7 @@ export default function FaqOverlay() {
     confirmingExit,
     setConfirmingExit
   } = useContentDraft({ items, save, close: closeFaq, closeButtonRef });
+  useModalFocus(isFaqOpen, closeButtonRef);
 
   useEffect(() => {
     if (!isFaqOpen) return;

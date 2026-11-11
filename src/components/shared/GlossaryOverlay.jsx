@@ -7,6 +7,7 @@ import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { useContent } from '../../hooks/useContent.js';
 import { useContentDraft } from '../../hooks/useContentDraft.js';
+import { useModalFocus } from '../../hooks/useModalFocus.js';
 import { X } from 'lucide-react';
 import './GlossaryOverlay.css';
 import './ContentEditor.css';
@@ -92,6 +93,7 @@ export default function GlossaryOverlay() {
     confirmingExit,
     setConfirmingExit
   } = useContentDraft({ items, save, close: closeGlossary, closeButtonRef });
+  useModalFocus(isGlossaryOpen, closeButtonRef);
 
   useEffect(() => {
     if (!isGlossaryOpen) return;
