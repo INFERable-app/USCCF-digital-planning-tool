@@ -6,8 +6,8 @@ All persistent data lives in one Neo4j database:
 - each user's saved progress
 - the admin list
 
-Uploaded PDFs are the only data outside Neo4j. They are files in `UPLOADS_DIR`. See
-[architecture.md](architecture.md#pdf-uploads).
+Uploaded PDFs are the only data outside Neo4j. They are files in `UPLOADS_DIR`. See the
+[PDF uploads](architecture.md#pdf-uploads) section of `architecture.md`.
 
 The wizard graph exists in three shapes.
 
