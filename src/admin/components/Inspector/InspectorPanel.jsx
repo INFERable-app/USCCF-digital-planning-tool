@@ -39,10 +39,17 @@ export default function InspectorPanel({
   if (selection.type === 'node' && node) {
     const TypeForm = TYPE_FORMS[node.data.type];
     return (
-      <div className="inspector-panel">
+      <aside className="inspector-panel" aria-labelledby="inspector-title">
         <div className="inspector-panel__header">
-          <h2>NODE / {node.id}</h2>
-          <button type="button" className="inspector-panel__close" onClick={onClose}>
+          <h2 id="inspector-title" tabIndex={-1}>
+            NODE / {node.id}
+          </h2>
+          <button
+            type="button"
+            className="inspector-panel__close"
+            onClick={onClose}
+            aria-label="Close inspector"
+          >
             &times;
           </button>
         </div>
@@ -84,16 +91,23 @@ export default function InspectorPanel({
             Delete Node
           </button>
         </div>
-      </div>
+      </aside>
     );
   }
 
   if (selection.type === 'edge' && edge) {
     return (
-      <div className="inspector-panel">
+      <aside className="inspector-panel" aria-labelledby="inspector-title">
         <div className="inspector-panel__header">
-          <h2>EDGE / {edge.id}</h2>
-          <button type="button" className="inspector-panel__close" onClick={onClose}>
+          <h2 id="inspector-title" tabIndex={-1}>
+            EDGE / {edge.id}
+          </h2>
+          <button
+            type="button"
+            className="inspector-panel__close"
+            onClick={onClose}
+            aria-label="Close inspector"
+          >
             &times;
           </button>
         </div>
@@ -115,7 +129,7 @@ export default function InspectorPanel({
             Delete Edge
           </button>
         </div>
-      </div>
+      </aside>
     );
   }
 

@@ -16,12 +16,21 @@
 }
 
 .admin-toolbar__title-text {
+  margin: 0;
   font-size: 1.05rem;
   font-weight: 600;
   background: linear-gradient(90deg, var(--color-cyan-sky), var(--color-blue-ice));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* High-contrast modes drop the gradient, so the text needs a real colour */
+@media (forced-colors: active) {
+  .admin-toolbar__title-text {
+    background: none;
+    color: CanvasText;
+  }
 }
 
 .admin-toolbar__badge {

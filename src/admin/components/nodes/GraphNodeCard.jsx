@@ -28,6 +28,15 @@ export default function GraphNodeCard({ id, data, selected }) {
           <div className="graph-node-card__id">{id}</div>
         </div>
       </div>
+      {/* Shown only on keyboard focus: the node is selected by the click bubbling
+          to React Flow, then focus jumps to the inspector that opens for it */}
+      <button
+        type="button"
+        className="graph-node-card__edit nodrag"
+        onClick={() => setTimeout(() => document.getElementById('inspector-title')?.focus(), 0)}
+      >
+        Edit {data.label || id} in inspector
+      </button>
       {canHaveOutgoing && (
         <Handle
           type="source"

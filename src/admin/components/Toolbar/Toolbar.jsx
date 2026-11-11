@@ -18,7 +18,7 @@ export default function Toolbar({
   return (
     <header className="admin-toolbar">
       <div className="admin-toolbar__title">
-        <span className="admin-toolbar__title-text">Wizard Graph Architect</span>
+        <h1 className="admin-toolbar__title-text">Wizard Graph Architect</h1>
         {userLabel && <span className="admin-toolbar__badge">{userLabel}</span>}
       </div>
       <div className="admin-toolbar__actions">

@@ -86,6 +86,16 @@
   margin: 0.3rem 0 0.35rem;
 }
 
+.inspector-panel__header h2:focus {
+  outline: none;
+}
+
+.inspector-panel__error {
+  margin: -0.4rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-red-scarlet);
+}
+
 .inspector-panel__add-connection {
   display: flex;
   flex-direction: column;

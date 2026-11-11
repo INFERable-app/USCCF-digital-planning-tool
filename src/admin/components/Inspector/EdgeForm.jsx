@@ -1,9 +1,22 @@
+import { useState } from 'react';
 import { TextField, SelectField, CheckboxField } from '../../../components/editor/Field.jsx';
 
 export default function EdgeForm({ edge, nodeOptions, onChange, onRenameId }) {
+  const [renameError, setRenameError] = useState(null);
+
   return (
     <>
-      <TextField label="Edge ID" mono value={edge.id} onChange={onRenameId} />
+      <TextField
+        label="Edge ID"
+        mono
+        value={edge.id}
+        onChange={(v) => setRenameError(onRenameId(v))}
+      />
+      {renameError && (
+        <p className="inspector-panel__error" role="alert">
+          {renameError}
+        </p>
+      )}
       <TextField label="Label" value={edge.data.label} onChange={(v) => onChange({ label: v })} />
       <SelectField
         label="Target Node"

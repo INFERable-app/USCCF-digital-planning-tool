@@ -222,7 +222,13 @@ function GraphEditorInner({ graph, userLabel, save }) {
     selectOnly('node', newNodeId);
   }
 
+  // Anchors the confirm at the pointer, or at the button when activated by keyboard
   function handleRequestDelete(type, id, event) {
+    if (event.detail === 0) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      setPendingDelete({ type, id, x: rect.left + rect.width / 2, y: rect.top - 120 });
+      return;
+    }
     setPendingDelete({ type, id, x: event.clientX, y: event.clientY });
   }
 
@@ -252,6 +258,8 @@ function GraphEditorInner({ graph, userLabel, save }) {
         return;
       }
       if (!selection) return;
+      // Delete only acts on the canvas selection while focus is on the canvas
+      if (!e.target.closest?.('.react-flow')) return;
       if (e.key === 'Delete' || e.key === 'Backspace') {
         setPendingDelete({
           type: selection.type,
@@ -281,14 +289,15 @@ function GraphEditorInner({ graph, userLabel, save }) {
         oldId,
         newId
       );
-      if (nextNodes === nodes) return;
+      if (nextNodes === nodes) return null;
       pushHistory({ nodes, edges });
       setNodes(nextNodes);
       setEdges(nextEdges);
       setDirty(true);
       selectOnly('node', newId);
+      return null;
     } catch (err) {
-      alert(err.message);
+      return err.message;
     }
   }
 
@@ -326,13 +335,14 @@ function GraphEditorInner({ graph, userLabel, save }) {
   function renameEdgeId(oldId, newId) {
     try {
       const { edges: nextEdges } = mutations.renameEdgeId(nodes, edges, oldId, newId);
-      if (nextEdges === edges) return;
+      if (nextEdges === edges) return null;
       pushHistory({ nodes, edges });
       setEdges(nextEdges);
       setDirty(true);
       selectOnly('edge', newId);
+      return null;
     } catch (err) {
-      alert(err.message);
+      return err.message;
     }
   }
 
@@ -361,7 +371,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
         canUndo={past.length > 0}
         canRedo={future.length > 0}
       />
-      <div className="admin-shell__main">
+      <main className="admin-shell__main">
         <GraphCanvas
           nodes={nodes}
           edges={edges}
@@ -394,7 +404,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
             onRequestDelete={handleRequestDelete}
           />
         )}
-      </div>
+      </main>
       {showAdminsModal && <AdminsModal onClose={() => setShowAdminsModal(false)} />}
       {showSaveModal && (
         <SaveModal onClose={() => setShowSaveModal(false)} onConfirm={handleConfirmSave} />
@@ -430,6 +440,14 @@ function GraphEditorInner({ graph, userLabel, save }) {
   );
 }
 
+function LoadingStatus() {
+  return (
+    <p className="sr-only" role="status">
+      Loading…
+    </p>
+  );
+}
+
 function GraphEditor(props) {
   return (
     <ReactFlowProvider>
@@ -438,11 +456,29 @@ function GraphEditor(props) {
   );
 }
 
+const BASE_TITLE = document.title;
+
 export default function AdminApp() {
   const { user, loading } = useAuth();
   const { graph, loading: graphLoading, error, save } = useAdminGraph();
 
-  if (loading) return null;
+  // Titles the page after its current state
+  const state = loading
+    ? 'Loading'
+    : !user
+      ? 'Signing in'
+      : !user.isAdmin
+        ? '403 Forbidden'
+        : error
+          ? 'Failed to load graph'
+          : graphLoading || !graph
+            ? 'Loading'
+            : null;
+  useEffect(() => {
+    document.title = state ? `${state} – ${BASE_TITLE}` : BASE_TITLE;
+  }, [state]);
+
+  if (loading) return <LoadingStatus />;
 
   if (!user) {
     window.location.href = '/auth/login';
@@ -458,7 +494,6 @@ export default function AdminApp() {
     );
   }
 
-  if (graphLoading || !graph) return null;
   if (error) {
     return (
       <div className="admin-forbidden">
@@ -467,6 +502,7 @@ export default function AdminApp() {
       </div>
     );
   }
+  if (graphLoading || !graph) return <LoadingStatus />;
 
   return <GraphEditor graph={graph} userLabel={user.name || user.email} save={save} />;
 }
