@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
@@ -178,6 +179,7 @@ export default function UseCaseNav() {
   const [confirmAt, setConfirmAt] = useState(null);
   const asideRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const resetButtonRef = useRef(null);
   const openerRef = useRef(null);
   const wasOpenRef = useRef(isOpen);
 
@@ -194,6 +196,16 @@ export default function UseCaseNav() {
     const focusWasInside = active === document.body || asideRef.current?.contains(active);
     if (focusWasInside && openerRef.current?.isConnected) openerRef.current.focus();
   }, [isOpen]);
+
+  // Anchors the confirm at the pointer, or at the button when activated by keyboard
+  function openResetConfirm(e) {
+    if (e.detail === 0) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setConfirmAt({ x: rect.left + rect.width / 2, y: rect.top });
+    } else {
+      setConfirmAt({ x: e.clientX, y: e.clientY });
+    }
+  }
 
   const tree = useMemo(
     () => buildUseCaseTree(nodes, edges, startNodeId),
@@ -262,9 +274,10 @@ export default function UseCaseNav() {
           </button>
           {hasProgress && (
             <button
+              ref={resetButtonRef}
               type="button"
               className="usecase-nav__reset"
-              onClick={(e) => setConfirmAt({ x: e.clientX, y: e.clientY })}
+              onClick={openResetConfirm}
             >
               <RotateCcw size={16} aria-hidden="true" />
               <span>Start over</span>
@@ -272,20 +285,26 @@ export default function UseCaseNav() {
           )}
         </div>
       </aside>
-      {confirmAt && (
-        <ConfirmPopover
-          x={confirmAt.x}
-          y={confirmAt.y}
-          message="Start over? This clears your saved progress."
-          confirmLabel="Start over"
-          onConfirm={() => {
-            setConfirmAt(null);
-            resetProgress();
-            close();
-          }}
-          onCancel={() => setConfirmAt(null)}
-        />
-      )}
+      {/* Rendered into body so its fixed position isn't offset by the sidebar's transform */}
+      {confirmAt &&
+        createPortal(
+          <ConfirmPopover
+            x={confirmAt.x}
+            y={confirmAt.y}
+            message="Start over? This clears your saved progress."
+            confirmLabel="Start over"
+            onConfirm={() => {
+              setConfirmAt(null);
+              resetProgress();
+              close();
+            }}
+            onCancel={() => {
+              setConfirmAt(null);
+              resetButtonRef.current?.focus();
+            }}
+          />,
+          document.body
+        )}
     </div>
   );
 }
