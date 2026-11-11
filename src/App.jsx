@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGraphEngine } from './graph/useGraphEngine.js';
 import { getPreviousAnswerLabel } from './graph/getPreviousAnswerLabel.js';
 import { getNodePath } from './graph/getNodePath.js';
@@ -14,6 +14,8 @@ import { EditModeProvider, useEditMode } from './contexts/EditModeContext.jsx';
 import EditModeBar from './components/edit/EditModeBar.jsx';
 import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
+
+const BASE_TITLE = document.title;
 
 // Moves focus to the screen's main content without changing the URL hash,
 // which would fire popstate and step the wizard back
@@ -92,6 +94,25 @@ function AppContent({ engine }) {
 
   const hasProgress =
     Boolean(savedProgress) || currentNodeId !== startNodeId || Object.keys(answers).length > 0;
+
+  // Titles the page after the screen's heading and, after the first screen,
+  // moves focus to that heading so keyboard and screen-reader users land on it
+  const screenKey = !user ? 'sign-in' : showResume ? 'resume' : currentNodeId;
+  const isFirstScreenRef = useRef(true);
+  useEffect(() => {
+    const main = document.getElementById('main');
+    if (!main) return;
+    const heading = main.querySelector('h1');
+    const headingText = heading?.textContent.trim();
+    document.title = headingText ? `${headingText} – ${BASE_TITLE}` : BASE_TITLE;
+    if (isFirstScreenRef.current) {
+      isFirstScreenRef.current = false;
+      return;
+    }
+    const target = heading ?? main;
+    target.setAttribute('tabindex', '-1');
+    target.focus();
+  }, [screenKey, loading, savedProgress === undefined]);
 
   const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
   const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);

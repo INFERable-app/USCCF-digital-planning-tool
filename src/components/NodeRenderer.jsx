@@ -29,6 +29,7 @@ export default function NodeRenderer({
 
   return (
     <NodeComponent
+      key={node.id}
       node={node}
       nodes={nodes}
       edges={edges}
