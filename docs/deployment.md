@@ -452,3 +452,6 @@ Observed on staging. Each one is a candidate for a fix.
   backup.
 - **Uploaded PDFs are not backed up.**
 - **Restarts sign everyone out.** Sessions live in the backend's memory.
+- **Content changes are not logged.** Change logging is a planned feature that has not been
+  built yet. Until then, nothing records who changed wizard content or when, and the only way
+  to undo a past change is to restore a whole backup.
