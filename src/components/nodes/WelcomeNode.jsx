@@ -10,7 +10,7 @@ export default function WelcomeNode({ node, nodeEdges, advance, isStartNode }) {
   return (
     <div className="screen">
       <HeroHeader />
-      <div className="bottom-section">
+      <main id="main" tabIndex={-1} className="bottom-section">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <EditableText
           as="h1"
@@ -26,7 +26,7 @@ export default function WelcomeNode({ node, nodeEdges, advance, isStartNode }) {
           onCommit={(v) => setNodeField(node.id, 'body', v)}
         />
         <CtaButtonEdge edge={nodeEdges[0]} advance={advance} />
-      </div>
+      </main>
     </div>
   );
 }

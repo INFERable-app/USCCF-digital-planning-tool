@@ -13,7 +13,7 @@ export default function HeroHeader({ onBack }) {
   const { goHome } = useWizardNav();
   return (
     <div className="top-hero">
-      <div className="header-bar">
+      <header className="header-bar">
         <div className="header-start">
           <button className="mobile-nav-btn" onClick={toggle} aria-label="Open navigation">
             <Menu size={22} />
@@ -33,7 +33,7 @@ export default function HeroHeader({ onBack }) {
           </button>
         </div>
         <UserMenu />
-      </div>
+      </header>
       <p className="app-title">Digital Transformation Planning Tool</p>
       <Breadcrumb />
       <div className="hero-image-wrap">

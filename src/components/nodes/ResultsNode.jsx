@@ -27,12 +27,12 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
   return (
     <div className="screen screen-compact">
       <CompactHeader onBack={onBack} />
-      <div className="survey-content">
+      <main id="main" tabIndex={-1} className="survey-content">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <PreviousAnswerHeading label={previousAnswerLabel} />
         <p className="results-label">Recommended next step:</p>
         <EditableText
-          as="p"
+          as="h1"
           className="results-recommendation"
           value={result.recommendation}
           placeholder="Recommendation"
@@ -75,7 +75,7 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
         <p className="recommendation-next-text">
           After you perform the recommended step, return to the tool when you need more guidance.
         </p>
-      </div>
+      </main>
       <div className="bottom-cta">
         {onBack && (
           <button className="btn-secondary cta-back" onClick={onBack}>

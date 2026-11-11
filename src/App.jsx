@@ -15,6 +15,13 @@ import EditModeBar from './components/edit/EditModeBar.jsx';
 import SignInScreen from './components/auth/SignInScreen.jsx';
 import ResumeScreen from './components/auth/ResumeScreen.jsx';
 
+// Moves focus to the screen's main content without changing the URL hash,
+// which would fire popstate and step the wizard back
+function skipToMain(e) {
+  e.preventDefault();
+  document.getElementById('main')?.focus();
+}
+
 function AppContent({ engine }) {
   const { user, loading } = useAuth();
   const { isOpen } = useDrawer();
@@ -106,6 +113,9 @@ function AppContent({ engine }) {
       hasProgress={hasProgress}
     >
       <div className="app-shell">
+        <a href="#main" className="skip-link" onClick={skipToMain}>
+          Skip to main content
+        </a>
         <EditModeBar />
         <div className="phone-chrome">
           <div

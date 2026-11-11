@@ -131,7 +131,7 @@ export default function SignInScreen() {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="signin-screen">
+    <main id="main" tabIndex={-1} className="signin-screen">
       <div className="signin-card">
         <div className="signin-header">
           <div className="signin-logo" role="img" aria-label="U.S. Chamber of Commerce Foundation">
@@ -258,6 +258,6 @@ export default function SignInScreen() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

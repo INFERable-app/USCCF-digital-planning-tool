@@ -23,7 +23,7 @@ export default function RadioSurveyNode({
   return (
     <div className="screen screen-compact">
       <CompactHeader onBack={onBack} />
-      <div className="survey-content">
+      <main id="main" tabIndex={-1} className="survey-content">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <PreviousAnswerHeading label={previousAnswerLabel} />
         <EditableText
@@ -33,6 +33,7 @@ export default function RadioSurveyNode({
           onCommit={(v) => setNodeField(node.id, 'intro', v)}
         />
         <EditableText
+          as="h1"
           className="survey-question"
           value={node.question}
           placeholder="Question"
@@ -53,7 +54,7 @@ export default function RadioSurveyNode({
             />
           ))}
         </EditableEdgeList>
-      </div>
+      </main>
       <div className="bottom-cta">
         {onBack && (
           <button className="btn-secondary cta-back" onClick={onBack}>

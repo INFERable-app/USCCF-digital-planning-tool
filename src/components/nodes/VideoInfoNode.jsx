@@ -20,9 +20,10 @@ export default function VideoInfoNode({
   return (
     <div className="screen screen-compact">
       <CompactHeader onBack={onBack} />
-      <div className="survey-content">
+      <main id="main" tabIndex={-1} className="survey-content">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <PreviousAnswerHeading label={previousAnswerLabel} />
+        <h1 className="sr-only">{previousAnswerLabel || 'Video'}</h1>
         <EditableText
           className="body-text"
           value={node.intro}
@@ -79,7 +80,7 @@ export default function VideoInfoNode({
             )}
           </p>
         )}
-      </div>
+      </main>
       <div className="bottom-cta">
         <CtaButtonEdge edge={nodeEdges[0]} advance={advance} />
       </div>

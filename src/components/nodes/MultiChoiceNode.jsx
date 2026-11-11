@@ -20,10 +20,11 @@ export default function MultiChoiceNode({
   return (
     <div className="screen">
       <HeroHeader onBack={onBack} />
-      <div className="bottom-section">
+      <main id="main" tabIndex={-1} className="bottom-section">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <PreviousAnswerHeading label={previousAnswerLabel} />
         <EditableText
+          as="h1"
           className="question-text"
           value={node.question}
           placeholder="Question"
@@ -39,7 +40,7 @@ export default function MultiChoiceNode({
             <ChoiceButtonEdge key={edge.id} edge={edge} advance={advance} />
           ))}
         </EditableEdgeList>
-      </div>
+      </main>
       <div className="bottom-cta">
         {onBack && (
           <button className="btn-secondary cta-back" onClick={onBack}>
