@@ -1,9 +1,12 @@
 import './SaveModal.css';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { usePopoverFocus } from '../../../hooks/usePopoverFocus.js';
 
 export default function SaveModal({ onClose, onConfirm }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
+  const dialogRef = useRef(null);
+  usePopoverFocus(dialogRef, onClose);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -12,7 +15,6 @@ export default function SaveModal({ onClose, onConfirm }) {
     try {
       await onConfirm();
       setMessage({ type: 'success', text: 'Graph saved to database successfully.' });
-      setTimeout(onClose, 1200);
     } catch (err) {
       setMessage({ type: 'error', text: `Failed to save: ${err.message}` });
     } finally {
@@ -20,12 +22,21 @@ export default function SaveModal({ onClose, onConfirm }) {
     }
   }
 
+  const saved = message?.type === 'success';
+
   return (
     <div className="save-modal-backdrop" onClick={onClose}>
-      <div className="save-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={dialogRef}
+        className="save-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="save-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="save-modal__header">
-          <h2>Save Graph to Database</h2>
-          <button type="button" className="save-modal__close" onClick={onClose}>
+          <h2 id="save-modal-title">Save Graph to Database</h2>
+          <button type="button" className="save-modal__close" onClick={onClose} aria-label="Close">
             &times;
           </button>
         </div>
@@ -36,15 +47,20 @@ export default function SaveModal({ onClose, onConfirm }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {message && (
-            <div className={`save-modal__message save-modal__message--${message.type}`}>
+          <div role="status">
+            {saved && (
+              <div className="save-modal__message save-modal__message--success">{message.text}</div>
+            )}
+          </div>
+          {message?.type === 'error' && (
+            <div className="save-modal__message save-modal__message--error" role="alert">
               {message.text}
             </div>
           )}
 
           <div className="save-modal__footer">
             <button type="button" className="save-modal__cancel" onClick={onClose}>
-              Cancel
+              {saved ? 'Close' : 'Cancel'}
             </button>
             <button type="submit" className="save-modal__submit" disabled={saving}>
               {saving ? 'Saving...' : 'Save to Database'}

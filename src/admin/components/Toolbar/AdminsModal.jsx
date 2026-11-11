@@ -1,7 +1,8 @@
 import './AdminsModal.css';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
+import { usePopoverFocus } from '../../../hooks/usePopoverFocus.js';
 
 export default function AdminsModal({ onClose }) {
   const { user } = useAuth();
@@ -11,6 +12,8 @@ export default function AdminsModal({ onClose }) {
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState(null);
+  const dialogRef = useRef(null);
+  usePopoverFocus(dialogRef, onClose);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -31,14 +34,6 @@ export default function AdminsModal({ onClose }) {
   useEffect(() => {
     load();
   }, [load]);
-
-  useEffect(() => {
-    function handleKey(e) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [onClose]);
 
   async function handleAdd(e) {
     e.preventDefault();
@@ -91,10 +86,22 @@ export default function AdminsModal({ onClose }) {
 
   return (
     <div className="admins-modal-backdrop" onClick={onClose}>
-      <div className="admins-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={dialogRef}
+        className="admins-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="admins-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="admins-modal__header">
-          <h2>Admins</h2>
-          <button type="button" className="admins-modal__close" onClick={onClose}>
+          <h2 id="admins-modal-title">Admins</h2>
+          <button
+            type="button"
+            className="admins-modal__close"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>
@@ -105,7 +112,9 @@ export default function AdminsModal({ onClose }) {
         </div>
 
         {loading ? (
-          <p className="admins-modal__empty">Loading…</p>
+          <p className="admins-modal__empty" role="status">
+            Loading…
+          </p>
         ) : (
           <div className="admins-modal__list">
             {admins.length === 0 && bootstrap.length === 0 && (
@@ -181,8 +190,15 @@ export default function AdminsModal({ onClose }) {
           </div>
         </form>
 
-        {message && (
-          <div className={`admins-modal__message admins-modal__message--${message.type}`}>
+        <div role="status">
+          {message?.type === 'success' && (
+            <div className="admins-modal__message admins-modal__message--success">
+              {message.text}
+            </div>
+          )}
+        </div>
+        {message?.type === 'error' && (
+          <div className="admins-modal__message admins-modal__message--error" role="alert">
             {message.text}
           </div>
         )}
