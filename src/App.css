@@ -17,6 +17,18 @@ body {
   outline-offset: 2px;
 }
 
+/* Turns off transitions and animations for people who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Main content and screen headings take focus programmatically only, so no ring */
 main:focus,
 main h1:focus {
