@@ -1,0 +1,32 @@
+.move-buttons {
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.move-buttons__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 18px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.move-buttons__btn:hover {
+  background: var(--surface-panel);
+}
+
+.move-buttons__btn[aria-disabled='true'] {
+  color: var(--color-navy-midnight-alpha-50);
+  cursor: default;
+}
+
+.move-buttons__btn[aria-disabled='true']:hover {
+  background: none;
+}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowRight, GripVertical, MoreHorizontal, Search } from 'lucide-react';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { nodeTypeMeta } from '../../admin/components/nodes/nodeTypeMeta.js';
+import MoveButtons from './MoveButtons.jsx';
 
 function NodePicker({ nodes, currentTargetId, onPick, onClose }) {
   const [query, setQuery] = useState('');
@@ -58,7 +59,16 @@ function NodePicker({ nodes, currentTargetId, onPick, onClose }) {
 
 // The controls that wrap a single option in edit mode: reorder grip, a chip
 // that walks into the destination screen, and the overflow menu.
-export default function EdgeControls({ edge, sourceId, nodes, onDragStart, children }) {
+export default function EdgeControls({
+  edge,
+  sourceId,
+  nodes,
+  onDragStart,
+  index,
+  count,
+  onMove,
+  children
+}) {
   const { removeButton, retargetButton, setEdgeField, goToNode } = useEditMode();
   const [menuOpen, setMenuOpen] = useState(false);
   const [picking, setPicking] = useState(false);
@@ -69,10 +79,16 @@ export default function EdgeControls({ edge, sourceId, nodes, onDragStart, child
         className="edge-controls__grip"
         draggable
         onDragStart={() => onDragStart(edge.id)}
-        aria-label="Reorder button"
+        aria-hidden="true"
       >
         <GripVertical size={14} />
       </span>
+      <MoveButtons
+        index={index}
+        count={count}
+        itemLabel={`"${edge.label || 'button'}"`}
+        onMove={onMove}
+      />
 
       <div className="edge-controls__option">{children}</div>
 

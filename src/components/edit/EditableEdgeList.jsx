@@ -27,14 +27,19 @@ export default function EditableEdgeList({
       </div>
     );
 
+  function moveEdge(from, to) {
+    const ordered = nodeEdges.map((e) => e.id);
+    ordered.splice(to, 0, ordered.splice(from, 1)[0]);
+    reorderButtons(nodeId, ordered);
+  }
+
   function handleDrop(overId) {
     if (!dragId || dragId === overId) return;
     const ordered = nodeEdges.map((e) => e.id);
     const from = ordered.indexOf(dragId);
     const to = ordered.indexOf(overId);
     if (from === -1 || to === -1) return;
-    ordered.splice(to, 0, ordered.splice(from, 1)[0]);
-    reorderButtons(nodeId, ordered);
+    moveEdge(from, to);
     setDragId(null);
   }
 
@@ -49,7 +54,15 @@ export default function EditableEdgeList({
           onDragOver={(e) => e.preventDefault()}
           onDrop={() => handleDrop(edge.id)}
         >
-          <EdgeControls edge={edge} sourceId={nodeId} nodes={nodes} onDragStart={setDragId}>
+          <EdgeControls
+            edge={edge}
+            sourceId={nodeId}
+            nodes={nodes}
+            onDragStart={setDragId}
+            index={i}
+            count={nodeEdges.length}
+            onMove={moveEdge}
+          >
             {rendered[i]}
           </EdgeControls>
         </div>

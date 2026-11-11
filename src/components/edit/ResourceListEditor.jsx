@@ -2,6 +2,7 @@ import '../editor/ResolversEditor/ResolversEditor.css';
 import { useState } from 'react';
 import { GripVertical } from 'lucide-react';
 import ResourceRow from '../editor/ResolversEditor/ResourceRow.jsx';
+import MoveButtons from './MoveButtons.jsx';
 
 export default function ResourceListEditor({ resources = [], onChange, renderRowExtras }) {
   const [dragIndex, setDragIndex] = useState(null);
@@ -62,10 +63,16 @@ export default function ResourceListEditor({ resources = [], onChange, renderRow
             className="resolver-box__resource-handle"
             draggable
             onDragStart={() => setDragIndex(i)}
-            aria-label="Reorder resource"
+            aria-hidden="true"
           >
             <GripVertical size={13} />
           </span>
+          <MoveButtons
+            index={i}
+            count={resources.length}
+            itemLabel={`resource ${res.label ? `"${res.label}"` : i + 1}`}
+            onMove={moveResource}
+          />
           {renderRowExtras ? (
             <div className="resolver-box__resource-body">
               <ResourceRow

@@ -8,6 +8,7 @@ import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { useContent } from '../../hooks/useContent.js';
 import { useContentDraft } from '../../hooks/useContentDraft.js';
 import { useModalFocus } from '../../hooks/useModalFocus.js';
+import MoveButtons from '../edit/MoveButtons.jsx';
 import { GripVertical, X } from 'lucide-react';
 import './FaqOverlay.css';
 import './ContentEditor.css';
@@ -40,12 +41,16 @@ function FaqEditor({ draft, onChange }) {
     onChange(draft.map((item, i) => (i === index ? { ...item, ...patch } : item)));
   }
 
+  function moveItem(fromIndex, toIndex) {
+    const next = [...draft];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    onChange(next);
+  }
+
   function handleDrop(overIndex) {
     if (dragIndex === null || dragIndex === overIndex) return;
-    const next = [...draft];
-    const [moved] = next.splice(dragIndex, 1);
-    next.splice(overIndex, 0, moved);
-    onChange(next);
+    moveItem(dragIndex, overIndex);
     setDragIndex(null);
   }
 
@@ -69,10 +74,16 @@ function FaqEditor({ draft, onChange }) {
             className="content-editor__handle"
             draggable
             onDragStart={() => setDragIndex(i)}
-            aria-label="Reorder question"
+            aria-hidden="true"
           >
             <GripVertical size={14} />
           </span>
+          <MoveButtons
+            index={i}
+            count={draft.length}
+            itemLabel={`question ${item.question ? `"${item.question}"` : i + 1}`}
+            onMove={moveItem}
+          />
           <div className="content-editor__fields">
             <label className="content-editor__field-label" htmlFor={`${item._key}-question`}>
               Question

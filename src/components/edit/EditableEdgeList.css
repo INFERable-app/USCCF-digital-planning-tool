@@ -15,8 +15,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  /* Aligns with the option column, clearing the grip and the two chips. */
-  margin: 6px 76px 0 28px;
+  /* Aligns with the option column, clearing the grip, move buttons and the two chips. */
+  margin: 6px 76px 0 60px;
   padding: 14px 24px;
   background: var(--surface-page);
   border: 1px dashed var(--color-navy-midnight-alpha-40);
