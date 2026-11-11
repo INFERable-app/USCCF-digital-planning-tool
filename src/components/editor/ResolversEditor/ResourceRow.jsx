@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { isCompleteResource, missingResourceFieldLabel } from './resolverSanitize.js';
 
@@ -14,6 +14,8 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
   const complete = isCompleteResource(resource);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const uploadErrorId = useId();
+  const warningId = useId();
 
   async function handleFileUpload(e) {
     const file = e.target.files[0];
@@ -44,7 +46,12 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
 
   return (
     <div className={`resource-row${complete ? '' : ' resource-row--incomplete'}`}>
-      <select value={type} onChange={(e) => onChange({ type: e.target.value })}>
+      <select
+        value={type}
+        onChange={(e) => onChange({ type: e.target.value })}
+        aria-label="Resource type"
+        aria-describedby={complete ? undefined : warningId}
+      >
         {TYPE_OPTIONS.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
@@ -57,6 +64,7 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
             type="text"
             defaultValue={resource.label || ''}
             placeholder="Label"
+            aria-label="Label"
             onBlur={(e) => flushSync(() => onChange({ label: e.target.value }))}
           />
         )}
@@ -77,6 +85,7 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
                   min="1"
                   defaultValue={resource.pageStart ?? ''}
                   placeholder="Start page"
+                  aria-label="Start page"
                   onBlur={(e) =>
                     flushSync(() =>
                       onChange({ pageStart: e.target.value ? Number(e.target.value) : undefined })
@@ -88,6 +97,7 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
                   min="1"
                   defaultValue={resource.pageEnd ?? ''}
                   placeholder="End page"
+                  aria-label="End page"
                   onBlur={(e) =>
                     flushSync(() =>
                       onChange({ pageEnd: e.target.value ? Number(e.target.value) : undefined })
@@ -101,6 +111,7 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
               type="text"
               defaultValue={resource.url || ''}
               placeholder="URL (optional)"
+              aria-label="PDF URL (optional)"
               onBlur={(e) => flushSync(() => onChange({ url: e.target.value }))}
             />
             <input
@@ -108,9 +119,17 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
               accept="application/pdf"
               disabled={uploading}
               onChange={handleFileUpload}
+              aria-label="Upload PDF"
+              aria-describedby={uploadError ? uploadErrorId : undefined}
             />
-            {uploading && <span className="resource-row__uploading">Uploading&hellip;</span>}
-            {uploadError && <p className="resource-row__warning">Upload failed: {uploadError}</p>}
+            <span className="resource-row__uploading" role="status">
+              {uploading ? 'Uploading…' : ''}
+            </span>
+            {uploadError && (
+              <p id={uploadErrorId} className="resource-row__warning" role="alert">
+                Upload failed: {uploadError}
+              </p>
+            )}
           </div>
         )}
         {type === 'link' && (
@@ -118,6 +137,7 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
             type="text"
             defaultValue={resource.url || ''}
             placeholder="URL"
+            aria-label="URL"
             onBlur={(e) => flushSync(() => onChange({ url: e.target.value }))}
           />
         )}
@@ -127,12 +147,14 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
               type="text"
               defaultValue={resource.label || ''}
               placeholder="Prompt label"
+              aria-label="Prompt label"
               onBlur={(e) => flushSync(() => onChange({ label: e.target.value }))}
             />
             <textarea
               rows={3}
               defaultValue={resource.text || ''}
               placeholder="Prompt text"
+              aria-label="Prompt text"
               onBlur={(e) => flushSync(() => onChange({ text: e.target.value }))}
             />
           </>
@@ -142,17 +164,22 @@ export default function ResourceRow({ resource, onChange, onRemove }) {
             rows={2}
             defaultValue={resource.description || ''}
             placeholder="Description (optional) — shown inside the card"
+            aria-label="Description (optional)"
             onBlur={(e) => flushSync(() => onChange({ description: e.target.value }))}
           />
         )}
         {!complete && (
-          <p className="resource-row__warning">
+          <p id={warningId} className="resource-row__warning">
             Missing {missingResourceFieldLabel(resource)} — this resource won't be saved until it's
             filled in.
           </p>
         )}
       </div>
-      <button type="button" onClick={onRemove} aria-label="Remove resource">
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Remove resource ${resource.label ? `"${resource.label}"` : ''}`.trim()}
+      >
         &minus;
       </button>
     </div>
