@@ -9,13 +9,19 @@ import { Menu } from 'lucide-react';
 const IMG_TPM_MAN = '/images/tpm-man.jpg';
 
 export default function HeroHeader({ onBack }) {
-  const { toggle } = useDrawer();
+  const { isOpen, toggle } = useDrawer();
   const { goHome } = useWizardNav();
   return (
     <div className="top-hero">
       <header className="header-bar">
         <div className="header-start">
-          <button className="mobile-nav-btn" onClick={toggle} aria-label="Open navigation">
+          <button
+            className="mobile-nav-btn"
+            onClick={toggle}
+            aria-label="Open navigation"
+            aria-expanded={isOpen}
+            aria-controls="usecase-nav"
+          >
             <Menu size={22} />
           </button>
           {onBack && (
@@ -40,7 +46,13 @@ export default function HeroHeader({ onBack }) {
         <img src={IMG_TPM_MAN} alt="" className="hero-image" />
       </div>
       <UseCaseNav />
-      <button className="sidebar-open-btn" onClick={toggle} aria-label="Open navigation">
+      <button
+        className="sidebar-open-btn"
+        onClick={toggle}
+        aria-label="Open navigation"
+        aria-expanded={isOpen}
+        aria-controls="usecase-nav"
+      >
         <Menu size={20} />
       </button>
     </div>
