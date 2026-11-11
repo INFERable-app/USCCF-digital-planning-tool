@@ -17,6 +17,7 @@ import Toolbar from './components/Toolbar/Toolbar.jsx';
 import SaveModal from './components/shared/SaveModal.jsx';
 import AdminsModal from './components/Toolbar/AdminsModal.jsx';
 import ConfirmPopover from '../components/shared/ConfirmPopover.jsx';
+import LoadingScreen from '../components/shared/LoadingScreen.jsx';
 import InspectorPanel from './components/Inspector/InspectorPanel.jsx';
 
 function GraphEditorInner({ graph, userLabel, save }) {
@@ -440,14 +441,6 @@ function GraphEditorInner({ graph, userLabel, save }) {
   );
 }
 
-function LoadingStatus() {
-  return (
-    <p className="sr-only" role="status">
-      Loading…
-    </p>
-  );
-}
-
 function GraphEditor(props) {
   return (
     <ReactFlowProvider>
@@ -460,7 +453,7 @@ const BASE_TITLE = document.title;
 
 export default function AdminApp() {
   const { user, loading } = useAuth();
-  const { graph, loading: graphLoading, error, save } = useAdminGraph();
+  const { graph, loading: graphLoading, error, reload, save } = useAdminGraph();
 
   // Titles the page after its current state
   const state = loading
@@ -478,7 +471,7 @@ export default function AdminApp() {
     document.title = state ? `${state} – ${BASE_TITLE}` : BASE_TITLE;
   }, [state]);
 
-  if (loading) return <LoadingStatus />;
+  if (loading) return <LoadingScreen message="Loading the graph editor…" />;
 
   if (!user) {
     window.location.href = '/auth/login';
@@ -499,10 +492,18 @@ export default function AdminApp() {
       <div className="admin-forbidden">
         <h1>Failed to load graph</h1>
         <p>{error.message}</p>
+        <button
+          type="button"
+          className="loading-screen__retry"
+          onClick={reload}
+          disabled={graphLoading}
+        >
+          {graphLoading ? 'Retrying…' : 'Try again'}
+        </button>
       </div>
     );
   }
-  if (graphLoading || !graph) return <LoadingStatus />;
+  if (graphLoading || !graph) return <LoadingScreen message="Loading the graph editor…" />;
 
   return <GraphEditor graph={graph} userLabel={user.name || user.email} save={save} />;
 }

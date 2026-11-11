@@ -7,6 +7,7 @@ import NodeRenderer from './components/NodeRenderer.jsx';
 import ResourceLibraryOverlay from './components/shared/ResourceLibraryOverlay.jsx';
 import FaqOverlay from './components/shared/FaqOverlay.jsx';
 import GlossaryOverlay from './components/shared/GlossaryOverlay.jsx';
+import LoadingScreen from './components/shared/LoadingScreen.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { DrawerProvider, useDrawer } from './contexts/DrawerContext.jsx';
 import { WizardNavProvider } from './contexts/WizardNavContext.jsx';
@@ -117,7 +118,25 @@ function AppContent({ engine }) {
   const path = getNodePath(nodes, edges, startNodeId, currentNodeId);
   const previousAnswerLabel = getPreviousAnswerLabel(nodes, edges, path);
 
-  if (loading || (user && (!startNodeId || savedProgress === undefined))) return null;
+  if (loading || (user && (!startNodeId || savedProgress === undefined))) {
+    return (
+      <div className="app-shell">
+        <div className="phone-chrome">
+          <div className="app-screen">
+            <div className="dynamic-island" aria-hidden="true" />
+            <main>
+              <LoadingScreen
+                message="Loading the planning tool…"
+                error={user && engine.graphError ? "Couldn't load the planning tool." : null}
+                onRetry={engine.reloadGraph}
+              />
+            </main>
+            <div className="home-indicator" aria-hidden="true" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <WizardNavProvider

@@ -5,8 +5,10 @@ export function useGraphEngine() {
   const [currentNodeId, setCurrentNodeId] = useState(null);
   const [answers, setAnswers] = useState({});
   const [history, setHistory] = useState([]);
+  const [graphError, setGraphError] = useState(null);
 
-  useEffect(() => {
+  function loadGraph() {
+    setGraphError(null);
     fetch('/api/graph', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`Graph fetch failed: ${r.status}`);
@@ -16,7 +18,14 @@ export function useGraphEngine() {
         setGraph(data);
         setCurrentNodeId((prev) => (prev === null ? data.startNodeId : prev));
       })
-      .catch(console.error);
+      .catch((err) => {
+        console.error(err);
+        setGraphError(err);
+      });
+  }
+
+  useEffect(() => {
+    loadGraph();
   }, []);
 
   const nodes = graph?.nodes ?? {};
@@ -137,6 +146,8 @@ export function useGraphEngine() {
     restore,
     resetToStart,
     graph,
-    setGraph
+    setGraph,
+    graphError,
+    reloadGraph: loadGraph
   };
 }
