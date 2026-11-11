@@ -30,9 +30,9 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
       <main id="main" tabIndex={-1} className="survey-content">
         <ScreenActions node={node} isStartNode={isStartNode} />
         <PreviousAnswerHeading label={previousAnswerLabel} />
-        <p className="results-label">Recommended next step:</p>
+        <h1 className="results-label">Recommended next step:</h1>
         <EditableText
-          as="h1"
+          as="p"
           className="results-recommendation"
           value={result.recommendation}
           placeholder="Recommendation"

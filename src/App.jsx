@@ -103,7 +103,7 @@ function AppContent({ engine }) {
     const main = document.getElementById('main');
     if (!main) return;
     const heading = main.querySelector('h1');
-    const headingText = heading?.textContent.trim();
+    const headingText = heading?.textContent.trim().replace(/:$/, '');
     document.title = headingText ? `${headingText} – ${BASE_TITLE}` : BASE_TITLE;
     if (isFirstScreenRef.current) {
       isFirstScreenRef.current = false;
