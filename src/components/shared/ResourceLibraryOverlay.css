@@ -113,6 +113,9 @@
   gap: 16px;
   overflow-y: auto;
   flex: 1;
+  /* Room for card focus rings, which the scroll area would otherwise clip */
+  padding: 5px;
+  margin: 0 -5px;
 }
 
 .resource-overlay__section {

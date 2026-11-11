@@ -110,8 +110,17 @@ export default function GlossaryOverlay() {
   if (!isGlossaryOpen) return null;
 
   function renderStatus() {
-    if (error) return <p className="content-editor__status">Couldn't load the glossary.</p>;
-    return <p className="content-editor__status">Loading…</p>;
+    if (error)
+      return (
+        <p className="content-editor__status" role="alert">
+          Couldn't load the glossary.
+        </p>
+      );
+    return (
+      <p className="content-editor__status" role="status">
+        Loading…
+      </p>
+    );
   }
 
   function renderList(entries) {
@@ -133,11 +142,13 @@ export default function GlossaryOverlay() {
         className="glossary-overlay-panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Glossary of terms"
+        aria-labelledby="glossary-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="glossary-overlay__heading-row">
-          <h2 className="glossary-overlay__title">Glossary of Terms</h2>
+          <h2 id="glossary-title" className="glossary-overlay__title">
+            Glossary of Terms
+          </h2>
           {canEdit && <EditModeSwitch checked={editMode} onToggle={toggleEditMode} />}
           <button
             ref={closeButtonRef}

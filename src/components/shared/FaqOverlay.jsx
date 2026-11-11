@@ -163,8 +163,17 @@ export default function FaqOverlay() {
   if (!isFaqOpen) return null;
 
   function renderStatus() {
-    if (error) return <p className="content-editor__status">Couldn't load the FAQ.</p>;
-    return <p className="content-editor__status">Loading…</p>;
+    if (error)
+      return (
+        <p className="content-editor__status" role="alert">
+          Couldn't load the FAQ.
+        </p>
+      );
+    return (
+      <p className="content-editor__status" role="status">
+        Loading…
+      </p>
+    );
   }
 
   function renderList(faqItems) {
@@ -196,11 +205,13 @@ export default function FaqOverlay() {
         className="faq-overlay-panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Frequently asked questions"
+        aria-labelledby="faq-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="faq-overlay__heading-row">
-          <h2 className="faq-overlay__title">Frequently Asked Questions</h2>
+          <h2 id="faq-title" className="faq-overlay__title">
+            Frequently Asked Questions
+          </h2>
           {canEdit && <EditModeSwitch checked={editMode} onToggle={toggleEditMode} />}
           <button
             ref={closeButtonRef}

@@ -137,8 +137,17 @@ export default function ResourceLibraryOverlay() {
   if (!isResourceLibraryOpen) return null;
 
   function renderStatus() {
-    if (error) return <p className="content-editor__status">Couldn't load resources.</p>;
-    return <p className="content-editor__status">Loading…</p>;
+    if (error)
+      return (
+        <p className="content-editor__status" role="alert">
+          Couldn't load resources.
+        </p>
+      );
+    return (
+      <p className="content-editor__status" role="status">
+        Loading…
+      </p>
+    );
   }
 
   function renderList(resources) {
@@ -148,14 +157,14 @@ export default function ResourceLibraryOverlay() {
       <>
         <div
           className="resource-overlay__tabs"
-          role="tablist"
+          role="group"
           aria-label="Filter resources by category"
         >
           {TABS.map((tab) => (
             <button
               key={tab.id}
-              role="tab"
-              aria-selected={activeTab === tab.id}
+              type="button"
+              aria-pressed={activeTab === tab.id}
               className={`resource-overlay__tab${activeTab === tab.id ? ' resource-overlay__tab--active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
             >
@@ -198,11 +207,13 @@ export default function ResourceLibraryOverlay() {
         className="resource-overlay-panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Resource library"
+        aria-labelledby="resource-library-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="resource-overlay__heading-row">
-          <h2 className="resource-overlay__title">Resources</h2>
+          <h2 id="resource-library-title" className="resource-overlay__title">
+            Resources
+          </h2>
           {canEdit && <EditModeSwitch checked={editMode} onToggle={toggleEditMode} />}
           <button
             ref={closeButtonRef}
