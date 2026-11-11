@@ -40,7 +40,7 @@ export default function CompactHeader({ onBack }) {
         <img src={IMG_TPM_MAN} alt="" className="hero-image" />
       </div>
       <UseCaseNav />
-      <button className="sidebar-open-btn" onClick={toggle} aria-label="Open resource panel">
+      <button className="sidebar-open-btn" onClick={toggle} aria-label="Open navigation">
         <Menu size={20} />
       </button>
     </div>
