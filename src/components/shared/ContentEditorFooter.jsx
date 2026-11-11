@@ -1,4 +1,5 @@
 import './ContentEditor.css';
+import { useEffect, useRef, useState } from 'react';
 
 // Edit / Preview switch and Save / Cancel row at the bottom of a help-content overlay in Edit Mode.
 export default function ContentEditorFooter({
@@ -10,9 +11,26 @@ export default function ContentEditorFooter({
   onSave,
   onCancel
 }) {
+  const [announcement, setAnnouncement] = useState('');
+  const wasSavingRef = useRef(false);
+
+  // Announces a successful save to screen readers
+  useEffect(() => {
+    if (saving) setAnnouncement('');
+    else if (wasSavingRef.current && !saveError) setAnnouncement('Changes saved');
+    wasSavingRef.current = saving;
+  }, [saving, saveError]);
+
   return (
     <div className="content-editor__footer">
-      {saveError && <p className="content-editor__error">Couldn't save: {saveError}</p>}
+      {saveError && (
+        <p className="content-editor__error" role="alert">
+          Couldn't save: {saveError}
+        </p>
+      )}
+      <span className="sr-only" role="status">
+        {announcement}
+      </span>
       <div className="content-editor__views" role="group" aria-label="Editor view">
         <button
           type="button"

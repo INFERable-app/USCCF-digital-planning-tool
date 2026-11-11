@@ -1,5 +1,5 @@
 import './EditModeBar.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import ExitEditModeConfirm from './ExitEditModeConfirm.jsx';
@@ -7,6 +7,15 @@ import ExitEditModeConfirm from './ExitEditModeConfirm.jsx';
 export default function EditModeBar() {
   const { editMode, dirty, saving, error, cancel, save, exit } = useEditMode();
   const [confirmingExit, setConfirmingExit] = useState(false);
+  const [announcement, setAnnouncement] = useState('');
+  const wasSavingRef = useRef(false);
+
+  // Announces a successful save to screen readers
+  useEffect(() => {
+    if (saving) setAnnouncement('');
+    else if (wasSavingRef.current && !error) setAnnouncement('Changes saved');
+    wasSavingRef.current = saving;
+  }, [saving, error]);
 
   if (!editMode) return null;
 
@@ -58,7 +67,14 @@ export default function EditModeBar() {
         </button>
       </div>
 
-      {error && <div className="edit-bar__error">{error}</div>}
+      {error && (
+        <div className="edit-bar__error" role="alert">
+          {error}
+        </div>
+      )}
+      <span className="sr-only" role="status">
+        {announcement}
+      </span>
 
       {confirmingExit && <ExitEditModeConfirm onClose={() => setConfirmingExit(false)} />}
     </div>
