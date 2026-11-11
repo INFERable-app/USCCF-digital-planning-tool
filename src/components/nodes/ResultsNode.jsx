@@ -79,7 +79,7 @@ export default function ResultsNode({ node, answers, onBack, previousAnswerLabel
       <div className="bottom-cta">
         {onBack && (
           <button className="btn-secondary cta-back" onClick={onBack}>
-            <span aria-hidden="true">‹</span> Back
+            <span aria-hidden="true">‹</span>&nbsp;Back
           </button>
         )}
       </div>
