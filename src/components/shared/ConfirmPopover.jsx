@@ -17,7 +17,7 @@ export default function ConfirmPopover({
       <div ref={ref} className="confirm-popover" style={style} onClick={(e) => e.stopPropagation()}>
         <p>{message}</p>
         <div className="confirm-popover__actions">
-          <button type="button" className="confirm-popover__cancel" onClick={onCancel}>
+          <button type="button" className="confirm-popover__cancel" onClick={onCancel} autoFocus>
             Cancel
           </button>
           <button type="button" className="confirm-popover__confirm" onClick={onConfirm}>
