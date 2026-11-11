@@ -82,6 +82,48 @@
   object-position: top center;
 }
 
+/* Mobile: header, title, tracker and image stack in normal flow so the header
+   grows with enlarged or re-spaced text instead of clipping it. Spacing
+   reproduces the original positions (title 82px, tracker 110px, image to 460px). */
+@media (max-width: 767px) {
+  .top-hero {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-hero .header-bar {
+    position: relative;
+    height: auto;
+    min-height: 72px;
+  }
+
+  .top-hero .app-title {
+    position: static;
+    margin-top: 10px;
+    padding: 0 16px;
+    white-space: normal;
+  }
+
+  .top-hero .breadcrumb {
+    position: static;
+    margin: 6px 16px 0;
+  }
+
+  .top-hero .hero-image-wrap {
+    position: relative;
+    inset: auto;
+    flex-shrink: 0;
+    height: 340px;
+    margin: 16px 17px 0;
+  }
+
+  .top-hero:has(.breadcrumb) .hero-image-wrap {
+    height: 274px;
+    margin-top: 2px;
+  }
+}
+
 /* ── Bottom section (hero screens) ───────────────────────────────────────── */
 .bottom-section {
   flex: 1;

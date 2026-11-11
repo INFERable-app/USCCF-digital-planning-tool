@@ -38,6 +38,34 @@
   right: 16px;
 }
 
+/* Mobile: header, title and tracker stack in normal flow so the header grows
+   with enlarged or re-spaced text instead of overlapping the question below */
+@media (max-width: 767px) {
+  .screen-compact .compact-header {
+    height: auto;
+    min-height: 200px;
+    padding-bottom: 16px;
+  }
+
+  .screen-compact .compact-header .header-bar {
+    position: relative;
+    height: auto;
+    min-height: 72px;
+  }
+
+  .screen-compact .compact-header .app-title {
+    position: static;
+    margin-top: 10px;
+    padding: 0 16px;
+    white-space: normal;
+  }
+
+  .screen-compact .compact-header .breadcrumb {
+    position: static;
+    margin: 6px 16px 0;
+  }
+}
+
 /* Hidden on mobile, becomes left column on desktop */
 .compact-hero-wrap {
   display: none;
