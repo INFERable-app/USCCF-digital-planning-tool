@@ -1,5 +1,5 @@
 import './PreviousAnswerHeading.css';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
@@ -17,6 +17,7 @@ export default function PreviousAnswerHeading({ label }) {
   const { editMode, setEdgeField } = useEditMode();
   const { path, nodes, edges, startNodeId } = useWizardNav();
   const edgeId = path[path.length - 1]?.edgeId;
+  const hintId = useId();
 
   const inSidebar = useMemo(
     () =>
@@ -36,9 +37,11 @@ export default function PreviousAnswerHeading({ label }) {
         as="span"
         value={label}
         multiline={false}
+        label="Answer that led to this screen"
+        describedBy={hintId}
         onCommit={(value) => setEdgeField(edgeId, 'label', value)}
       />
-      <p className="previous-answer-heading__hint">
+      <p id={hintId} className="previous-answer-heading__hint">
         {inSidebar
           ? `Also changes this answer’s button on the previous screen and its entry in the ${USE_CASE_NAV_TITLE} sidebar.`
           : 'Also changes this answer’s button on the previous screen.'}

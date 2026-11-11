@@ -29,14 +29,20 @@ function GlossaryEditor({ draft, onChange }) {
       {draft.map((entry, i) => (
         <div key={entry._key} className="content-editor__card">
           <div className="content-editor__fields">
-            <span className="content-editor__field-label">Term</span>
+            <label className="content-editor__field-label" htmlFor={`${entry._key}-term`}>
+              Term
+            </label>
             <input
+              id={`${entry._key}-term`}
               type="text"
               value={entry.term || ''}
               onChange={(e) => updateAt(i, { term: e.target.value })}
             />
-            <span className="content-editor__field-label">Definition</span>
+            <label className="content-editor__field-label" htmlFor={`${entry._key}-definition`}>
+              Definition
+            </label>
             <textarea
+              id={`${entry._key}-definition`}
               rows={3}
               value={entry.definition || ''}
               onChange={(e) => updateAt(i, { definition: e.target.value })}
@@ -51,7 +57,7 @@ function GlossaryEditor({ draft, onChange }) {
             type="button"
             className="content-editor__remove"
             onClick={() => onChange(draft.filter((_, idx) => idx !== i))}
-            aria-label="Remove term"
+            aria-label={`Remove term ${entry.term || ''}`.trim()}
           >
             &minus;
           </button>

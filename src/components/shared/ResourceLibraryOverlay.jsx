@@ -56,7 +56,8 @@ function CategoryPicker({ resource, onChange }) {
   }
 
   return (
-    <div>
+    <fieldset className="content-editor__category-group">
+      <legend className="sr-only">Categories</legend>
       <div className="content-editor__categories">
         {Object.entries(SECTION_LABELS).map(([id, label]) => (
           <label key={id} className="content-editor__category">
@@ -74,7 +75,7 @@ function CategoryPicker({ resource, onChange }) {
           Pick at least one category — this resource won't be saved until it has one.
         </p>
       )}
-    </div>
+    </fieldset>
   );
 }
 

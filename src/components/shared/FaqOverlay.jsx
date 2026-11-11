@@ -74,28 +74,40 @@ function FaqEditor({ draft, onChange }) {
             <GripVertical size={14} />
           </span>
           <div className="content-editor__fields">
-            <span className="content-editor__field-label">Question</span>
+            <label className="content-editor__field-label" htmlFor={`${item._key}-question`}>
+              Question
+            </label>
             <input
+              id={`${item._key}-question`}
               type="text"
               value={item.question || ''}
               onChange={(e) => updateAt(i, { question: e.target.value })}
             />
-            <span className="content-editor__field-label">Intro</span>
+            <label className="content-editor__field-label" htmlFor={`${item._key}-intro`}>
+              Intro
+            </label>
             <textarea
+              id={`${item._key}-intro`}
               rows={3}
               value={item.intro || ''}
               onChange={(e) => updateAt(i, { intro: e.target.value })}
             />
-            <span className="content-editor__field-label">Bullets (one per line)</span>
+            <label className="content-editor__field-label" htmlFor={`${item._key}-bullets`}>
+              Bullets (one per line)
+            </label>
             <textarea
+              id={`${item._key}-bullets`}
               rows={3}
               value={(item.bullets || []).join('\n')}
               onChange={(e) =>
                 updateAt(i, { bullets: e.target.value ? e.target.value.split('\n') : [] })
               }
             />
-            <span className="content-editor__field-label">Outro</span>
+            <label className="content-editor__field-label" htmlFor={`${item._key}-outro`}>
+              Outro
+            </label>
             <textarea
+              id={`${item._key}-outro`}
               rows={2}
               value={item.outro || ''}
               onChange={(e) => updateAt(i, { outro: e.target.value })}
@@ -110,7 +122,7 @@ function FaqEditor({ draft, onChange }) {
             type="button"
             className="content-editor__remove"
             onClick={() => onChange(draft.filter((_, idx) => idx !== i))}
-            aria-label="Remove question"
+            aria-label={`Remove question ${item.question || ''}`.trim()}
           >
             &minus;
           </button>

@@ -13,6 +13,8 @@ export default function EditableText({
   className,
   value,
   placeholder,
+  label,
+  describedBy,
   onCommit,
   multiline = true
 }) {
@@ -47,6 +49,8 @@ export default function EditableText({
     className: `${className ?? ''} editable-text`.trim(),
     defaultValue: value ?? '',
     placeholder,
+    'aria-label': label ?? placeholder,
+    'aria-describedby': describedBy,
     onInput: (e) => {
       if (e.nativeEvent.isComposing) return;
       if (e.target.value !== (value ?? '')) commit(e.target.value);
