@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildUseCaseTree } from '../../graph/buildUseCaseTree.js';
 import { useDrawer } from '../../contexts/DrawerContext.jsx';
 import { useWizardNav } from '../../contexts/WizardNavContext.jsx';
@@ -176,6 +176,24 @@ export default function UseCaseNav() {
     hasProgress
   } = useWizardNav();
   const [confirmAt, setConfirmAt] = useState(null);
+  const asideRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const openerRef = useRef(null);
+  const wasOpenRef = useRef(isOpen);
+
+  // Focuses the close button on open, and returns focus to the opener on close
+  useEffect(() => {
+    if (isOpen === wasOpenRef.current) return;
+    wasOpenRef.current = isOpen;
+    if (isOpen) {
+      openerRef.current = document.activeElement;
+      closeButtonRef.current?.focus();
+      return;
+    }
+    const active = document.activeElement;
+    const focusWasInside = active === document.body || asideRef.current?.contains(active);
+    if (focusWasInside && openerRef.current?.isConnected) openerRef.current.focus();
+  }, [isOpen]);
 
   const tree = useMemo(
     () => buildUseCaseTree(nodes, edges, startNodeId),
@@ -196,10 +214,16 @@ export default function UseCaseNav() {
   return (
     <div className="usecase-nav-track">
       {isOpen && <div className="usecase-nav-backdrop" onClick={close} aria-hidden="true" />}
-      <aside className="usecase-nav" aria-label="Use case navigation">
+      <aside
+        ref={asideRef}
+        className="usecase-nav"
+        aria-label="Use case navigation"
+        inert={!isOpen}
+      >
         <div className="usecase-nav__heading-row">
           <h2 className="usecase-nav__title">{USE_CASE_NAV_TITLE}</h2>
           <button
+            ref={closeButtonRef}
             className="sidebar-close-btn"
             onClick={toggle}
             aria-label="Close navigation panel"
