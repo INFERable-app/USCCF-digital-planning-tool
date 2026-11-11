@@ -29,6 +29,21 @@
   flex-shrink: 0;
 }
 
+/* Selects the edge; reset to look like the row's plain text */
+.node-outgoing-edges__select {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .node-outgoing-edges__label {
   flex: 1;
   min-width: 0;

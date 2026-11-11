@@ -133,6 +133,14 @@ function GraphEditorInner({ graph, userLabel, save }) {
     selectOnly('edge', newEdgeId);
   }
 
+  // Adds an edge from the inspector form, keeping the source node selected
+  function handleAddEdge(sourceId, targetId, label) {
+    pushHistory({ nodes, edges });
+    const { edges: nextEdges } = mutations.addEdge(nodes, edges, { sourceId, targetId, label });
+    setEdges(nextEdges);
+    setDirty(true);
+  }
+
   function handleConnectStart() {
     setIsConnecting(true);
   }
@@ -381,6 +389,7 @@ function GraphEditorInner({ graph, userLabel, save }) {
             onUpdateEdgeData={updateEdgeData}
             onRenameEdgeId={renameEdgeId}
             onSelectEdge={(edgeId) => selectOnly('edge', edgeId)}
+            onAddEdge={handleAddEdge}
             onClose={clearSelection}
             onRequestDelete={handleRequestDelete}
           />

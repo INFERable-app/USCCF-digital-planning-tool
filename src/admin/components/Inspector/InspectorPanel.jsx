@@ -2,6 +2,7 @@ import './InspectorPanel.css';
 import { Trash2 } from 'lucide-react';
 import NodeCommonFields from './NodeCommonFields.jsx';
 import NodeOutgoingEdgesList from './NodeOutgoingEdgesList.jsx';
+import AddConnectionForm from './AddConnectionForm.jsx';
 import EdgeForm from './EdgeForm.jsx';
 import WelcomeForm from './nodeForms/WelcomeForm.jsx';
 import MultiChoiceForm from './nodeForms/MultiChoiceForm.jsx';
@@ -31,6 +32,7 @@ export default function InspectorPanel({
   onUpdateEdgeData,
   onRenameEdgeId,
   onSelectEdge,
+  onAddEdge,
   onClose,
   onRequestDelete
 }) {
@@ -63,6 +65,12 @@ export default function InspectorPanel({
               edges={outgoingEdges}
               onReorder={(orderedIds) => onReorderNodeEdges(node.id, orderedIds)}
               onSelectEdge={onSelectEdge}
+            />
+            <AddConnectionForm
+              key={node.id}
+              sourceId={node.id}
+              nodeIds={allNodeIds}
+              onAdd={(targetId, label) => onAddEdge(node.id, targetId, label)}
             />
           </div>
         </div>
