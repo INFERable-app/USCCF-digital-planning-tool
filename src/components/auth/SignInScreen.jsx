@@ -165,9 +165,16 @@ export default function SignInScreen() {
 
           <div className="signin-privacy">
             <span className="signin-privacy-eyebrow">Before you continue</span>
-            <h2 className="signin-privacy-title">Data Privacy Notice</h2>
+            <h2 id="privacy-notice-title" className="signin-privacy-title">
+              Data Privacy Notice
+            </h2>
 
-            <div className="signin-privacy-scroll">
+            <div
+              className="signin-privacy-scroll"
+              tabIndex={0}
+              role="region"
+              aria-labelledby="privacy-notice-title"
+            >
               <h3>What Information We Collect</h3>
               <div className="signin-privacy-row">
                 <LockIcon />
@@ -228,6 +235,7 @@ export default function SignInScreen() {
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
+                aria-describedby={agreed ? undefined : 'privacy-hint'}
               />
               <span>I Agree</span>
             </label>
@@ -252,7 +260,10 @@ export default function SignInScreen() {
               <AppleIcon />
               <span>Continue with Apple</span>
             </button>
-            <p className={`signin-privacy-hint${agreed ? ' signin-privacy-hint--hidden' : ''}`}>
+            <p
+              id="privacy-hint"
+              className={`signin-privacy-hint${agreed ? ' signin-privacy-hint--hidden' : ''}`}
+            >
               Accept the notice above to continue.
             </p>
           </div>
