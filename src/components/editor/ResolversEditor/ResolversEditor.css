@@ -87,7 +87,7 @@
   flex: 1;
   min-width: 0;
   padding: 0.35rem 0.5rem;
-  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border: 1px solid var(--color-navy-midnight-alpha-50);
   border-radius: 5px;
   font-size: 0.75rem;
   background: var(--surface-page);
@@ -98,7 +98,7 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  color: var(--color-navy-midnight-alpha-40);
+  color: var(--color-navy-midnight-alpha-85);
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
@@ -155,7 +155,7 @@
   flex-shrink: 0;
   width: 6.5rem;
   padding: 0.3rem 0.35rem;
-  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border: 1px solid var(--color-navy-midnight-alpha-50);
   border-radius: 5px;
   font-size: 0.72rem;
   background: var(--surface-page);
@@ -174,7 +174,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0.3rem 0.5rem;
-  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border: 1px solid var(--color-navy-midnight-alpha-50);
   border-radius: 5px;
   font-size: 0.75rem;
   font-family: inherit;

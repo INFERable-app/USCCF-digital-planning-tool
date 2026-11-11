@@ -41,8 +41,12 @@
   --color-navy-midnight-alpha-20: rgb(10 21 43 / 0.2);
   --color-navy-midnight-alpha-40: rgb(10 21 43 / 0.4);
   --color-navy-midnight-alpha-50: rgb(10 21 43 / 0.5);
+  --color-navy-midnight-alpha-65: rgb(10 21 43 / 0.65);
   --color-navy-midnight-alpha-85: rgb(10 21 43 / 0.85);
   --color-navy-midnight-alpha-90: rgb(10 21 43 / 0.9);
+
+  /* Ice blue at partial opacity, for text on dark fills */
+  --color-blue-ice-alpha-80: rgb(216 242 255 / 0.8);
 
   /* Data blue ramp, lightest to darkest */
   --color-data-blue-50: hsl(207 100% 98%);

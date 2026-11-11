@@ -17,6 +17,12 @@ body {
   outline-offset: 2px;
 }
 
+/* Placeholder text dark enough to read (≥4.5:1) on white, grey and ice fields */
+::placeholder {
+  color: var(--color-navy-midnight-alpha-65);
+  opacity: 1;
+}
+
 /* Turns off transitions and animations for people who ask for less motion */
 @media (prefers-reduced-motion: reduce) {
   *,

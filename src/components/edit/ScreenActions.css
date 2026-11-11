@@ -30,7 +30,7 @@
 .screen-actions__select {
   margin-left: auto;
   background: var(--surface-page);
-  border: 1px solid var(--color-navy-midnight-alpha-20);
+  border: 1px solid var(--color-navy-midnight-alpha-50);
   border-radius: 6px;
   padding: 5px 8px;
   font-family: inherit;

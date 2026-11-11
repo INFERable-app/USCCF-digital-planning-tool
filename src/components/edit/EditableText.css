@@ -9,7 +9,7 @@
   letter-spacing: inherit;
   text-align: inherit;
   background: transparent;
-  border: 1px dashed var(--color-navy-midnight-alpha-20);
+  border: 1px dashed var(--color-navy-midnight-alpha-50);
   border-radius: 4px;
   padding: 6px 10px;
   margin: -6px -10px;
@@ -31,12 +31,12 @@
 }
 
 .editable-text::placeholder {
-  color: var(--color-navy-midnight-alpha-50);
+  color: var(--color-navy-midnight-alpha-65);
   font-style: italic;
 }
 
 .editable-text:hover {
-  border-color: var(--color-navy-midnight-alpha-50);
+  border-color: var(--color-navy-midnight-alpha-65);
   background: var(--surface-page);
 }
 
@@ -52,9 +52,14 @@
    fill rather than a white one. */
 .btn-choice .editable-text,
 .btn-primary .editable-text {
-  border-color: color-mix(in srgb, var(--color-white) 45%, transparent);
+  border-color: color-mix(in srgb, var(--color-white) 60%, transparent);
   margin: 0;
   padding: 0;
+}
+
+.btn-choice .editable-text::placeholder,
+.btn-primary .editable-text::placeholder {
+  color: var(--color-blue-ice-alpha-80);
 }
 
 .btn-choice .editable-text:hover,

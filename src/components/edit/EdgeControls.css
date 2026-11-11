@@ -75,6 +75,12 @@
   cursor: pointer;
 }
 
+/* Focus ring drawn inside rows so the menu's overflow can't clip it */
+.edge-controls__menu button:focus-visible,
+.edge-picker__row:focus-visible {
+  outline-offset: -3px;
+}
+
 .edge-controls__menu button:last-child {
   border-bottom: none;
 }
@@ -117,6 +123,12 @@
   padding: 10px 12px;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--color-navy-midnight-alpha-50);
+}
+
+/* The input itself has no outline, so the search row shows focus instead */
+.edge-picker__search:focus-within {
+  outline: 3px solid var(--color-blue-electric);
+  outline-offset: -3px;
 }
 
 .edge-picker__search input {
