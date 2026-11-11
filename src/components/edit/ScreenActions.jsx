@@ -43,7 +43,14 @@ export default function ScreenActions({ node, isStartNode }) {
         <button
           type="button"
           className="screen-actions__delete"
-          onClick={(e) => setConfirmAt({ x: e.clientX, y: e.clientY })}
+          onClick={(e) => {
+            if (e.detail === 0) {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setConfirmAt({ x: rect.left + rect.width / 2, y: rect.bottom });
+            } else {
+              setConfirmAt({ x: e.clientX, y: e.clientY });
+            }
+          }}
         >
           <Trash2 size={13} />
           Delete screen

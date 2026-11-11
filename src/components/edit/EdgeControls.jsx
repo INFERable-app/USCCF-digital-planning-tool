@@ -1,5 +1,6 @@
 import './EdgeControls.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePopoverFocus } from '../../hooks/usePopoverFocus.js';
 import { ArrowRight, GripVertical, MoreHorizontal, Search } from 'lucide-react';
 import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import { nodeTypeMeta } from '../../admin/components/nodes/nodeTypeMeta.js';
@@ -7,6 +8,8 @@ import MoveButtons from './MoveButtons.jsx';
 
 function NodePicker({ nodes, currentTargetId, onPick, onClose }) {
   const [query, setQuery] = useState('');
+  const pickerRef = useRef(null);
+  usePopoverFocus(pickerRef, onClose);
   const term = query.trim().toLowerCase();
   const matches = Object.values(nodes).filter((node) => {
     if (!term) return true;
@@ -16,7 +19,14 @@ function NodePicker({ nodes, currentTargetId, onPick, onClose }) {
 
   return (
     <div className="edge-picker-backdrop" onClick={onClose}>
-      <div className="edge-picker" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={pickerRef}
+        className="edge-picker"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Change destination"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="edge-picker__search">
           <Search size={14} />
           <input
@@ -24,6 +34,7 @@ function NodePicker({ nodes, currentTargetId, onPick, onClose }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search screens…"
+            aria-label="Search screens"
             autoFocus
           />
         </div>
@@ -72,6 +83,39 @@ export default function EdgeControls({
   const { removeButton, retargetButton, setEdgeField, goToNode } = useEditMode();
   const [menuOpen, setMenuOpen] = useState(false);
   const [picking, setPicking] = useState(false);
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const target = nodes[edge.targetNodeId];
+  const targetTitle = target?.question ?? target?.heading ?? edge.targetNodeId;
+
+  // Moves focus to the first item when the menu opens
+  useEffect(() => {
+    if (menuOpen) menuRef.current?.querySelector('[role="menuitem"]')?.focus();
+  }, [menuOpen]);
+
+  function closeMenu() {
+    setMenuOpen(false);
+    menuButtonRef.current?.focus();
+  }
+
+  // Arrow keys, Home and End move between items; Escape and Tab close the menu
+  function handleMenuKeyDown(e) {
+    const items = Array.from(menuRef.current.querySelectorAll('[role="menuitem"]'));
+    const index = items.indexOf(document.activeElement);
+    let next = null;
+    if (e.key === 'ArrowDown') next = items[(index + 1) % items.length];
+    else if (e.key === 'ArrowUp') next = items[(index - 1 + items.length) % items.length];
+    else if (e.key === 'Home') next = items[0];
+    else if (e.key === 'End') next = items[items.length - 1];
+    else if (e.key === 'Escape' || e.key === 'Tab') {
+      e.preventDefault();
+      e.stopPropagation();
+      closeMenu();
+      return;
+    } else return;
+    e.preventDefault();
+    next?.focus();
+  }
 
   return (
     <>
@@ -96,18 +140,20 @@ export default function EdgeControls({
         type="button"
         className="edge-controls__chip"
         onClick={() => goToNode(edge.targetNodeId)}
-        title={`Go to ${edge.targetNodeId}`}
-        aria-label={`Go to ${edge.targetNodeId}`}
+        title={`Go to ${targetTitle}`}
+        aria-label={`Go to ${targetTitle}`}
       >
         <ArrowRight size={15} />
       </button>
 
       <div className="edge-controls__menu-wrap">
         <button
+          ref={menuButtonRef}
           type="button"
           className="edge-controls__chip"
           onClick={() => setMenuOpen((o) => !o)}
-          aria-label="Button options"
+          aria-label={`Options for "${edge.label || 'button'}"`}
+          aria-haspopup="menu"
           aria-expanded={menuOpen}
         >
           <MoreHorizontal size={15} />
@@ -115,12 +161,18 @@ export default function EdgeControls({
         {menuOpen && (
           <>
             <div className="edge-controls__menu-scrim" onClick={() => setMenuOpen(false)} />
-            <div className="edge-controls__menu" role="menu">
+            <div
+              ref={menuRef}
+              className="edge-controls__menu"
+              role="menu"
+              aria-label={`Options for "${edge.label || 'button'}"`}
+              onKeyDown={handleMenuKeyDown}
+            >
               <button
                 type="button"
                 role="menuitem"
                 onClick={() => {
-                  setMenuOpen(false);
+                  closeMenu();
                   setPicking(true);
                 }}
               >
@@ -131,7 +183,7 @@ export default function EdgeControls({
                 role="menuitem"
                 onClick={() => {
                   setEdgeField(edge.id, 'disabled', !edge.disabled);
-                  setMenuOpen(false);
+                  closeMenu();
                 }}
               >
                 {edge.disabled ? 'Enable button' : 'Disable button'}

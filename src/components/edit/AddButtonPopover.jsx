@@ -1,10 +1,13 @@
 import './AddButtonPopover.css';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { NODE_TYPES, nodeTypeMeta } from '../../admin/components/nodes/nodeTypeMeta.js';
+import { usePopoverFocus } from '../../hooks/usePopoverFocus.js';
 
 export default function AddButtonPopover({ onAdd, onCancel }) {
   const [label, setLabel] = useState('');
   const [type, setType] = useState('multiChoice');
+  const formRef = useRef(null);
+  usePopoverFocus(formRef, onCancel);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -15,11 +18,17 @@ export default function AddButtonPopover({ onAdd, onCancel }) {
   return (
     <div className="add-button-popover-backdrop" onClick={onCancel}>
       <form
+        ref={formRef}
         className="add-button-popover"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-button-title"
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
       >
-        <div className="add-button-popover__header">Add button</div>
+        <h2 id="add-button-title" className="add-button-popover__header">
+          Add button
+        </h2>
 
         <label htmlFor="add-button-label">Button text</label>
         <input
