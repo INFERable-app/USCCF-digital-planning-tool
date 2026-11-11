@@ -2,7 +2,24 @@ import { useEditMode } from '../../contexts/EditModeContext.jsx';
 import EditableText from '../edit/EditableText.jsx';
 
 export default function RadioEdge({ edge, selected, onSelect }) {
-  const { setEdgeField } = useEditMode();
+  const { editMode, setEdgeField } = useEditMode();
+
+  // In edit mode the radio is a visual preview only, so the label field isn't
+  // inside a <label> that already names another control
+  if (editMode) {
+    return (
+      <div className="radio-option">
+        <input type="radio" tabIndex={-1} aria-hidden="true" checked={false} readOnly />
+        <EditableText
+          as="span"
+          value={edge.label}
+          multiline={false}
+          placeholder="Option text"
+          onCommit={(next) => setEdgeField(edge.id, 'label', next)}
+        />
+      </div>
+    );
+  }
 
   return (
     <label className="radio-option">
@@ -12,13 +29,7 @@ export default function RadioEdge({ edge, selected, onSelect }) {
         checked={selected}
         onChange={() => onSelect(edge.id)}
       />
-      <EditableText
-        as="span"
-        value={edge.label}
-        multiline={false}
-        placeholder="Option text"
-        onCommit={(next) => setEdgeField(edge.id, 'label', next)}
-      />
+      <span>{edge.label}</span>
     </label>
   );
 }

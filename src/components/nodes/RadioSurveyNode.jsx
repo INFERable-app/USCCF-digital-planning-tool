@@ -66,20 +66,26 @@ export default function RadioSurveyNode({
             <span aria-hidden="true">‹</span> Back
           </button>
         )}
-        <button
-          className="btn-primary"
-          onClick={() => !editMode && selectedEdgeId && advance(selectedEdgeId)}
-          disabled={submitDisabled}
-          aria-describedby={submitDisabled ? hintId : undefined}
-        >
-          <EditableText
-            as="span"
-            value={node.submitLabel ?? 'Next'}
-            multiline={false}
-            placeholder="Next"
-            onCommit={(v) => setNodeField(node.id, 'submitLabel', v)}
-          />
-        </button>
+        {editMode ? (
+          <div className="btn-primary">
+            <EditableText
+              as="span"
+              value={node.submitLabel ?? 'Next'}
+              multiline={false}
+              placeholder="Next"
+              onCommit={(v) => setNodeField(node.id, 'submitLabel', v)}
+            />
+          </div>
+        ) : (
+          <button
+            className="btn-primary"
+            onClick={() => selectedEdgeId && advance(selectedEdgeId)}
+            disabled={submitDisabled}
+            aria-describedby={submitDisabled ? hintId : undefined}
+          >
+            {node.submitLabel ?? 'Next'}
+          </button>
+        )}
         <span id={hintId} className="sr-only">
           Choose an option to continue.
         </span>

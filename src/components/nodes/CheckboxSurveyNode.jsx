@@ -66,18 +66,21 @@ export default function CheckboxSurveyNode({
             <span aria-hidden="true">‹</span> Back
           </button>
         )}
-        <button
-          className="btn-primary"
-          onClick={() => !editMode && advance(node.submitEdgeId, [...selected])}
-        >
-          <EditableText
-            as="span"
-            value={submitEdge?.label ?? 'Submit'}
-            multiline={false}
-            placeholder="Submit"
-            onCommit={(v) => submitEdge && setEdgeField(submitEdge.id, 'label', v)}
-          />
-        </button>
+        {editMode ? (
+          <div className="btn-primary">
+            <EditableText
+              as="span"
+              value={submitEdge?.label ?? 'Submit'}
+              multiline={false}
+              placeholder="Submit"
+              onCommit={(v) => submitEdge && setEdgeField(submitEdge.id, 'label', v)}
+            />
+          </div>
+        ) : (
+          <button className="btn-primary" onClick={() => advance(node.submitEdgeId, [...selected])}>
+            {submitEdge?.label ?? 'Submit'}
+          </button>
+        )}
       </div>
     </div>
   );
