@@ -36,7 +36,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--color-navy-midnight-alpha-40);
+  background: var(--color-navy-midnight-alpha-50);
   flex-shrink: 0;
   transition:
     background 0.2s ease,
@@ -53,7 +53,7 @@
 .breadcrumb-dot--dimmed {
   width: 12px;
   height: 12px;
-  background: var(--color-data-blue-300);
+  background: var(--color-data-blue-500);
 }
 
 /* Lines shrink so long paths fit narrow screens */
@@ -62,7 +62,7 @@
   flex: 0 1 36px;
   min-width: 8px;
   height: 4px;
-  background: var(--color-navy-midnight-alpha-40);
+  background: var(--color-navy-midnight-alpha-50);
 }
 
 .breadcrumb-step--active .breadcrumb-dot {
@@ -90,7 +90,7 @@
 }
 
 .breadcrumb-caption--preview {
-  color: var(--color-blue-electric);
+  color: var(--accent-primary);
 }
 
 @media (hover: none) {

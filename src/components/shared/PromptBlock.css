@@ -44,6 +44,11 @@
   color: var(--color-white);
 }
 
+/* Light ring so focus shows against the dark bar */
+.prompt-block-copy:focus-visible {
+  outline-color: var(--color-cyan-sky);
+}
+
 .prompt-block-body {
   display: block;
   width: 100%;
@@ -72,7 +77,8 @@
 
 .prompt-block-body:focus {
   background: var(--color-black);
-  outline: none;
+  outline: 3px solid var(--color-cyan-sky);
+  outline-offset: -3px;
 }
 
 .prompt-placeholder {
