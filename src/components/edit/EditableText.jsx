@@ -9,6 +9,7 @@ import { useEditMode } from '../../contexts/EditModeContext.jsx';
 // input so the edit bar reacts to the first keystroke.
 export default function EditableText({
   as: Tag = 'p',
+  id,
   className,
   value,
   placeholder,
@@ -34,10 +35,15 @@ export default function EditableText({
 
   if (!editMode) {
     if (value === undefined || value === null || value === '') return null;
-    return <Tag className={className}>{value}</Tag>;
+    return (
+      <Tag id={id} className={className}>
+        {value}
+      </Tag>
+    );
   }
 
   const props = {
+    id,
     className: `${className ?? ''} editable-text`.trim(),
     defaultValue: value ?? '',
     placeholder,

@@ -1,5 +1,5 @@
 import '../shared/survey.css';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import PreviousAnswerHeading from '../shared/PreviousAnswerHeading.jsx';
 import RadioEdge from '../edges/RadioEdge.jsx';
@@ -19,6 +19,9 @@ export default function RadioSurveyNode({
 }) {
   const [selectedEdgeId, setSelectedEdgeId] = useState(null);
   const { editMode, setNodeField } = useEditMode();
+  const questionId = useId();
+  const hintId = useId();
+  const submitDisabled = !editMode && !selectedEdgeId;
 
   return (
     <div className="screen screen-compact">
@@ -34,6 +37,7 @@ export default function RadioSurveyNode({
         />
         <EditableText
           as="h1"
+          id={questionId}
           className="survey-question"
           value={node.question}
           placeholder="Question"
@@ -41,6 +45,7 @@ export default function RadioSurveyNode({
         />
         <EditableEdgeList
           className="radio-list"
+          groupProps={{ role: 'radiogroup', 'aria-labelledby': questionId }}
           nodeId={node.id}
           nodeEdges={nodeEdges}
           nodes={nodes}
@@ -64,7 +69,8 @@ export default function RadioSurveyNode({
         <button
           className="btn-primary"
           onClick={() => !editMode && selectedEdgeId && advance(selectedEdgeId)}
-          disabled={!editMode && !selectedEdgeId}
+          disabled={submitDisabled}
+          aria-describedby={submitDisabled ? hintId : undefined}
         >
           <EditableText
             as="span"
@@ -74,6 +80,9 @@ export default function RadioSurveyNode({
             onCommit={(v) => setNodeField(node.id, 'submitLabel', v)}
           />
         </button>
+        <span id={hintId} className="sr-only">
+          Choose an option to continue.
+        </span>
       </div>
     </div>
   );

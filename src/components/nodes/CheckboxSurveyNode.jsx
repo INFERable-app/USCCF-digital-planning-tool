@@ -1,5 +1,5 @@
 import '../shared/survey.css';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import CompactHeader from '../shared/CompactHeader.jsx';
 import CheckboxEdge from '../edges/CheckboxEdge.jsx';
 import EditableText from '../edit/EditableText.jsx';
@@ -19,6 +19,7 @@ export default function CheckboxSurveyNode({
   const [selected, setSelected] = useState(new Set());
   const { editMode, setNodeField, setEdgeField } = useEditMode();
   const submitEdge = edges[node.submitEdgeId];
+  const questionId = useId();
 
   function handleToggle(edgeId) {
     setSelected((prev) => {
@@ -36,6 +37,7 @@ export default function CheckboxSurveyNode({
         <ScreenActions node={node} isStartNode={isStartNode} />
         <EditableText
           as="h1"
+          id={questionId}
           className="survey-question"
           value={node.question}
           placeholder="Question"
@@ -43,6 +45,7 @@ export default function CheckboxSurveyNode({
         />
         <EditableEdgeList
           className="checkbox-list"
+          groupProps={{ role: 'group', 'aria-labelledby': questionId }}
           nodeId={node.id}
           nodeEdges={nodeEdges}
           nodes={nodes}

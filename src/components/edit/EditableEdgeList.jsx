@@ -8,12 +8,24 @@ import AddButtonPopover from './AddButtonPopover.jsx';
 // Wraps a screen's option list in edit mode: each option keeps its normal
 // appearance and gains a reorder grip, a "go to destination" chip and an
 // overflow menu, with an Add button underneath.
-export default function EditableEdgeList({ nodeId, nodeEdges, nodes, className, children }) {
+export default function EditableEdgeList({
+  nodeId,
+  nodeEdges,
+  nodes,
+  className,
+  groupProps,
+  children
+}) {
   const { editMode, reorderButtons, addButton, goToNode } = useEditMode();
   const [dragId, setDragId] = useState(null);
   const [adding, setAdding] = useState(false);
 
-  if (!editMode) return <div className={className}>{children}</div>;
+  if (!editMode)
+    return (
+      <div className={className} {...groupProps}>
+        {children}
+      </div>
+    );
 
   function handleDrop(overId) {
     if (!dragId || dragId === overId) return;
@@ -29,7 +41,7 @@ export default function EditableEdgeList({ nodeId, nodeEdges, nodes, className, 
   const rendered = Array.isArray(children) ? children : [children];
 
   return (
-    <div className={`${className ?? ''} edge-list--editing`.trim()}>
+    <div className={`${className ?? ''} edge-list--editing`.trim()} {...groupProps}>
       {nodeEdges.map((edge, i) => (
         <div
           key={edge.id}
