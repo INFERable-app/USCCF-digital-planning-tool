@@ -1,5 +1,5 @@
 import './ConfirmPopover.css';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useClampedPopoverPosition } from './useClampedPopoverPosition.js';
 
 // Small inline confirm anchored at a screen position — replaces window.confirm().
@@ -13,8 +13,15 @@ export default function ConfirmPopover({
 }) {
   const { ref, style } = useClampedPopoverPosition(x, y);
   const messageId = useId();
-  // Captured on first render, before autoFocus moves focus to Cancel
+  const cancelRef = useRef(null);
+  // Captured on first render, before focus moves to Cancel
   const [opener] = useState(() => document.activeElement);
+
+  // Focuses Cancel once the popover is positioned and visible; hidden elements can't take focus
+  const visible = style.visibility !== 'hidden';
+  useEffect(() => {
+    if (visible) cancelRef.current?.focus();
+  }, [visible]);
 
   // Returns focus to whatever opened the popover once it closes
   useEffect(() => {
@@ -60,7 +67,12 @@ export default function ConfirmPopover({
       >
         <p id={messageId}>{message}</p>
         <div className="confirm-popover__actions">
-          <button type="button" className="confirm-popover__cancel" onClick={onCancel} autoFocus>
+          <button
+            type="button"
+            className="confirm-popover__cancel"
+            onClick={onCancel}
+            ref={cancelRef}
+          >
             Cancel
           </button>
           <button type="button" className="confirm-popover__confirm" onClick={onConfirm}>
